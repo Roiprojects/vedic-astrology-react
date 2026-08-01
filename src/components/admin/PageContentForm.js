@@ -1,14 +1,13 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
+import { saveAdminPageContent } from "@/lib/supabase/admin-data";
 const inputCls = "w-full rounded-xl border border-gold/30 bg-overlay px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-gold/70";
 const labelCls = "mb-1.5 block text-sm font-medium text-ink";
 function Section({ title, children }) {
     return (_jsxs("section", { className: "rounded-3xl border border-gold/20 bg-surface/60 p-6 sm:p-7", children: [_jsx("h2", { className: "font-serif text-xl text-ink", children: title }), _jsx("div", { className: "mt-5 space-y-5", children: children })] }));
 }
 export function PageContentForm({ pageId, initial, config, }) {
-    const navigate = useNavigate();
     const [form, setForm] = useState(initial);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -31,21 +30,11 @@ export function PageContentForm({ pageId, initial, config, }) {
                 .filter((f) => f.question && f.answer),
         };
         try {
-            const res = await fetch(`/api/admin/pages/${pageId}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
-                setError(data.error ?? "Could not save.");
-                return;
-            }
+            await saveAdminPageContent(pageId, payload);
             setSaved(true);
-            window.location.reload();
         }
-        catch {
-            setError("Something went wrong. Please try again.");
+        catch (err) {
+            setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
         }
         finally {
             setSaving(false);

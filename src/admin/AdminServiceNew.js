@@ -2,19 +2,17 @@ import { jsxs as _jsxs, jsx as _jsx, Fragment as _Fragment } from "react/jsx-run
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { getServicesForAdmin } from "@/lib/data";
+import { getAdminServices } from "@/lib/supabase/admin-data";
 import { ServiceForm } from "@/components/admin/ServiceForm";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
 export default function AdminServiceNewPage() {
-    const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [nextOrder, setNextOrder] = useState(1);
     useEffect(() => {
-        const data = getServicesForAdmin();
-        setServices(data);
-        setNextOrder(data.reduce((max, s) => Math.max(max, s.order), 0) + 1);
-        setLoading(false);
+        getAdminServices()
+            .then((data) => setNextOrder(data.reduce((max, s) => Math.max(max, s.order), 0) + 1))
+            .finally(() => setLoading(false));
     }, []);
     const blank = {
         slug: "",

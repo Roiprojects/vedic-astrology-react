@@ -17,18 +17,26 @@ export function useAuth() {
       return;
     }
     const supabase = createSupabaseBrowserClient();
+    async function refreshAdminState(session: Session | null) {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (!session) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+      const { data: admin } = await supabase.rpc("is_admin");
+      setIsAdmin(Boolean(admin));
+      setLoading(false);
+    }
 
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
+      void refreshAdminState(data.session);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
+        void refreshAdminState(session);
       }
     );
 

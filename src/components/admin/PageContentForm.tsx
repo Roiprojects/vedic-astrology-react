@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
+import { saveAdminPageContent } from "@/lib/supabase/admin-data";
 import type { PageContent, PageId } from "@/lib/data/pages-store";
 
 const inputCls =
@@ -25,7 +25,6 @@ export function PageContentForm({
   initial: PageContent;
   config: { pricing: boolean; includes: boolean; faqs: boolean };
 }) {
-  const navigate = useNavigate();
   const [form, setForm] = useState<PageContent>(initial);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,20 +51,10 @@ export function PageContentForm({
     };
 
     try {
-      const res = await fetch(`/api/admin/pages/${pageId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error ?? "Could not save.");
-        return;
-      }
+      await saveAdminPageContent(pageId, payload);
       setSaved(true);
-      window.location.reload();
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setSaving(false);
     }

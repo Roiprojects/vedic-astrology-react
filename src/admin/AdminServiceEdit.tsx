@@ -2,7 +2,8 @@ import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { getServiceForAdmin } from "@/lib/data";
+import { getAdminService } from "@/lib/supabase/admin-data";
+import type { Service } from "@/lib/data/types";
 import { ServiceForm } from "@/components/admin/ServiceForm";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
@@ -10,17 +11,15 @@ import { siteConfig } from "@/lib/site";
 export default function AdminServiceEditPage() {
   const { slug } = useParams<{ slug: string }>();
   const serviceSlug = slug ?? "";
-  const [service, setService] = useState<Awaited<ReturnType<typeof getServiceForAdmin>> | null>(null);
+  const [service, setService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      const data = await getServiceForAdmin(serviceSlug);
-      if (!cancelled) {
-        setService(data ?? null);
-        setLoading(false);
-      }
+      const data = await getAdminService(serviceSlug);
+      if (!cancelled) setService(data);
+      if (!cancelled) setLoading(false);
     }
     load();
     return () => { cancelled = true; };

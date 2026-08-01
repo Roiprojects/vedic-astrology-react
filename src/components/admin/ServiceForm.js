@@ -2,6 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
+import { deleteAdminService, saveAdminService } from "@/lib/supabase/admin-data";
 const inputCls = "w-full rounded-xl border border-gold/30 bg-overlay px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-gold/70";
 const labelCls = "mb-1.5 block text-sm font-medium text-ink";
 const hintCls = "mt-1 text-xs text-faint";
@@ -42,31 +43,12 @@ export function ServiceForm({ mode, initial, }) {
                 .map((f) => ({ question: f.question.trim(), answer: f.answer.trim() }))
                 .filter((f) => f.question && f.answer),
         };
-        const url = mode === "create" ? "/api/admin/services" : `/api/admin/services/${initial.slug}`;
-        const method = mode === "create" ? "POST" : "PUT";
         try {
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
-                const fieldErrors = data?.issues?.fieldErrors;
-                if (fieldErrors) {
-                    const msgs = Object.entries(fieldErrors).flatMap(([k, v]) => (v ?? []).map((m) => `${k}: ${m}`));
-                    setError(msgs.join(" · ") || data.error || "Validation failed");
-                }
-                else {
-                    setError(data.error ?? "Could not save. Please try again.");
-                }
-                return;
-            }
+            await saveAdminService(payload);
             navigate("/admin/services");
-            window.location.reload();
         }
-        catch {
-            setError("Something went wrong. Please try again.");
+        catch (err) {
+            setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
         }
         finally {
             setSaving(false);
@@ -79,17 +61,11 @@ export function ServiceForm({ mode, initial, }) {
         setDeleting(true);
         setError(null);
         try {
-            const res = await fetch(`/api/admin/services/${initial.slug}`, { method: "DELETE" });
-            if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
-                setError(data.error ?? "Could not delete.");
-                return;
-            }
+            await deleteAdminService(initial.slug);
             navigate("/admin/services");
-            window.location.reload();
         }
-        catch {
-            setError("Something went wrong. Please try again.");
+        catch (err) {
+            setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
         }
         finally {
             setDeleting(false);

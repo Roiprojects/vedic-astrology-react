@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { getPageContent, isPageId, PAGE_CONFIG } from "@/lib/data";
+import { isPageId, PAGE_CONFIG } from "@/lib/data";
+import { getAdminPageContent } from "@/lib/supabase/admin-data";
 import type { PageContent } from "@/lib/data";
 import { PageContentForm } from "@/components/admin/PageContentForm";
 import { Link, useParams } from "react-router-dom";
@@ -20,8 +21,9 @@ export default function AdminPagesPage() {
       setLoading(false);
       return;
     }
-    setContent(getPageContent(page));
-    setLoading(false);
+    getAdminPageContent(page)
+      .then(setContent)
+      .finally(() => setLoading(false));
   }, [page]);
 
   if (loading) {

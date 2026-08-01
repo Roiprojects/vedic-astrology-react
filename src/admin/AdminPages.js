@@ -2,7 +2,8 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { getPageContent, isPageId, PAGE_CONFIG } from "@/lib/data";
+import { isPageId, PAGE_CONFIG } from "@/lib/data";
+import { getAdminPageContent } from "@/lib/supabase/admin-data";
 import { PageContentForm } from "@/components/admin/PageContentForm";
 import { Link, useParams } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
@@ -17,8 +18,9 @@ export default function AdminPagesPage() {
             setLoading(false);
             return;
         }
-        setContent(getPageContent(page));
-        setLoading(false);
+        getAdminPageContent(page)
+            .then(setContent)
+            .finally(() => setLoading(false));
     }, [page]);
     if (loading) {
         return _jsx("div", { className: "mx-auto max-w-3xl", children: _jsx("p", { className: "text-muted", children: "Loading\u2026" }) });

@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { Pencil, Plus, Star } from "lucide-react";
-import { getHomamsForAdmin } from "@/lib/data";
+import { getAdminHomams } from "@/lib/supabase/admin-data";
+import type { Homam } from "@/lib/data/types";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
 
@@ -13,12 +14,15 @@ function formatPrice(price: number, discount?: number | null) {
 }
 
 export default function AdminHomamsPage() {
-  const [homams, setHomams] = useState<Awaited<ReturnType<typeof getHomamsForAdmin>>>([]);
+  const [homams, setHomams] = useState<Homam[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setHomams(getHomamsForAdmin());
-    setLoading(false);
+    getAdminHomams()
+      .then(setHomams)
+      .catch((err) => setError(err.message || "Could not load homams."))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -43,6 +47,7 @@ export default function AdminHomamsPage() {
       </div>
 
       <div className="mt-8 overflow-hidden rounded-3xl border border-gold/20 bg-surface/60">
+        {error && <p className="p-5 text-sm text-danger">{error}</p>}
         <table className="w-full text-left text-sm">
           <thead className="border-b border-gold/20 bg-[#b67a1b]/[0.02] text-xs uppercase tracking-wide text-faint">
             <tr>

@@ -1,22 +1,20 @@
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { getHomamsForAdmin } from "@/lib/data";
+import { getAdminHomams } from "@/lib/supabase/admin-data";
 import { HomamForm } from "@/components/admin/HomamForm";
 import type { Homam } from "@/lib/data/types";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
 
 export default function AdminHomamNewPage() {
-  const [homams, setHomams] = useState<Awaited<ReturnType<typeof getHomamsForAdmin>>>([]);
   const [loading, setLoading] = useState(true);
   const [nextOrder, setNextOrder] = useState(1);
 
   useEffect(() => {
-    const data = getHomamsForAdmin();
-    setHomams(data);
-    setNextOrder(data.reduce((max, h) => Math.max(max, h.order), 0) + 1);
-    setLoading(false);
+    getAdminHomams()
+      .then((data) => setNextOrder(data.reduce((max, h) => Math.max(max, h.order), 0) + 1))
+      .finally(() => setLoading(false));
   }, []);
 
   const blank: Homam = {

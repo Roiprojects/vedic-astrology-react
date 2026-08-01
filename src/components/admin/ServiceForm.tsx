@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
+import { deleteAdminService, saveAdminService } from "@/lib/supabase/admin-data";
 import type { Service } from "@/lib/data/types";
 
 const inputCls =
@@ -122,35 +123,11 @@ export function ServiceForm({
         .filter((f) => f.question && f.answer),
     };
 
-    const url =
-      mode === "create" ? "/api/admin/services" : `/api/admin/services/${initial.slug}`;
-    const method = mode === "create" ? "POST" : "PUT";
-
     try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        const fieldErrors = data?.issues?.fieldErrors as
-          | Record<string, string[]>
-          | undefined;
-        if (fieldErrors) {
-          const msgs = Object.entries(fieldErrors).flatMap(([k, v]) =>
-            (v ?? []).map((m) => `${k}: ${m}`)
-          );
-          setError(msgs.join(" · ") || data.error || "Validation failed");
-        } else {
-          setError(data.error ?? "Could not save. Please try again.");
-        }
-        return;
-      }
+      await saveAdminService(payload);
       navigate("/admin/services");
-      window.location.reload();
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -167,16 +144,10 @@ export function ServiceForm({
     setDeleting(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/services/${initial.slug}`, { method: "DELETE" });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error ?? "Could not delete.");
-        return;
-      }
+      await deleteAdminService(initial.slug);
       navigate("/admin/services");
-      window.location.reload();
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setDeleting(false);
     }

@@ -1,6 +1,8 @@
 import { Helmet } from "react-helmet-async";
+import { Navigate } from "react-router-dom";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { LogoutButton } from "@/components/admin/LogoutButton";
+import { useAuth } from "@/hooks/useAuth";
 import { siteConfig } from "@/lib/site";
 
 type AdminLayoutProps = {
@@ -8,6 +10,16 @@ type AdminLayoutProps = {
 };
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
+  const { loading, session, isAdmin } = useAuth();
+
+  if (loading) {
+    return <main className="container-x py-8 text-muted">Loading…</main>;
+  }
+
+  if (!session || !isAdmin) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
   return (
     <>
       <Helmet>

@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { getHomamForAdmin } from "@/lib/data";
+import { getAdminHomam } from "@/lib/supabase/admin-data";
 import { HomamForm } from "@/components/admin/HomamForm";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
@@ -15,11 +15,11 @@ export default function AdminHomamEditPage() {
     useEffect(() => {
         let cancelled = false;
         async function load() {
-            const data = await getHomamForAdmin(homamSlug);
-            if (!cancelled) {
-                setHomam(data ?? null);
+            const data = await getAdminHomam(homamSlug);
+            if (!cancelled)
+                setHomam(data);
+            if (!cancelled)
                 setLoading(false);
-            }
         }
         load();
         return () => { cancelled = true; };
