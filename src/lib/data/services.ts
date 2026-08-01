@@ -1,0 +1,475 @@
+import type { Service } from "./types";
+
+const commonReceive = [
+  "Personal phone / WhatsApp consultation with Guruji",
+  "Analysis of your birth chart (kundli) for this concern",
+  "Clear, honest guidance in simple language",
+  "Practical remedies, mantras and spiritual measures",
+  "Suggested homam or pooja if required",
+  "Follow-up instructions for lasting results",
+];
+
+const bookingFaq = {
+  question: "How do I book this consultation?",
+  answer:
+    "Fill the enquiry form on this page with your birth details and question, or tap WhatsApp / Call. Guruji reviews your details and confirms a consultation slot. Payment can be made via Razorpay, UPI, or by uploading a payment screenshot.",
+};
+
+const confidentialFaq = {
+  question: "Is my information kept confidential?",
+  answer:
+    "Yes. Your birth details and everything you share stay strictly private and are used only to prepare your guidance.",
+};
+
+export const services: Service[] = [
+  {
+    slug: "love-relationship-problems",
+    title: "Love & Relationship Problems",
+    categorySlug: "astrology-consultations",
+    icon: "💖",
+    gradient: "from-rose-500/30 to-fuchsia-600/30",
+    shortDescription:
+      "Understand love compatibility, resolve misunderstandings, and bring harmony to your relationship.",
+    fullDescription:
+      "Relationships flourish when planetary energies between two people are in balance. Through careful analysis of Venus and the 7th house, Guruji reveals the root cause of misunderstandings, emotional distance, or repeated conflict — and guides you with Vedic remedies to restore love, trust, and understanding.",
+    problem:
+      "Frequent arguments, emotional distance, one-sided love, doubts about compatibility, or a relationship that keeps hitting the same wall can leave you anxious and confused. Vedic astrology looks beyond the surface to the planetary influences shaping your bond.",
+    price: 501,
+    duration: "20–30 min consultation",
+    analysis: [
+      "Venus (love & attraction) and 7th house (partnership) analysis",
+      "Relationship compatibility and guna matching",
+      "Timing of harmony and difficult transit periods",
+      "Doshas affecting love and intimacy",
+      "Remedies to strengthen understanding and trust",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Clarity on compatibility and long-term potential",
+      "Solutions for recurring misunderstandings",
+      "Remedies to attract and stabilize love",
+    ],
+    remedies: [
+      "Venus-strengthening mantras and gemstone guidance",
+      "Specific pooja / homam if indicated",
+      "Simple daily spiritual practices for harmony",
+    ],
+    faqs: [
+      {
+        question: "Can you tell if my relationship will work out?",
+        answer:
+          "Astrology gives indicative guidance on compatibility and favourable periods. Guruji offers honest insights and remedies, but your choices and effort matter most.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: true,
+    order: 1,
+    active: true,
+  },
+  {
+    slug: "marriage-delay-divorce-issues",
+    title: "Marriage Delay & Divorce Issues",
+    categorySlug: "astrology-consultations",
+    icon: "💍",
+    gradient: "from-amber-500/30 to-rose-600/30",
+    shortDescription:
+      "Guidance for late marriage, Manglik dosha, and restoring marital harmony.",
+    fullDescription:
+      "Delays in marriage or strain within one often trace back to Manglik dosha, afflicted 7th house lords, or difficult Saturn/Rahu influences. Guruji examines your chart to identify obstacles and recommends time-tested remedies to open the path to marriage and peace within it.",
+    problem:
+      "Marriage proposals falling through, unexplained delays, family pressure, or a marriage under constant strain can be deeply stressful. Understanding the planetary cause brings both relief and a way forward.",
+    price: 751,
+    duration: "25–35 min consultation",
+    analysis: [
+      "Manglik (Mangal) dosha detection and severity",
+      "7th house, Venus and Jupiter marriage indicators",
+      "Late-marriage yogas and favourable marriage periods",
+      "Compatibility and dosha cancellation checks",
+      "Remedies for marital harmony",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Know the real reason behind marriage delay",
+      "Manglik dosha clarity and remedies",
+      "Guidance to restore harmony in an existing marriage",
+    ],
+    remedies: [
+      "Mangal Dosha remedies and recommended homam",
+      "Auspicious timing (muhurta) guidance",
+      "Mantras and vrat for a smooth married life",
+    ],
+    faqs: [
+      {
+        question: "I am Manglik — is that a serious problem?",
+        answer:
+          "Manglik dosha varies in strength and is often cancelled by other placements. Guruji assesses the actual severity and suggests remedies — it is rarely a reason for fear.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: true,
+    order: 2,
+    active: true,
+  },
+  {
+    slug: "career-confusion-job-problems",
+    title: "Career Confusion & Job Problems",
+    categorySlug: "astrology-consultations",
+    icon: "💼",
+    gradient: "from-sky-500/30 to-indigo-600/30",
+    shortDescription:
+      "Find your ideal career direction and overcome job instability or fear of loss.",
+    fullDescription:
+      "Your 10th house, along with the Sun and Saturn, holds the blueprint of your professional life. Guruji analyses these to reveal your natural strengths, favourable career fields, and the periods when growth, change, or caution is advised.",
+    problem:
+      "Feeling stuck, repeated job changes, fear of losing your position, or confusion about which path to choose can drain your confidence. Vedic astrology points to the direction where you will truly thrive.",
+    price: 751,
+    duration: "25–35 min consultation",
+    analysis: [
+      "10th house (career), Sun (authority) and Saturn (discipline) analysis",
+      "Best-suited career fields and skills",
+      "Dasha and transit timing for job change or promotion",
+      "Obstacles causing instability or delays",
+      "Remedies to strengthen career growth",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Clarity on the right career direction",
+      "Timing for job change, promotion or business",
+      "Remedies to remove career blockages",
+    ],
+    remedies: [
+      "Saturn and Sun strengthening remedies",
+      "Career-focused homam if indicated",
+      "Mantras and disciplines for steady growth",
+    ],
+    faqs: [
+      {
+        question: "Can astrology tell me which field is best for me?",
+        answer:
+          "Your chart highlights natural aptitudes and favourable fields. Guruji combines this with practical guidance so you can make confident, grounded decisions.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: true,
+    order: 3,
+    active: true,
+  },
+  {
+    slug: "financial-instability-debt-problems",
+    title: "Financial Instability & Debt Problems",
+    categorySlug: "astrology-consultations",
+    icon: "💰",
+    gradient: "from-emerald-500/30 to-amber-600/30",
+    shortDescription:
+      "Break wealth blockages, find debt relief, and stabilize your finances.",
+    fullDescription:
+      "Wealth flows through Jupiter, Venus and Mercury, supported by the 2nd and 11th houses. When these are afflicted, money slips away or debt accumulates. Guruji identifies the blockage and prescribes remedies to invite stability and abundance.",
+    problem:
+      "Money that never seems to stay, mounting debt, blocked income, or repeated financial setbacks create constant worry. Understanding the planetary pattern is the first step to changing it.",
+    price: 999,
+    duration: "30 min consultation",
+    analysis: [
+      "Jupiter, Venus and Mercury (wealth) analysis",
+      "2nd house (savings) and 11th house (gains) review",
+      "Causes of wealth blockage and financial leakage",
+      "Debt-relief timing and favourable periods",
+      "Remedies to attract and retain wealth",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Identify what is blocking your money flow",
+      "Practical guidance for debt relief",
+      "Remedies to attract steady abundance",
+    ],
+    remedies: [
+      "Lakshmi Kubera pooja / homam guidance",
+      "Wealth mantras and charitable measures",
+      "Gemstone and daily practice suggestions",
+    ],
+    faqs: [
+      {
+        question: "Will astrology help me clear my debt?",
+        answer:
+          "Astrology reveals favourable periods and remedies to ease financial pressure, but it works best alongside disciplined planning. Guruji guides you on both.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 4,
+    active: true,
+  },
+  {
+    slug: "family-conflicts-domestic-issues",
+    title: "Family Conflicts & Domestic Issues",
+    categorySlug: "astrology-consultations",
+    icon: "🏡",
+    gradient: "from-teal-500/30 to-purple-600/30",
+    shortDescription:
+      "Restore peace at home and heal parental or domestic conflict.",
+    fullDescription:
+      "The 4th house and the Moon govern home, mother, and emotional peace. When disturbed, family harmony suffers. Guruji examines these influences to uncover the source of tension and recommends remedies to bring warmth and understanding back home.",
+    problem:
+      "Constant friction at home, disputes between family members, or a heavy, restless atmosphere affects everyone. Vedic astrology helps identify and soothe the underlying planetary causes.",
+    price: 501,
+    duration: "20–30 min consultation",
+    analysis: [
+      "4th house (home & peace) and Moon (emotions) analysis",
+      "Planetary causes of family tension",
+      "Parental and generational conflict indicators",
+      "Favourable periods for reconciliation",
+      "Remedies for domestic harmony",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Understand the root of ongoing conflict",
+      "Guidance to restore peace and warmth",
+      "Remedies for a harmonious home",
+    ],
+    remedies: [
+      "Moon-strengthening remedies and mantras",
+      "Peace-giving pooja / homam if indicated",
+      "Simple household spiritual practices",
+    ],
+    faqs: [
+      {
+        question: "Can remedies really improve family relationships?",
+        answer:
+          "Remedies calm afflicted energies and support a more peaceful atmosphere. Combined with patience and understanding, many families notice a real shift.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 5,
+    active: true,
+  },
+  {
+    slug: "mental-stress-anxiety-depression",
+    title: "Mental Stress, Anxiety & Depression",
+    categorySlug: "astrology-consultations",
+    icon: "🧘",
+    gradient: "from-indigo-500/30 to-cyan-600/30",
+    shortDescription:
+      "Find emotional peace through Moon–Saturn analysis and spiritual remedies.",
+    fullDescription:
+      "The Moon governs the mind and Saturn governs fear and heaviness. A difficult Moon–Saturn relationship can create persistent worry, low mood, or restlessness. Guruji offers gentle spiritual guidance and remedies to bring calm and inner balance.",
+    problem:
+      "Ongoing anxiety, overthinking, low energy, or a heavy mind can feel isolating. Vedic astrology and spiritual remedies offer a supportive path toward peace — alongside, never instead of, professional care where needed.",
+    price: 501,
+    duration: "25 min consultation",
+    analysis: [
+      "Moon (mind) and Saturn (fear/heaviness) analysis",
+      "Chandra dosha and mental-peace indicators",
+      "Challenging transit and dasha periods",
+      "Spiritual causes of restlessness",
+      "Peace-giving remedies and practices",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Understand planetary influences on your mind",
+      "Calming mantras and spiritual practices",
+      "A supportive, compassionate consultation",
+    ],
+    remedies: [
+      "Moon-strengthening and peace mantras",
+      "Maha Mrityunjaya / Chandra homam guidance",
+      "Meditation and daily grounding practices",
+    ],
+    faqs: [
+      {
+        question: "Is this a substitute for medical treatment?",
+        answer:
+          "No. Astrological guidance is spiritual and supportive. For medical concerns including anxiety or depression, please also consult qualified health professionals.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 6,
+    active: true,
+  },
+  {
+    slug: "health-wellness-astrology",
+    title: "Health & Wellness Astrology",
+    categorySlug: "astrology-consultations",
+    icon: "🌿",
+    gradient: "from-lime-500/30 to-emerald-600/30",
+    shortDescription:
+      "Astrological indications for health, vitality, and wellbeing with supportive remedies.",
+    fullDescription:
+      "The 6th house, Ascendant, and planets like Sun, Moon and Saturn offer indications about vitality and health tendencies. Guruji highlights areas to care for and recommends spiritual remedies to support your wellbeing.",
+    problem:
+      "Recurring health concerns, low vitality, or a wish to strengthen wellbeing lead many to seek astrological indications. This guidance complements — and never replaces — proper medical care.",
+    price: 751,
+    duration: "25–30 min consultation",
+    analysis: [
+      "Ascendant, 6th house and health-significator planets",
+      "Vitality and constitution indicators",
+      "Challenging periods to stay cautious",
+      "Doshas linked to wellbeing",
+      "Supportive spiritual remedies",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Awareness of health tendencies in your chart",
+      "Supportive remedies for vitality",
+      "Guidance on favourable periods for care",
+    ],
+    remedies: [
+      "Dhanvantari / Maha Mrityunjaya homam guidance",
+      "Health-supporting mantras and practices",
+      "Charity and lifestyle suggestions",
+    ],
+    faqs: [
+      {
+        question: "Can astrology diagnose my illness?",
+        answer:
+          "Astrology gives indicative tendencies, not medical diagnosis. Always consult a doctor for diagnosis and treatment; Guruji's guidance is spiritual support.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 7,
+    active: true,
+  },
+  {
+    slug: "education-exam-success",
+    title: "Education & Exam Success",
+    categorySlug: "astrology-consultations",
+    icon: "📚",
+    gradient: "from-yellow-500/30 to-orange-600/30",
+    shortDescription:
+      "Improve focus, overcome learning obstacles, and succeed in studies and exams.",
+    fullDescription:
+      "Mercury, Jupiter and the 4th/5th houses shape learning, memory and academic success, with Saraswati's blessings for knowledge. Guruji analyses these to help students overcome concentration issues and study obstacles.",
+    problem:
+      "Difficulty concentrating, exam anxiety, or a bright student who cannot show results — these often have planetary influences that can be gently strengthened with the right guidance.",
+    price: 501,
+    duration: "20–25 min consultation",
+    analysis: [
+      "Mercury (intellect) and Jupiter (wisdom) analysis",
+      "4th & 5th house education indicators",
+      "Concentration and memory obstacles",
+      "Favourable periods for exams and admissions",
+      "Saraswati-related remedies",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Guidance to improve focus and memory",
+      "Support for exam confidence",
+      "Remedies for academic success",
+    ],
+    remedies: [
+      "Saraswati homam and mantra guidance",
+      "Study-supporting spiritual practices",
+      "Favourable timing for important exams",
+    ],
+    faqs: [
+      {
+        question: "Which remedies help students the most?",
+        answer:
+          "Saraswati mantras, a strengthened Mercury/Jupiter, and disciplined routines help most. Guruji tailors remedies to the student's chart.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 8,
+    active: true,
+  },
+  {
+    slug: "business-growth-partnership-problems",
+    title: "Business Growth & Partnership Problems",
+    categorySlug: "astrology-consultations",
+    icon: "📈",
+    gradient: "from-orange-500/30 to-red-600/30",
+    shortDescription:
+      "Grow your business, resolve partnership issues, and time key decisions well.",
+    fullDescription:
+      "Business success is shaped by the 7th house (partnerships), 10th house (profession), and wealth planets. Guruji analyses these to guide expansion, resolve partner disputes, and choose auspicious timing for important moves.",
+    problem:
+      "Stalled growth, unreliable partners, or uncertainty about expanding can put your livelihood at risk. Vedic timing and remedies help you act with confidence.",
+    price: 1100,
+    duration: "30–40 min consultation",
+    analysis: [
+      "7th house (partnership) and 10th house (business) analysis",
+      "Wealth and growth yogas",
+      "Partnership compatibility and dispute causes",
+      "Auspicious timing for launches and deals",
+      "Remedies to accelerate growth",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Clarity on partnership decisions",
+      "Timing for expansion and key deals",
+      "Remedies to remove business obstacles",
+    ],
+    remedies: [
+      "Lakshmi Kubera / Ganapathi homam guidance",
+      "Business-strengthening mantras",
+      "Auspicious muhurta for important steps",
+    ],
+    faqs: [
+      {
+        question: "Can you help me choose a good business partner?",
+        answer:
+          "Guruji can assess partnership compatibility and favourable timing from both charts where available, helping you decide with greater clarity.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 9,
+    active: true,
+  },
+  {
+    slug: "property-legal-court-case-guidance",
+    title: "Property, Legal & Court Case Guidance",
+    categorySlug: "astrology-consultations",
+    icon: "⚖️",
+    gradient: "from-slate-500/30 to-purple-700/30",
+    shortDescription:
+      "Guidance for property delays, legal stress, and court matters.",
+    fullDescription:
+      "Property and legal matters are governed by the 4th house (property), Mars, and Saturn (delays, disputes, discipline). Guruji analyses these to indicate favourable periods and remedies for property purchases, disputes, and court cases.",
+    problem:
+      "Blocked property deals, prolonged legal battles, or the stress of a court case can weigh heavily. Vedic astrology highlights favourable timing and remedies to ease the path.",
+    price: 1100,
+    duration: "30–40 min consultation",
+    analysis: [
+      "4th house (property) analysis",
+      "Mars and Saturn (disputes, delays) review",
+      "Favourable periods for property and legal matters",
+      "Doshas contributing to obstacles",
+      "Remedies for resolution and relief",
+    ],
+    receive: commonReceive,
+    benefits: [
+      "Guidance on property purchase or sale timing",
+      "Support and remedies for legal stress",
+      "Clarity on favourable and cautious periods",
+    ],
+    remedies: [
+      "Sudarshana / Navagraha homam guidance",
+      "Mars & Saturn pacifying remedies",
+      "Mantras and charity for legal relief",
+    ],
+    faqs: [
+      {
+        question: "Can astrology tell me if I will win my case?",
+        answer:
+          "Astrology indicates favourable and difficult periods and offers remedies, but outcomes also depend on facts and legal process. Guruji offers honest, supportive guidance.",
+      },
+      bookingFaq,
+      confidentialFaq,
+    ],
+    featured: false,
+    order: 10,
+    active: true,
+  },
+];

@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/*
+  Vedic Astrology — Premium spiritual design system
+  Palette derived from the brand logo: gold zodiac wheel + Om on a burnt-saffron
+  field, set against a deep warm temple-night background.
+*/
+
+@theme {
+  --color-bg: #faf4e8;
+  --color-bg-soft: #f3ead8;
+  --color-surface: #fffdf7;
+  --color-surface-2: #f6eddb;
+  --color-overlay: #fffdf8;
+
+  --color-purple-950: #1c0a05;
+  --color-purple-900: #2a0f08;
+  --color-purple-800: #3e160c;
+  --color-purple-700: #5c2210;
+  --color-purple-600: #8a3413;
+  --color-purple-500: #c0491d;
+  --color-purple-400: #e2732f;
+
+  --color-saffron: #f0842e;
+  --color-saffron-deep: #d9641c;
+  --color-ember: #bd471d;
+
+  --color-gold: #b8860b;
+  --color-gold-light: #fde68a;
+  --color-gold-dark: #92610a;
+  --color-gold-soft: rgba(184, 134, 11, 0.12);
+
+  --color-ink: #2b1810;
+  --color-ink-soft: #5c3d2e;
+  --color-muted: #8b6f5e;
+  --color-muted-light: #a89080;
+
+  --color-border: rgba(139, 111, 94, 0.25);
+  --color-border-strong: rgba(139, 111, 94, 0.45);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-display: "Cinzel", ui-serif, Georgia, serif;
+
+  --radius-card: 1.25rem;
+  --radius-button: 9999px;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  line-height: 1.625;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+}
+
+input, textarea, select {
+  font: inherit;
+}
+
+.container-x {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .container-x { padding-inline: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .container-x { padding-inline: 2rem; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(184, 134, 11, 0); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-gold { animation: pulse-gold 2s ease-in-out infinite; }
