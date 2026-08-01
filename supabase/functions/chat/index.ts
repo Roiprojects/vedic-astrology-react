@@ -1,5 +1,5 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
-import { AI_DISABLED_MESSAGE, geminiUrl, getGeminiKey } from "../_shared/gemini.ts";
+import { AI_DISABLED_MESSAGE, geminiUrl, resolveGeminiKey } from "../_shared/gemini.ts";
 
 const SYSTEM_PROMPT_BASE = `You are "Guruji Assistant", a warm, respectful Vedic astrology assistant for the Vedic Astrology website of Sampath Kumara.
 
@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return jsonResponse({ ok: false, error: "Method not allowed" }, 405);
 
-  const key = getGeminiKey();
+  const key = await resolveGeminiKey();
   if (!key) return jsonResponse({ ok: false, error: AI_DISABLED_MESSAGE }, 503);
 
   let body: { messages?: Msg[]; serviceTitle?: string };
