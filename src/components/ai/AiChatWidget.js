@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Send, Sparkles, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 const GREETING = {
     role: "assistant",
     content: "Namaste 🙏 I'm Guruji Assistant. Ask me anything about Vedic astrology — your rashi, doshas, remedies, homams, or life guidance.",
@@ -30,7 +31,7 @@ export function AiChatWidget() {
         setMessages([...history, { role: "assistant", content: "" }]);
         setBusy(true);
         try {
-            const res = await fetch("/api/chat", {
+            const res = await apiFetch("/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

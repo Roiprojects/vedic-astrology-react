@@ -5,6 +5,7 @@ import { Input, Label, Textarea } from "@/components/forms/fields";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { siteConfig } from "@/lib/site";
 import { whatsappLink } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 
 type Status = "idle" | "loading" | "done" | "error";
 
@@ -53,7 +54,7 @@ export function PalmReader() {
     setError("");
     setReading("");
     try {
-      const res = await fetch("/api/palm-reading", {
+      const res = await apiFetch("/api/palm-reading", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageBase64: base64, mediaType, name, question }),

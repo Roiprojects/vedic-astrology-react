@@ -9,6 +9,7 @@ import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Input, Label, Select, Textarea } from "@/components/forms/fields";
 import { siteConfig } from "@/lib/site";
 import { whatsappLink } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 const titles = {
     consultation: "Book Your Consultation",
     homam: "Book This Homam",
@@ -32,7 +33,7 @@ export function BookingForm({ variant, subject, className, }) {
     async function onSubmit(values) {
         setServerError(null);
         try {
-            const res = await fetch("/api/enquiry", {
+            const res = await apiFetch("/api/enquiry", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values),

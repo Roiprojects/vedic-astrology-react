@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Send, Sparkles, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -38,7 +39,7 @@ export function AiChatWidget() {
     setBusy(true);
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await apiFetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

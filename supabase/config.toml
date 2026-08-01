@@ -1,0 +1,10 @@
+project_id = "bosnejioiwiqfcpwwnbi"
+
+[functions.chat]
+verify_jwt = false
+
+[functions.palm-reading]
+verify_jwt = false
+
+[functions.enquiry]
+verify_jwt = false

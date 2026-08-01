@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Loader2, MessageCircle, Phone, Send, ShieldCheck, Sparkles, X, } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { whatsappLink, cn } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 const SESSION_MS = 5 * 60 * 1000; // 5 minutes per service topic
 function buildGreeting(serviceTitle) {
     if (serviceTitle) {
@@ -95,7 +96,7 @@ export function ServiceAiChat() {
         setMessages([...history, { role: "assistant", content: "" }]);
         setBusy(true);
         try {
-            const response = await fetch("/api/chat", {
+            const response = await apiFetch("/api/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

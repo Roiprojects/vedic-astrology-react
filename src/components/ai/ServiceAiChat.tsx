@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { whatsappLink, cn } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -115,7 +116,7 @@ export function ServiceAiChat() {
     setBusy(true);
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await apiFetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
