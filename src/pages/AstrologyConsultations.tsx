@@ -14,8 +14,9 @@ export default function AstrologyConsultationsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setServices(getServices());
-    setLoading(false);
+    getServices()
+      .then(setServices)
+      .finally(() => setLoading(false));
   }, []);
 
   return (

@@ -2,8 +2,8 @@ import { jsxs as _jsxs, jsx as _jsx } from "react/jsx-runtime";
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
-import { getServicesForAdmin, getHomamsForAdmin } from "@/lib/data";
 import { PAGE_CONFIG, allPageIds } from "@/lib/data";
+import { getAdminHomams, getAdminServices } from "@/lib/supabase/admin-data";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
 export default function AdminDashboard() {
@@ -11,9 +11,12 @@ export default function AdminDashboard() {
     const [homams, setHomams] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setServices(getServicesForAdmin());
-        setHomams(getHomamsForAdmin());
-        setLoading(false);
+        Promise.all([getAdminServices(), getAdminHomams()])
+            .then(([nextServices, nextHomams]) => {
+            setServices(nextServices);
+            setHomams(nextHomams);
+        })
+            .finally(() => setLoading(false));
     }, []);
     const cards = [
         {

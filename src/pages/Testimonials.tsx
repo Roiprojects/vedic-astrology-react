@@ -13,8 +13,9 @@ export default function TestimonialsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTestimonials(getTestimonials());
-    setLoading(false);
+    getTestimonials()
+      .then(setTestimonials)
+      .finally(() => setLoading(false));
   }, []);
 
   return (

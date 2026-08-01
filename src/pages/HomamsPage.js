@@ -13,8 +13,9 @@ export default function HomamsPage() {
     const [homams, setHomams] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setHomams(getHomams());
-        setLoading(false);
+        getHomams()
+            .then(setHomams)
+            .finally(() => setLoading(false));
     }, []);
     return (_jsxs(_Fragment, { children: [_jsxs(Helmet, { children: [_jsxs("title", { children: ["15 Vedic Homams \u2014 ", siteConfig.name] }), _jsx("meta", { name: "description", content: "Book authentic Vedic fire rituals (homams) for prosperity, peace, protection, health, and success \u2014 performed with proper Vedic procedure." }), _jsx("link", { rel: "canonical", href: `${siteConfig.url}/homams` })] }), _jsx(JsonLd, { data: breadcrumbSchema([
                     { name: "Home", url: "/" },

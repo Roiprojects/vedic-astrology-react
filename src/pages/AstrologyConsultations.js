@@ -13,8 +13,9 @@ export default function AstrologyConsultationsPage() {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setServices(getServices());
-        setLoading(false);
+        getServices()
+            .then(setServices)
+            .finally(() => setLoading(false));
     }, []);
     return (_jsxs(_Fragment, { children: [_jsxs(Helmet, { children: [_jsxs("title", { children: ["Premium Astrology Consultations \u2014 ", siteConfig.name] }), _jsx("meta", { name: "description", content: "10 premium Vedic astrology consultation services for love, marriage, career, finance, family, health, education, business, and legal matters." }), _jsx("link", { rel: "canonical", href: `${siteConfig.url}/services/astrology-consultations` })] }), _jsx(JsonLd, { data: breadcrumbSchema([
                     { name: "Home", url: "/" },

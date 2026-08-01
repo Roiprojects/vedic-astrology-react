@@ -24,8 +24,9 @@ export default function BirthChartPdfPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setContent(getPageContent("birth-chart-pdf"));
-    setLoading(false);
+    getPageContent("birth-chart-pdf")
+      .then(setContent)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading || !content) {

@@ -25,8 +25,9 @@ export default function ChatWithGurujiPage() {
     const [content, setContent] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setContent(getPageContent("chat-with-guruji"));
-        setLoading(false);
+        getPageContent("chat-with-guruji")
+            .then(setContent)
+            .finally(() => setLoading(false));
     }, []);
     if (loading || !content) {
         return (_jsx("div", { className: "flex min-h-screen items-center justify-center", children: _jsx("p", { className: "text-muted", children: "Loading\u2026" }) }));

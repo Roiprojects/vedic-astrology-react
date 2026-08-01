@@ -20,8 +20,9 @@ export default function ServicesPage() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setCategories(getServiceCategories());
-        setLoading(false);
+        getServiceCategories()
+            .then(setCategories)
+            .finally(() => setLoading(false));
     }, []);
     return (_jsxs(_Fragment, { children: [_jsxs(Helmet, { children: [_jsxs("title", { children: ["Astrology Services \u2014 ", siteConfig.name] }), _jsx("meta", { name: "description", content: "Explore premium Vedic astrology consultations, sacred homam bookings, birth chart PDF reports, and live chat with Guruji." }), _jsx("link", { rel: "canonical", href: `${siteConfig.url}/services` })] }), _jsx(JsonLd, { data: breadcrumbSchema([
                     { name: "Home", url: "/" },

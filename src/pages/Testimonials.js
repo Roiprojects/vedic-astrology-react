@@ -12,8 +12,9 @@ export default function TestimonialsPage() {
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setTestimonials(getTestimonials());
-        setLoading(false);
+        getTestimonials()
+            .then(setTestimonials)
+            .finally(() => setLoading(false));
     }, []);
     return (_jsxs(_Fragment, { children: [_jsxs(Helmet, { children: [_jsxs("title", { children: ["Client Testimonials \u2014 ", siteConfig.name] }), _jsx("meta", { name: "description", content: "Real experiences from people who received Vedic astrology guidance, homams, and spiritual remedies from Sampath Kumara." }), _jsx("link", { rel: "canonical", href: `${siteConfig.url}/testimonials` })] }), _jsx(JsonLd, { data: breadcrumbSchema([
                     { name: "Home", url: "/" },

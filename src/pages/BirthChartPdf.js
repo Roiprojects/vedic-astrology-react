@@ -22,8 +22,9 @@ export default function BirthChartPdfPage() {
     const [content, setContent] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setContent(getPageContent("birth-chart-pdf"));
-        setLoading(false);
+        getPageContent("birth-chart-pdf")
+            .then(setContent)
+            .finally(() => setLoading(false));
     }, []);
     if (loading || !content) {
         return (_jsx("div", { className: "flex min-h-screen items-center justify-center", children: _jsx("p", { className: "text-muted", children: "Loading\u2026" }) }));

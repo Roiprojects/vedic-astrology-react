@@ -22,8 +22,9 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setCategories(getServiceCategories());
-    setLoading(false);
+    getServiceCategories()
+      .then(setCategories)
+      .finally(() => setLoading(false));
   }, []);
 
   return (

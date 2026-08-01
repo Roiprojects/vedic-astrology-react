@@ -20,8 +20,9 @@ export default function PalmReadingPage() {
     const [content, setContent] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setContent(getPageContent("palm-reading"));
-        setLoading(false);
+        getPageContent("palm-reading")
+            .then(setContent)
+            .finally(() => setLoading(false));
     }, []);
     if (loading || !content) {
         return (_jsx("div", { className: "flex min-h-screen items-center justify-center", children: _jsx("p", { className: "text-muted", children: "Loading\u2026" }) }));

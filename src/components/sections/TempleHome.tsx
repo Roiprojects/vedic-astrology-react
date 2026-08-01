@@ -9,6 +9,7 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { VedicSymbol } from "@/components/icons/VedicSymbol";
 import { HomamCard } from "@/components/cards/HomamCard";
 import { ServiceCard } from "@/components/cards/ServiceCard";
@@ -27,6 +28,7 @@ import {
   getFeaturedTestimonials,
   getHomeFaqs,
 } from "@/lib/data";
+import type { Homam, Service, Testimonial } from "@/lib/data/types";
 import { gurujiProfile } from "@/lib/data/content";
 import { siteConfig } from "@/lib/site";
 import { whatsappLink } from "@/lib/utils";
@@ -67,14 +69,34 @@ const trust = [
 ];
 
 export function TempleHome() {
-  const services = getFeaturedServices(3);
-  const homams = getFeaturedHomams(3);
-  const testimonials = getFeaturedTestimonials(3);
+  const [services, setServices] = useState<Service[]>([]);
+  const [homams, setHomams] = useState<Homam[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const faqs = getHomeFaqs();
   const wa = whatsappLink(
     siteConfig.whatsapp,
     "Namaste Guruji, I would like personalized Vedic astrology guidance."
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadFeaturedContent() {
+      const [nextServices, nextHomams, nextTestimonials] = await Promise.all([
+        getFeaturedServices(3),
+        getFeaturedHomams(3),
+        getFeaturedTestimonials(3),
+      ]);
+      if (!cancelled) {
+        setServices(nextServices);
+        setHomams(nextHomams);
+        setTestimonials(nextTestimonials);
+      }
+    }
+    void loadFeaturedContent();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <>

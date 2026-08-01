@@ -1,12 +1,18 @@
+import { useEffect, useState } from "react";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/effects/Reveal";
 import { Button } from "@/components/ui/Button";
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
 import { getFeaturedTestimonials } from "@/lib/data";
+import type { Testimonial } from "@/lib/data/types";
 
 export function TestimonialsPreview() {
-  const testimonials = getFeaturedTestimonials(6);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    getFeaturedTestimonials(6).then(setTestimonials);
+  }, []);
 
   return (
     <Section>

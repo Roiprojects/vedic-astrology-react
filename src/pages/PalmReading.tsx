@@ -22,8 +22,9 @@ export default function PalmReadingPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setContent(getPageContent("palm-reading"));
-    setLoading(false);
+    getPageContent("palm-reading")
+      .then(setContent)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading || !content) {

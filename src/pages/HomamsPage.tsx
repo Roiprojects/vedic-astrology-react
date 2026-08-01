@@ -14,8 +14,9 @@ export default function HomamsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setHomams(getHomams());
-    setLoading(false);
+    getHomams()
+      .then(setHomams)
+      .finally(() => setLoading(false));
   }, []);
 
   return (
