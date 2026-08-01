@@ -12,7 +12,7 @@ import { homams } from "../../../src/lib/data/homams";
 import { testimonials } from "../../../src/lib/data/testimonials";
 import { serviceCategories } from "../../../src/lib/data/categories";
 
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 function getAdminSupabase() {
