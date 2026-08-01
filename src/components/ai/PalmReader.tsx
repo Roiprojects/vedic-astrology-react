@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState } from "react";
 import { Hand, Loader2, RefreshCw, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/Button";

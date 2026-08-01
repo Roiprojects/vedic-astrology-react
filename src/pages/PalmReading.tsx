@@ -1,6 +1,5 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { Camera, Hand, ScanLine, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
@@ -10,6 +9,7 @@ import { ContactCta } from "@/components/sections/ContactCta";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/JsonLd";
 import { Badge } from "@/components/ui/Badge";
 import { getPageContent } from "@/lib/data";
+import { siteConfig } from "@/lib/site";
 
 const steps = [
   { icon: Camera, title: "Take a Photo", text: "Snap a clear, well-lit photo of your open palm." },
@@ -18,13 +18,31 @@ const steps = [
 ];
 
 export default function PalmReadingPage() {
-  const content = getPageContent("palm-reading");
+  const [content, setContent] = useState<Awaited<ReturnType<typeof getPageContent>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setContent(getPageContent("palm-reading"));
+    setLoading(false);
+  }, []);
+
+  if (loading || !content) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
-        <title>Instant Palm Reader — Vedic Astrology</title>
-        <meta name="description" content="Upload a photo of your palm and receive an instant Vedic palmistry reading covering love, career, vitality, and fortune." />
-        <link rel="canonical" href="/palm-reading" />
+        <title>Instant Palm Reader — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Upload a photo of your palm and receive an instant Vedic palmistry reading covering love, career, vitality, and fortune."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/palm-reading`} />
       </Helmet>
       <JsonLd
         data={breadcrumbSchema([

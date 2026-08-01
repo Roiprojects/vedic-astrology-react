@@ -5,8 +5,8 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { homams as seedHomams } from "./homams";
-import type { Homam } from "./types";
+import { homams as seedHomams } from "../../../src/lib/data/homams";
+import type { Homam } from "../../../src/lib/data/types";
 
 const DATA_DIR = path.join(process.cwd(), "content");
 const DATA_FILE = path.join(DATA_DIR, "homams.json");

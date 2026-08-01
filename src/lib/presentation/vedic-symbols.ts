@@ -97,6 +97,7 @@ const serviceSlugToSymbol: Record<string, VedicSymbolKind> = {
   "property-legal-court-case-guidance": "scales-shield",
 };
 
+
 const homamSlugToImage: Record<string, string> = {};
 
 export function getHomamSymbol(slug: string): VedicSymbolKind {
@@ -109,4 +110,16 @@ export function getHomamImage(slug: string): string | undefined {
 
 export function getServiceSymbol(slug: string): VedicSymbolKind {
   return serviceSlugToSymbol[slug] ?? "spark";
+}
+
+export function getRemedySymbol(text: string): VedicSymbolKind {
+  const value = text.toLowerCase();
+  if (/mantra|chant|japa|prayer/.test(value)) return "mantra";
+  if (/gem|stone|pearl|coral|emerald|sapphire/.test(value)) return "gemstone";
+  if (/homam|homa|pooja|puja|ritual|offering/.test(value)) return "sacred-flame";
+  if (/muhurat|muhurta|auspicious|timing/.test(value)) return "muhurta";
+  if (/donat|charity|feed|help the needy/.test(value)) return "charity";
+  if (/meditat|breath|grounding|yoga/.test(value)) return "meditation";
+  if (/daily|at home|lifestyle|vrat|fasting/.test(value)) return "daily-practice";
+  return "spark";
 }

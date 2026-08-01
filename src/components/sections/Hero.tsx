@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Sparkles, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -23,10 +22,7 @@ export function Hero() {
           <img
             src="/logo.jpg"
             alt=""
-            width={672}
-            height={672}
-            loading="eager"
-            className="rounded-full object-cover mix-blend-luminosity"
+            className="absolute inset-0 w-full h-full rounded-full object-cover mix-blend-luminosity"
           />
         </div>
       </div>

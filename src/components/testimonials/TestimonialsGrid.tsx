@@ -1,5 +1,3 @@
-"use client";
-
 import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import type { Testimonial } from "@/lib/data/types";

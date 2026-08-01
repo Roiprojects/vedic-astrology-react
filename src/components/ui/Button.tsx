@@ -1,4 +1,5 @@
 import * as React from "react";
+import { NavLink } from "react-router-dom";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +52,6 @@ export function Button(props: ButtonProps) {
 
   if (props.href !== undefined) {
     // Pull out consumed props so they are NOT spread onto the DOM element
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { href, external, variant, size, className, children, ...rest } = props;
     const isExternal =
       external ||
@@ -72,13 +72,18 @@ export function Button(props: ButtonProps) {
       );
     }
     return (
-      <a href={href} {...rest} className={classes}>
+      <NavLink
+        to={href}
+        {...rest}
+        className={({ isActive }) =>
+          cn(classes, isActive && "pointer-events-none opacity-80")
+        }
+      >
         {children}
-      </a>
+      </NavLink>
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { variant, size, className, children, ...rest } = props;
   return (
     <button {...rest} className={classes}>

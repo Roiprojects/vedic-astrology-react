@@ -1,29 +1,36 @@
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Pencil, Plus, Star } from "lucide-react";
 import { getServicesForAdmin } from "@/lib/data";
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
 function formatPrice(price: number, discount?: number | null) {
   if (discount != null && discount < price) {
-    return `\u20B9${discount.toLocaleString("en-IN")} (was \u20B9${price.toLocaleString("en-IN")})`;
+    return `₹${discount.toLocaleString("en-IN")} (was ₹${price.toLocaleString("en-IN")})`;
   }
-  return `\u20B9${price.toLocaleString("en-IN")}`;
+  return `₹${price.toLocaleString("en-IN")}`;
 }
 
-export default async function AdminServicesListPage() {
-  const services = await getServicesForAdmin();
+export default function AdminServicesPage() {
+  const [services, setServices] = useState<Awaited<ReturnType<typeof getServicesForAdmin>>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setServices(getServicesForAdmin());
+    setLoading(false);
+  }, []);
 
   return (
     <div>
       <Helmet>
-        <title>Services \u2014 Vedic Astrology Admin</title>
+        <title>Services — Admin — {siteConfig.name}</title>
       </Helmet>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-serif text-3xl text-ink">Services</h1>
           <p className="mt-1 text-sm text-muted">
-            {services.length} service{services.length === 1 ? "" : "s"} \u00B7 edit any field, toggle
-            visibility, or add a new one.
+            {loading ? "…" : `${services.length} service${services.length === 1 ? "" : "s"} · edit any field, toggle visibility, or add a new one.`}
           </p>
         </div>
         <Link

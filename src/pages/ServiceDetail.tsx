@@ -1,7 +1,6 @@
-"use client";
-
-import React from "react";
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Clock, MessageCircleMore, Phone } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -27,23 +26,46 @@ import {
   serviceSchema,
 } from "@/components/seo/JsonLd";
 
-import { useParams, Navigate } from "react-router-dom";
-
-export default function ServiceDetail() {
+export default function ServiceDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [service, setService] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [service, setService] = useState<Awaited<ReturnType<typeof getServiceBySlug>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
-    if (slug) {
-      const s = getServiceBySlug(slug);
-      setService(s || null);
-      setLoading(false);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (!slug) return;
+      const data = await getServiceBySlug(slug);
+      if (!cancelled) {
+        setService(data ?? null);
+        setLoading(false);
+      }
     }
+    load();
+    return () => { cancelled = true; };
   }, [slug]);
 
-  if (loading) return <div className="container-x py-20 text-center">Loading...</div>;
-  if (!service) return <Navigate to="/not-found" replace />;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
+  if (!service) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="font-serif text-4xl text-gold-gradient">404</h1>
+          <p className="mt-4 text-muted">Service not found.</p>
+          <a href="/services" className="mt-6 inline-block text-gold-light underline">
+            Back to services
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const url = `${siteConfig.url}/services/${service.slug}`;
   const wa = whatsappLink(
@@ -54,7 +76,7 @@ export default function ServiceDetail() {
   return (
     <>
       <Helmet>
-        <title>{service.title} — Vedic Astrology</title>
+        <title>{service.title} — {siteConfig.name}</title>
         <meta name="description" content={service.shortDescription} />
         <link rel="canonical" href={url} />
       </Helmet>

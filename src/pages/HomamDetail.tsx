@@ -1,7 +1,6 @@
-"use client";
-
-import React from "react";
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Clock, MessageCircleMore, Phone } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -26,40 +25,63 @@ import {
   serviceSchema,
 } from "@/components/seo/JsonLd";
 
-import { useParams, Navigate } from "react-router-dom";
-
-export default function HomamDetail() {
+export default function HomamDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [homam, setHomam] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [homam, setHomam] = useState<Awaited<ReturnType<typeof getHomamBySlug>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
-    if (slug) {
-      const h = getHomamBySlug(slug);
-      setHomam(h || null);
-      setLoading(false);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      if (!slug) return;
+      const data = await getHomamBySlug(slug);
+      if (!cancelled) {
+        setHomam(data ?? null);
+        setLoading(false);
+      }
     }
+    load();
+    return () => { cancelled = true; };
   }, [slug]);
 
-  if (loading) return <div className="container-x py-20 text-center">Loading...</div>;
-  if (!homam) return <Navigate to="/not-found" replace />;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
+  if (!homam) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="font-serif text-4xl text-gold-gradient">404</h1>
+          <p className="mt-4 text-muted">Homam not found.</p>
+          <a href="/homams" className="mt-6 inline-block text-gold-light underline">
+            Back to homams
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const url = `${siteConfig.url}/homams/${homam.slug}`;
   const wa = whatsappLink(
     siteConfig.whatsapp,
-    `Namaste Guruji, I would like to book the ${homam.title}.`
+    `Namaste Guruji, I would like to book the ${homam.name}.`
   );
 
   return (
     <>
       <Helmet>
-        <title>{homam.title} — Vedic Astrology</title>
+        <title>{homam.name} — {siteConfig.name}</title>
         <meta name="description" content={homam.shortBenefit} />
         <link rel="canonical" href={url} />
       </Helmet>
       <JsonLd
         data={serviceSchema({
-          name: homam.title,
+          name: homam.name,
           description: homam.shortBenefit,
           price: homam.price,
           url,
@@ -70,7 +92,7 @@ export default function HomamDetail() {
         data={breadcrumbSchema([
           { name: "Home", url: "/" },
           { name: "Homams", url: "/homams" },
-          { name: homam.title, url: `/homams/${homam.slug}` },
+          { name: homam.name, url: `/homams/${homam.slug}` },
         ])}
       />
 
@@ -85,7 +107,7 @@ export default function HomamDetail() {
                 items={[
                   { name: "Home", href: "/" },
                   { name: "Homams", href: "/homams" },
-                  { name: homam.title },
+                  { name: homam.name },
                 ]}
               />
             </div>
@@ -103,7 +125,7 @@ export default function HomamDetail() {
             </Reveal>
             <Reveal delay={0.06}>
               <h1 className="mt-5 font-serif text-4xl leading-tight text-[#fff8e8] sm:text-5xl">
-                {homam.title}
+                {homam.name}
               </h1>
             </Reveal>
             <Reveal delay={0.12}>
@@ -121,7 +143,7 @@ export default function HomamDetail() {
                 <Button href="#book" variant="primary" size="lg" className="w-full sm:w-auto">
                   Book Homam
                 </Button>
-                <AskGurujiButton serviceTitle={homam.title} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
+                <AskGurujiButton serviceTitle={homam.name} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
                   <MessageCircleMore className="h-5 w-5" /> Ask Guruji
                 </AskGurujiButton>
                 <Button href={wa} external variant="whatsapp" size="lg" className="w-full sm:w-auto">
@@ -185,7 +207,7 @@ export default function HomamDetail() {
       {/* Booking form */}
       <Section id="book" className="scroll-mt-24 pt-0">
         <div className="mx-auto max-w-3xl rounded-3xl border border-gold/25 bg-surface/60 p-6 sm:p-9">
-          <BookingForm variant="homam" subject={homam.title} />
+          <BookingForm variant="homam" subject={homam.name} />
         </div>
       </Section>
 

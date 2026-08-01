@@ -13,24 +13,22 @@
  */
 import fs from "node:fs/promises";
 import path from "node:path";
-import { services as seedServices } from "./services";
-import type { Service } from "./types";
-
+import { services as seedServices } from "../../src/lib/data/services";
 const DATA_DIR = path.join(process.cwd(), "content");
 const DATA_FILE = path.join(DATA_DIR, "services.json");
-
-export async function readServicesRaw(): Promise<Service[]> {
-  try {
-    const buf = await fs.readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(buf) as Service[];
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-  } catch {
-    // File missing or unreadable — fall back to the seed data.
-  }
-  return seedServices;
+export async function readServicesRaw() {
+    try {
+        const buf = await fs.readFile(DATA_FILE, "utf8");
+        const parsed = JSON.parse(buf);
+        if (Array.isArray(parsed) && parsed.length > 0)
+            return parsed;
+    }
+    catch {
+        // File missing or unreadable — fall back to the seed data.
+    }
+    return seedServices;
 }
-
-export async function writeServicesRaw(list: Service[]): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(DATA_FILE, `${JSON.stringify(list, null, 2)}\n`, "utf8");
+export async function writeServicesRaw(list) {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(DATA_FILE, `${JSON.stringify(list, null, 2)}\n`, "utf8");
 }

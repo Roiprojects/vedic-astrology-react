@@ -5,6 +5,7 @@ import path from "node:path";
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
@@ -13,10 +14,6 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-      "/_next": {
         target: "http://localhost:3001",
         changeOrigin: true,
       },

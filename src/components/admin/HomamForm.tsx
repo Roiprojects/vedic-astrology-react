@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
@@ -142,6 +140,7 @@ export function HomamForm({
         return;
       }
       navigate("/admin/homams");
+      window.location.reload();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -161,6 +160,7 @@ export function HomamForm({
         return;
       }
       navigate("/admin/homams");
+      window.location.reload();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

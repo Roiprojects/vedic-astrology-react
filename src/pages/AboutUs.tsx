@@ -1,5 +1,3 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
 import { Award, Clock, Languages, MessageSquare, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
@@ -17,6 +15,7 @@ import {
   whyChooseUs,
 } from "@/lib/data/content";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { siteConfig } from "@/lib/site";
 
 const profileRows = [
   { icon: Award, label: "Experience", value: gurujiProfile.experience },
@@ -25,13 +24,16 @@ const profileRows = [
   { icon: Clock, label: "Availability", value: gurujiProfile.availability },
 ];
 
-export default function AboutPage() {
+export default function AboutUs() {
   return (
     <>
       <Helmet>
-        <title>About Us — Vedic Astrology</title>
-        <meta name="description" content="Learn about Sampath Kumara — an experienced Vedic astrologer offering authentic consultations, homams, and spiritual guidance rooted in Vedic wisdom." />
-        <link rel="canonical" href="/about-us" />
+        <title>About Us — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Learn about Sampath Kumara — an experienced Vedic astrologer offering authentic consultations, homams, and spiritual guidance rooted in Vedic wisdom."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/about-us`} />
       </Helmet>
       <JsonLd
         data={breadcrumbSchema([

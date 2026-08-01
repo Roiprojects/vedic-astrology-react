@@ -131,7 +131,7 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-gold/15 pt-6 text-xs text-[#e9d6b3]/50 sm:flex-row">
           <p>
-            © {year} {siteConfig.name}. All rights reserved.
+            &copy; {year} {siteConfig.name}. All rights reserved.
           </p>
           <ul className="flex flex-wrap items-center gap-4">
             {footerLinks.legal.map((l) => (

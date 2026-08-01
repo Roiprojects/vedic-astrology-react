@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import type { Session, User } from "@supabase/supabase-js";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export function useAuth() {
-  const [session, setSession] = useState<{ user: { id: string; email: string } } | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,13 +19,15 @@ export function useAuth() {
     const supabase = createSupabaseBrowserClient();
 
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session as any);
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event: string, session: any) => {
+      (_event, session) => {
         setSession(session);
+        setUser(session?.user ?? null);
         setLoading(false);
       }
     );
@@ -42,5 +47,5 @@ export function useAuth() {
     await supabase.auth.signOut();
   }, []);
 
-  return { session, user: session?.user ?? null, loading, signIn, signOut };
+  return { session, user, isAdmin, loading, signIn, signOut };
 }

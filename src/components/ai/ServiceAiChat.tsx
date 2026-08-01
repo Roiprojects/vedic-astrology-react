@@ -1,7 +1,3 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -54,7 +50,7 @@ export function ServiceAiChat() {
   const [sessionSecondsLeft, setSessionSecondsLeft] = useState(SESSION_MS / 1000);
   const [sessionEnded, setSessionEnded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const tickRef = useRef<NodeJS.Timeout | null>(null);
+  const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sessionStartRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -206,7 +202,7 @@ export function ServiceAiChat() {
           >
             <header className="flex items-center justify-between border-b border-[#d5aa50]/25 bg-[#391829] px-4 py-3">
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={siteConfig.gurujiPortrait}
                   alt=""
                   width={44}
@@ -287,13 +283,13 @@ export function ServiceAiChat() {
                       </span>
                       <ArrowRight className="h-4 w-4" />
                     </a>
-                    <Link
+                    <a
                       href="/contact-us"
                       className="flex min-h-11 items-center justify-between rounded-xl border border-[#dbb25c]/25 px-4 text-xs text-[#ead9b5] transition-colors hover:bg-white/5"
                     >
                       <span>Book formal consultation</span>
                       <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
+                    </a>
                     <button
                       type="button"
                       onClick={() => {

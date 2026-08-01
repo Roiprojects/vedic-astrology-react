@@ -18,10 +18,7 @@ export function HomamCard({ homam }: { homam: Homam }) {
           <img
             src={image}
             alt={homam.name}
-            width={600}
-            height={450}
-            loading="lazy"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
           />
         ) : (
           <div className={cn("absolute inset-0 bg-gradient-to-br", homam.gradient)}>
@@ -46,7 +43,7 @@ export function HomamCard({ homam }: { homam: Homam }) {
         {/* Wash so the banner fuses into the card body */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#28101e] via-[#28101e]/35 to-transparent" />
 
-        {/* Symbol medallion — only when there's a photo */}
+        {/* Symbol medallion — only when there's a photo (avoids double symbol) */}
         {image && (
           <span className="absolute bottom-3 left-3 grid h-12 w-12 place-items-center rounded-2xl border border-[#e7b64c]/55 bg-[#28101e]/85 text-[#ffe6a8] shadow-lg backdrop-blur">
             <VedicSymbol kind={symbol} size="md" strokeWidth={1.6} />

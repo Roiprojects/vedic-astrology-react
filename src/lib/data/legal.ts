@@ -1,7 +1,5 @@
-export type LegalSection = {
-  heading: string;
-  paragraphs: string[];
-};
+import type { LegalSection } from "@/components/layout/LegalContent";
+import { siteConfig } from "@/lib/site";
 
 export const legalLastUpdated = "8 July 2026";
 
@@ -9,7 +7,7 @@ export const privacyPolicy: LegalSection[] = [
   {
     heading: "Introduction",
     paragraphs: [
-      "This Privacy Policy explains how Vedic Astrology (\"we\", \"us\") collects, uses, and protects the personal information you share when using our website and services.",
+      `This Privacy Policy explains how ${siteConfig.name} ("we", "us") collects, uses, and protects the personal information you share when using our website and services.`,
     ],
   },
   {
@@ -42,13 +40,13 @@ export const privacyPolicy: LegalSection[] = [
     heading: "Data Retention & Your Rights",
     paragraphs: [
       "We retain your information only as long as necessary to provide our services. You may request access to, correction of, or deletion of your personal data at any time.",
-      "To make such a request, contact us at support@vedicastrology.com.",
+      `To make such a request, contact us at ${siteConfig.email}.`,
     ],
   },
   {
     heading: "Contact",
     paragraphs: [
-      "If you have questions about this Privacy Policy, please contact us at support@vedicastrology.com or via WhatsApp.",
+      `If you have questions about this Privacy Policy, please contact us at ${siteConfig.email} or via WhatsApp.`,
     ],
   },
 ];
@@ -57,7 +55,7 @@ export const termsAndConditions: LegalSection[] = [
   {
     heading: "Acceptance of Terms",
     paragraphs: [
-      "By accessing and using Vedic Astrology, you agree to these Terms and Conditions. If you do not agree, please do not use the website or services.",
+      `By accessing and using ${siteConfig.name}, you agree to these Terms and Conditions. If you do not agree, please do not use the website or services.`,
     ],
   },
   {
@@ -101,7 +99,7 @@ export const termsAndConditions: LegalSection[] = [
 export const disclaimerContent: LegalSection[] = [
   {
     heading: "Astrology Disclaimer",
-    paragraphs: ["Astrological guidance is for spiritual and advisory purposes only. It is not a substitute for professional advice in medical, legal, financial, or psychological matters. Results are not guaranteed."],
+    paragraphs: [siteConfig.disclaimer],
   },
   {
     heading: "Guidance, Not Guarantees",
@@ -127,7 +125,7 @@ export const refundPolicy: LegalSection[] = [
   {
     heading: "Overview",
     paragraphs: [
-      "At Vedic Astrology, we are committed to providing genuine Vedic astrology services with full transparency. This Refund & Cancellation Policy explains your rights and our process for refunds and cancellations of bookings, consultations, reports, homams, and other services.",
+      `At ${siteConfig.name}, we are committed to providing genuine Vedic astrology services with full transparency. This Refund & Cancellation Policy explains your rights and our process for refunds and cancellations of bookings, consultations, reports, homams, and other services.`,
     ],
   },
   {
@@ -148,7 +146,7 @@ export const refundPolicy: LegalSection[] = [
   {
     heading: "Refund Process",
     paragraphs: [
-      "To request a refund, contact us at +91-XXXXXXXXXX or support@vedicastrology.com with your booking details (name, phone number used, service booked, and date of payment).",
+      `To request a refund, contact us at ${siteConfig.phone} or ${siteConfig.email} with your booking details (name, phone number used, service booked, and date of payment).`,
       "Refund requests are reviewed within 3-5 business days. If approved, the refund will be processed to the original payment method within 7-10 business days. The timing of the refund appearing in your account depends on your bank or payment provider.",
       "For Razorpay payments, refunds will be initiated through Razorpay's refund API and will follow Razorpay's refund timeline.",
     ],
@@ -174,7 +172,7 @@ export const refundPolicy: LegalSection[] = [
   {
     heading: "Contact for Refund Requests",
     paragraphs: [
-      "For all refund and cancellation enquiries, please contact: Guruji Sampath Kumara at +91-XXXXXXXXXX (phone/WhatsApp) or support@vedicastrology.com. We typically respond within 1 business day.",
+      `For all refund and cancellation enquiries, please contact: ${siteConfig.guruji} at ${siteConfig.phone} (phone/WhatsApp) or ${siteConfig.email}. We typically respond within 1 business day.`,
     ],
   },
 ];

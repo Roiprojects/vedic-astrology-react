@@ -1,10 +1,10 @@
 /**
- * File-backed store for the three informational "service" pages
- * (Birth Chart PDF, Chat with Guruji, AI Palm Reader). Holds the editable hero
- * copy plus page-specific bits (price / includes / FAQs). Server-only.
+ * Type definitions and static defaults for the three informational "service" pages
+ * (Birth Chart PDF, Chat with Guruji, AI Palm Reader).
+ *
+ * The mutable, file-backed read/write functions live in
+ * `server/lib/data/pages-store.ts` (uses node:fs — server-only).
  */
-import fs from "node:fs/promises";
-import path from "node:path";
 import { birthChartReportIncludes } from "./content";
 import { birthChartFaqs, chatFaqs } from "./faqs";
 import type { Faq } from "./types";
@@ -69,29 +69,4 @@ export function allPageIds(): PageId[] {
 }
 export function pageDefaults(id: PageId): PageContent {
   return DEFAULTS[id];
-}
-
-const DATA_DIR = path.join(process.cwd(), "content");
-const DATA_FILE = path.join(DATA_DIR, "pages.json");
-
-async function readAll(): Promise<Partial<Record<PageId, PageContent>>> {
-  try {
-    const buf = await fs.readFile(DATA_FILE, "utf8");
-    const parsed = JSON.parse(buf);
-    return parsed && typeof parsed === "object" ? (parsed as Partial<Record<PageId, PageContent>>) : {};
-  } catch {
-    return {};
-  }
-}
-
-export async function readPageContent(id: PageId): Promise<PageContent> {
-  const all = await readAll();
-  return { ...DEFAULTS[id], ...(all[id] ?? {}) };
-}
-
-export async function writePageContent(id: PageId, content: PageContent): Promise<void> {
-  const all = await readAll();
-  all[id] = content;
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(DATA_FILE, `${JSON.stringify(all, null, 2)}\n`, "utf8");
 }

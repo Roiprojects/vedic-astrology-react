@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
@@ -55,7 +53,7 @@ export function PageContentForm({
 
     try {
       const res = await fetch(`/api/admin/pages/${pageId}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -65,6 +63,7 @@ export function PageContentForm({
         return;
       }
       setSaved(true);
+      window.location.reload();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

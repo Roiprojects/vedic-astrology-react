@@ -24,10 +24,6 @@ function makeStars(count: number, seed: number): Star[] {
   }));
 }
 
-/**
- * Lightweight CSS-only twinkling star field. No client JS — pure server render
- * with CSS animations, so it costs nothing on the main thread.
- */
 export function StarField({
   count = 60,
   seed = 7,

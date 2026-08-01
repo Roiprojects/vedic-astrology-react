@@ -1,6 +1,5 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/effects/Reveal";
@@ -8,16 +7,26 @@ import { HomamCard } from "@/components/cards/HomamCard";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getHomams } from "@/lib/data";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { siteConfig } from "@/lib/site";
 
 export default function HomamsPage() {
-  const homams = getHomams();
+  const [homams, setHomams] = useState<Awaited<ReturnType<typeof getHomams>>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setHomams(getHomams());
+    setLoading(false);
+  }, []);
 
   return (
     <>
       <Helmet>
-        <title>15 Vedic Homams — Vedic Astrology</title>
-        <meta name="description" content="Book authentic Vedic fire rituals (homams) for prosperity, peace, protection, health, and success — performed with proper Vedic procedure." />
-        <link rel="canonical" href="/homams" />
+        <title>15 Vedic Homams — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Book authentic Vedic fire rituals (homams) for prosperity, peace, protection, health, and success — performed with proper Vedic procedure."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/homams`} />
       </Helmet>
       <JsonLd
         data={breadcrumbSchema([
@@ -34,13 +43,17 @@ export default function HomamsPage() {
       />
 
       <Section>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {homams.map((homam, i) => (
-            <Reveal key={homam.slug} delay={(i % 3) * 0.05} className="h-full">
-              <HomamCard homam={homam} />
-            </Reveal>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-muted">Loading…</p>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {homams.map((homam, i) => (
+              <Reveal key={homam.slug} delay={(i % 3) * 0.05} className="h-full">
+                <HomamCard homam={homam} />
+              </Reveal>
+            ))}
+          </div>
+        )}
       </Section>
 
       <ContactCta

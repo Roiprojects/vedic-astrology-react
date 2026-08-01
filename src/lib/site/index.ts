@@ -1,9 +1,8 @@
 /**
  * Central site configuration.
- * Safe public defaults. Real values come from env vars or the admin
- * `settings` table once Supabase is connected.
+ * These are safe, public defaults — real values come from env vars / the admin
+ * `settings` table once Supabase is connected. Update the placeholders below.
  */
-import type { NavLink } from "./types";
 
 const WHATSAPP_NUMBER =
   import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "") || "919886100565";
@@ -17,6 +16,7 @@ export const siteConfig = {
   description:
     "Authentic Vedic astrology consultations, birth chart analysis, sacred homams, and spiritual remedies by experienced Vedic astrologer Sampath Kumara.",
   url: import.meta.env.VITE_SITE_URL || "https://vedicastrology.example.com",
+
   phone: "+91 98861 00565",
   phoneHref: "tel:+919886100565",
   whatsapp: WHATSAPP_NUMBER,
@@ -26,13 +26,21 @@ export const siteConfig = {
   workingHours: "Mon – Sun · 8:00 AM – 9:00 PM IST",
   mapQuery:
     "No 100 21 st main 8thCross Rajarajeshwari nagar Bengaluru - 560098",
+
   social: {
     facebook: "https://www.facebook.com/share/1EZYk4SBBW/",
     instagram: "https://www.instagram.com/sampathkumarakm?igsh=MXg5MThicWtxcG1vdQ==",
   },
+
   disclaimer:
     "Astrology provides spiritual guidance and indicative insights. Predictions are not guaranteed. For medical, legal, or financial decisions, please consult qualified professionals.",
 } as const;
+
+export type NavLink = {
+  label: string;
+  href: string;
+  children?: { label: string; href: string; description?: string }[];
+};
 
 export const mainNav: NavLink[] = [
   { label: "Home", href: "/" },
@@ -41,31 +49,11 @@ export const mainNav: NavLink[] = [
     label: "Services",
     href: "/services",
     children: [
-      {
-        label: "Astrology Consultations",
-        href: "/services/astrology-consultations",
-        description: "Guidance for love, career, marriage & more",
-      },
-      {
-        label: "Homam Bookings",
-        href: "/homams",
-        description: "15 sacred Vedic fire rituals",
-      },
-      {
-        label: "Birth Chart PDF",
-        href: "/birth-chart-pdf",
-        description: "Detailed Vedic kundli report",
-      },
-      {
-        label: "Chat with Guruji",
-        href: "/chat-with-guruji",
-        description: "Live Vedic guidance, first messages free",
-      },
-      {
-        label: "Instant Palm Reader",
-        href: "/palm-reading",
-        description: "Instant reading from your palm photo",
-      },
+      { label: "Astrology Consultations", href: "/services/astrology-consultations", description: "Guidance for love, career, marriage & more" },
+      { label: "Homam Bookings", href: "/homams", description: "15 sacred Vedic fire rituals" },
+      { label: "Birth Chart PDF", href: "/birth-chart-pdf", description: "Detailed Vedic kundli report" },
+      { label: "Chat with Guruji", href: "/chat-with-guruji", description: "Live Vedic guidance, first messages free" },
+      { label: "Instant Palm Reader", href: "/palm-reading", description: "Instant reading from your palm photo" },
     ],
   },
   { label: "Testimonials", href: "/testimonials" },

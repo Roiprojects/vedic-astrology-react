@@ -7,12 +7,14 @@
 */
 
 @theme {
+  /* Surfaces — warm ivory / parchment, tuned to the logo's gold-on-cream feel */
   --color-bg: #faf4e8;
   --color-bg-soft: #f3ead8;
   --color-surface: #fffdf7;
   --color-surface-2: #f6eddb;
   --color-overlay: #fffdf8;
 
+  /* Warm ember scale (drives the brand washes; replaces the old purple) */
   --color-purple-950: #1c0a05;
   --color-purple-900: #2a0f08;
   --color-purple-800: #3e160c;
@@ -21,96 +23,206 @@
   --color-purple-500: #c0491d;
   --color-purple-400: #e2732f;
 
+  /* Saffron / burnt orange (CTA + brand warmth) */
   --color-saffron: #f0842e;
   --color-saffron-deep: #d9641c;
   --color-ember: #bd471d;
 
-  --color-gold: #b8860b;
-  --color-gold-light: #fde68a;
-  --color-gold-dark: #92610a;
-  --color-gold-soft: rgba(184, 134, 11, 0.12);
+  /* Antique gold — tuned for readability on cream (gold-light = accent TEXT) */
+  --color-gold: #c1912f;
+  --color-gold-light: #9c6a15;
+  --color-gold-deep: #7c5210;
+  --color-gold-muted: #b0955c;
 
-  --color-ink: #2b1810;
-  --color-ink-soft: #5c3d2e;
-  --color-muted: #8b6f5e;
-  --color-muted-light: #a89080;
+  /* Dark maroon */
+  --color-maroon: #4a0f1a;
+  --color-maroon-deep: #340a12;
 
-  --color-border: rgba(139, 111, 94, 0.25);
-  --color-border-strong: rgba(139, 111, 94, 0.45);
+  /* Ink / text — deep warm brown on cream */
+  --color-ink: #2a1608;
+  --color-muted: #6a5340;
+  --color-faint: #94795f;
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
-  --font-display: "Cinzel", ui-serif, Georgia, serif;
+  /* Status */
+  --color-online: #3ad67f;
+  --color-danger: #e5484d;
 
-  --radius-card: 1.25rem;
-  --radius-button: 9999px;
-}
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-display: var(--font-cinzel), ui-serif, Georgia, serif;
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
+  /* Radii */
+  --radius-xl2: 1.5rem;
 
-body {
-  font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-ink);
-  line-height: 1.625;
-  min-height: 100dvh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  /* Shadows */
+  --shadow-glow-gold: 0 0 0 1px rgba(193, 145, 47, 0.28), 0 20px 50px -24px rgba(193, 145, 47, 0.35);
+  --shadow-glow-purple: 0 24px 60px -30px rgba(224, 115, 47, 0.35);
+  --shadow-card: 0 22px 44px -26px rgba(74, 15, 26, 0.16);
 
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  letter-spacing: -0.01em;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font: inherit;
-}
-
-input, textarea, select {
-  font: inherit;
-}
-
-.container-x {
-  width: 100%;
-  max-width: 80rem;
-  margin-inline: auto;
-  padding-inline: 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .container-x { padding-inline: 1.5rem; }
-}
-@media (min-width: 1024px) {
-  .container-x { padding-inline: 2rem; }
+  /* Animations */
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 11s ease-in-out infinite;
+  --animate-twinkle: twinkle 4.2s ease-in-out infinite;
+  --animate-glow: glow 3.6s ease-in-out infinite;
+  --animate-shimmer: shimmer 3.5s linear infinite;
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-spin-reverse: spin-reverse 90s linear infinite;
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
 }
-@keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(184, 134, 11, 0); }
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
 }
 
-.animate-float { animation: float 3s ease-in-out infinite; }
-.animate-pulse-gold { animation: pulse-gold 2s ease-in-out infinite; }
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    border-color: color-mix(in oklab, var(--color-gold) 32%, transparent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(1200px 720px at 80% -10%, rgba(240, 132, 46, 0.10), transparent 60%),
+      radial-gradient(900px 620px at 4% 0%, rgba(217, 178, 95, 0.12), transparent 55%),
+      radial-gradient(1100px 900px at 50% 120%, rgba(193, 145, 47, 0.07), transparent 62%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-saffron) 55%, transparent);
+    color: #1a0a04;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--color-gold-deep), var(--color-ember));
+    border-radius: 9999px;
+    border: 2px solid var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 1024px) {
+    .container-x { padding-inline: 2rem; }
+  }
+
+  /* Gold gradient text */
+  .text-gold-gradient {
+    background: linear-gradient(100deg, #c1912f 0%, #9c6a15 38%, #7c5210 70%, #b98a2a 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Bright shimmering gold text — for dark saffron backgrounds */
+  .text-gold-shine {
+    background: linear-gradient(100deg, #ffe6a8 0%, #f4bc55 38%, #e79a2b 58%, #ffe6a8 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Glass / temple card — light frosted parchment */
+  .glass-card {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 253, 247, 0.82));
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in oklab, var(--color-gold) 34%, transparent);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Rich saffron→maroon band used on inner-page heroes (matches the homepage). */
+  .warm-band {
+    background:
+      radial-gradient(120% 90% at 72% 15%, rgba(255, 197, 92, 0.38), transparent 55%),
+      radial-gradient(90% 70% at 10% 90%, rgba(120, 30, 18, 0.5), transparent 60%),
+      linear-gradient(120deg, #5c1c0c 0%, #a5390f 46%, #7d2512 74%, #48121b 100%);
+  }
+
+  /* Aurora sheen for hero/CTA panels */
+  .warm-aurora {
+    background:
+      radial-gradient(60% 80% at 20% 10%, rgba(240, 132, 46, 0.12), transparent 60%),
+      radial-gradient(70% 90% at 90% 20%, rgba(217, 178, 95, 0.12), transparent 60%),
+      radial-gradient(80% 90% at 50% 120%, rgba(193, 145, 47, 0.08), transparent 60%);
+  }
+
+  .gold-hairline {
+    border-bottom: 1px solid color-mix(in oklab, var(--color-gold) 30%, transparent);
+  }
+
+  /* Divine glow ring behind hero elements */
+  .divine-glow {
+    box-shadow: var(--shadow-glow-purple);
+  }
+
+  /* Shimmering gold border used on premium CTAs */
+  .btn-shimmer {
+    background-image: linear-gradient(
+      110deg,
+      transparent 20%,
+      rgba(244, 220, 156, 0.55) 45%,
+      rgba(244, 220, 156, 0.15) 55%,
+      transparent 75%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

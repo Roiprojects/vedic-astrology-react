@@ -37,16 +37,16 @@ export function PriceBadge({
         className
       )}
     >
-      {hasDiscount ? (
-        <>
-          <span>{formatINR(discountPrice)}</span>
-          <span className="text-[#3a1c07]/70 line-through decoration-1">
-            {formatINR(price)}
-          </span>
-        </>
-      ) : (
-        <span>{formatINR(price)}</span>
-      )}
+       {hasDiscount ? (
+         <>
+           <span>{formatINR(discountPrice ?? 0)}</span>
+           <span className="text-[#3a1c07]/70 line-through decoration-1">
+             {formatINR(price ?? 0)}
+           </span>
+         </>
+       ) : (
+         <span>{formatINR(price ?? 0)}</span>
+       )}
     </span>
   );
 }

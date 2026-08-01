@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
@@ -150,6 +148,7 @@ export function ServiceForm({
         return;
       }
       navigate("/admin/services");
+      window.location.reload();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -175,6 +174,7 @@ export function ServiceForm({
         return;
       }
       navigate("/admin/services");
+      window.location.reload();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -256,7 +256,7 @@ export function ServiceForm({
           />
         </div>
         <div>
-          <label className={labelCls}>The problem ("Are you facing this?")</label>
+          <label className={labelCls}>The problem (&ldquo;Are you facing this?&rdquo;)</label>
           <textarea
             className={inputCls}
             rows={4}

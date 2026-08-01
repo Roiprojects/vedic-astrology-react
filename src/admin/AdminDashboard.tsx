@@ -1,28 +1,38 @@
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 import { getServicesForAdmin, getHomamsForAdmin } from "@/lib/data";
-import { PAGE_CONFIG, allPageIds } from "@/lib/data/pages-store";
+import { PAGE_CONFIG, allPageIds } from "@/lib/data";
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
-export default async function AdminDashboard() {
-  const [services, homams] = await Promise.all([getServicesForAdmin(), getHomamsForAdmin()]);
+export default function AdminDashboard() {
+  const [services, setServices] = useState<Awaited<ReturnType<typeof getServicesForAdmin>>>([]);
+  const [homams, setHomams] = useState<Awaited<ReturnType<typeof getHomamsForAdmin>>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setServices(getServicesForAdmin());
+    setHomams(getHomamsForAdmin());
+    setLoading(false);
+  }, []);
 
   const cards = [
     {
       href: "/admin/services",
-      icon: "\uD83D\uDD2E",
+      icon: "🔮",
       title: "Astrology Consultations",
-      desc: `${services.length} services \u2014 full content, pricing, FAQs`,
+      desc: loading ? "…" : `${services.length} services — full content, pricing, FAQs`,
     },
     {
       href: "/admin/homams",
-      icon: "\uD83D\uDD25",
+      icon: "🔥",
       title: "Homam Bookings",
-      desc: `${homams.length} homams \u2014 full content, pricing, FAQs`,
+      desc: loading ? "…" : `${homams.length} homams — full content, pricing, FAQs`,
     },
     ...allPageIds().map((id) => ({
       href: `/admin/pages/${id}`,
-      icon: id === "birth-chart-pdf" ? "\uD83D\uDCDC" : id === "chat-with-guruji" ? "\uD83D\uDCAC" : "\u270B",
+      icon: id === "birth-chart-pdf" ? "📜" : id === "chat-with-guruji" ? "💬" : "✋",
       title: PAGE_CONFIG[id].label,
       desc: "Hero copy, content & FAQs",
     })),
@@ -31,7 +41,7 @@ export default async function AdminDashboard() {
   return (
     <div>
       <Helmet>
-        <title>Dashboard \u2014 Vedic Astrology Admin</title>
+        <title>Dashboard — Admin — {siteConfig.name}</title>
       </Helmet>
       <h1 className="font-serif text-3xl text-ink">Services Admin</h1>
       <p className="mt-1 text-sm text-muted">

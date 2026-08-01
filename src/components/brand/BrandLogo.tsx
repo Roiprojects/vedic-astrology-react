@@ -22,10 +22,7 @@ export function BrandLogo({
       <img
         src="/logo-mark.png"
         alt={`${siteConfig.name} logo`}
-        width={size}
-        height={size}
-        loading="eager"
-        className="object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-center"
       />
       {/* subtle inner sheen so the gold emblem lifts off the navbar */}
       <span

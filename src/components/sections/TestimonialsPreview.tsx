@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/Button";
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
 import { getFeaturedTestimonials } from "@/lib/data";
 
-export async function TestimonialsPreview() {
-  const testimonials = await getFeaturedTestimonials(6);
+export function TestimonialsPreview() {
+  const testimonials = getFeaturedTestimonials(6);
 
   return (
     <Section>

@@ -1,10 +1,11 @@
-import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { siteConfig } from "@/lib/site";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function AdminLoginPage() {
         setError("This account does not have admin access.");
         return;
       }
-      navigate("/admin/dashboard");
+      navigate("/admin/services");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -44,7 +45,7 @@ export default function AdminLoginPage() {
   return (
     <div className="grid min-h-screen place-items-center px-6">
       <Helmet>
-        <title>Admin Login — Vedic Astrology</title>
+        <title>Admin Login — {siteConfig.name}</title>
       </Helmet>
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">

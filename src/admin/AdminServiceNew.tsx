@@ -1,25 +1,35 @@
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { getServicesForAdmin } from "@/lib/data";
 import { ServiceForm } from "@/components/admin/ServiceForm";
 import type { Service } from "@/lib/data/types";
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
-export default async function AdminServiceNew() {
-  const services = await getServicesForAdmin();
-  const nextOrder = services.reduce((max, s) => Math.max(max, s.order), 0) + 1;
+export default function AdminServiceNewPage() {
+  const [services, setServices] = useState<Awaited<ReturnType<typeof getServicesForAdmin>>>([]);
+  const [loading, setLoading] = useState(true);
+  const [nextOrder, setNextOrder] = useState(1);
+
+  useEffect(() => {
+    const data = getServicesForAdmin();
+    setServices(data);
+    setNextOrder(data.reduce((max, s) => Math.max(max, s.order), 0) + 1);
+    setLoading(false);
+  }, []);
 
   const blank: Service = {
     slug: "",
     title: "",
     categorySlug: "astrology-consultations",
-    icon: "\uD83D\uDD2E",
+    icon: "🔮",
     shortDescription: "",
     fullDescription: "",
     problem: "",
     price: 0,
     discountPrice: null,
-    duration: "20\u201330 min consultation",
+    duration: "20–30 min consultation",
     gradient: "from-amber-500/30 to-orange-600/30",
     analysis: [],
     receive: [],
@@ -34,19 +44,25 @@ export default async function AdminServiceNew() {
   return (
     <div className="mx-auto max-w-3xl">
       <Helmet>
-        <title>New Service \u2014 Vedic Astrology Admin</title>
+        <title>New Service — Admin — {siteConfig.name}</title>
       </Helmet>
-      <Link
-        to="/admin/services"
-        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to services
-      </Link>
-      <h1 className="mt-4 font-serif text-3xl text-ink">New service</h1>
-      <p className="mt-1 text-sm text-muted">Add a new astrology service to the site.</p>
+      {loading ? (
+        <p className="text-muted">Loading…</p>
+      ) : (
+        <>
+          <Link
+            to="/admin/services"
+            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to services
+          </Link>
+          <h1 className="mt-4 font-serif text-3xl text-ink">New service</h1>
+          <p className="mt-1 text-sm text-muted">Add a new astrology service to the site.</p>
 
-      <ServiceForm mode="create" initial={blank} />
+          <ServiceForm mode="create" initial={blank} />
+        </>
+      )}
     </div>
   );
 }

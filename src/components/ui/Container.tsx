@@ -1,3 +1,11 @@
-export function Container({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={`container-x ${className ?? ''}`}>{children}</div>;
+import { cn } from "@/lib/utils";
+
+export function Container({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return <div className={cn("container-x", className)}>{children}</div>;
 }

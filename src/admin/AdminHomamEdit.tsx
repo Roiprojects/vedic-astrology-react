@@ -1,32 +1,54 @@
 import { Helmet } from "react-helmet-async";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { getHomamForAdmin } from "@/lib/data";
 import { HomamForm } from "@/components/admin/HomamForm";
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
-"use client";
-
-export default function AdminHomamEdit() {
+export default function AdminHomamEditPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [homam, setHomam] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
+  const homamSlug = slug ?? "";
+  const [homam, setHomam] = useState<Awaited<ReturnType<typeof getHomamForAdmin>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
-    if (slug) {
-      getHomamForAdmin(slug).then((h) => {
-        setHomam(h || null);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      const data = await getHomamForAdmin(homamSlug);
+      if (!cancelled) {
+        setHomam(data ?? null);
         setLoading(false);
-      });
+      }
     }
-  }, [slug]);
+    load();
+    return () => { cancelled = true; };
+  }, [homamSlug]);
 
-  if (loading) return <div className="container-x py-20 text-center">Loading…</div>;
-  if (!homam) return null;
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
+  if (!homam) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <p className="text-muted">Homam not found.</p>
+        <Link to="/admin/homams" className="text-gold-light underline">
+          Back to homams
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
       <Helmet>
-        <title>Edit \u00B7 {homam.name} \u2014 Vedic Astrology Admin</title>
+        <title>Edit · {homam.name} — Admin — {siteConfig.name}</title>
       </Helmet>
       <Link to="/admin/homams" className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink">
         <ArrowLeft className="h-4 w-4" />

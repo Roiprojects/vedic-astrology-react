@@ -1,6 +1,5 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { Clock, FileText, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
@@ -16,18 +15,36 @@ import { siteConfig } from "@/lib/site";
 
 const highlights = [
   { icon: FileText, title: "Detailed Report", text: "A comprehensive Vedic kundli PDF." },
-  { icon: Clock, title: "24-48 Hours", text: "Delivered to your email / WhatsApp." },
+  { icon: Clock, title: "24–48 Hours", text: "Delivered to your email / WhatsApp." },
   { icon: ShieldCheck, title: "100% Private", text: "Your details stay confidential." },
 ];
 
 export default function BirthChartPdfPage() {
-  const content = getPageContent("birth-chart-pdf");
+  const [content, setContent] = useState<Awaited<ReturnType<typeof getPageContent>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setContent(getPageContent("birth-chart-pdf"));
+    setLoading(false);
+  }, []);
+
+  if (loading || !content) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
-        <title>Birth Chart PDF — Vedic Astrology</title>
-        <meta name="description" content="Get a detailed Vedic kundli (birth chart) PDF report prepared from your exact birth details — including Lagna chart, doshas, remedies, and life guidance." />
-        <link rel="canonical" href="/birth-chart-pdf" />
+        <title>Birth Chart PDF — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Get a detailed Vedic kundli (birth chart) PDF report prepared from your exact birth details — including Lagna chart, doshas, remedies, and life guidance."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/birth-chart-pdf`} />
       </Helmet>
       <JsonLd
         data={serviceSchema({

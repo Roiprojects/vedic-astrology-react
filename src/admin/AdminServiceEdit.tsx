@@ -1,32 +1,54 @@
 import { Helmet } from "react-helmet-async";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { getServiceForAdmin } from "@/lib/data";
 import { ServiceForm } from "@/components/admin/ServiceForm";
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
-"use client";
-
-export default function AdminServiceEdit() {
+export default function AdminServiceEditPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [service, setService] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
+  const serviceSlug = slug ?? "";
+  const [service, setService] = useState<Awaited<ReturnType<typeof getServiceForAdmin>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
-    if (slug) {
-      getServiceForAdmin(slug).then((s) => {
-        setService(s || null);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      const data = await getServiceForAdmin(serviceSlug);
+      if (!cancelled) {
+        setService(data ?? null);
         setLoading(false);
-      });
+      }
     }
+    load();
+    return () => { cancelled = true; };
   }, [slug]);
 
-  if (loading) return <div className="container-x py-20 text-center">Loading…</div>;
-  if (!service) return null;
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
+  if (!service) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <p className="text-muted">Service not found.</p>
+        <Link to="/admin/services" className="text-gold-light underline">
+          Back to services
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
       <Helmet>
-        <title>Edit \u00B7 {service.title} \u2014 Vedic Astrology Admin</title>
+        <title>Edit · {service.title} — Admin — {siteConfig.name}</title>
       </Helmet>
       <Link
         to="/admin/services"

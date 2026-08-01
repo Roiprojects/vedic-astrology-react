@@ -1,29 +1,36 @@
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Pencil, Plus, Star } from "lucide-react";
 import { getHomamsForAdmin } from "@/lib/data";
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
 function formatPrice(price: number, discount?: number | null) {
   if (discount != null && discount < price) {
-    return `\u20B9${discount.toLocaleString("en-IN")} (was \u20B9${price.toLocaleString("en-IN")})`;
+    return `₹${discount.toLocaleString("en-IN")} (was ₹${price.toLocaleString("en-IN")})`;
   }
-  return `\u20B9${price.toLocaleString("en-IN")}`;
+  return `₹${price.toLocaleString("en-IN")}`;
 }
 
-export default async function AdminHomamsListPage() {
-  const homams = await getHomamsForAdmin();
+export default function AdminHomamsPage() {
+  const [homams, setHomams] = useState<Awaited<ReturnType<typeof getHomamsForAdmin>>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setHomams(getHomamsForAdmin());
+    setLoading(false);
+  }, []);
 
   return (
     <div>
       <Helmet>
-        <title>Homams \u2014 Vedic Astrology Admin</title>
+        <title>Homams — Admin — {siteConfig.name}</title>
       </Helmet>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-serif text-3xl text-ink">Homams</h1>
           <p className="mt-1 text-sm text-muted">
-            {homams.length} homam{homams.length === 1 ? "" : "s"} \u00B7 edit any field, toggle
-            visibility, or add a new one.
+            {loading ? "…" : `${homams.length} homam${homams.length === 1 ? "" : "s"} · edit any field, toggle visibility, or add a new one.`}
           </p>
         </div>
         <Link

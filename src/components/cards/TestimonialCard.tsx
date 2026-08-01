@@ -34,7 +34,7 @@ export function TestimonialCard({ t }: { t: Testimonial }) {
       </div>
 
       <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-muted">
-        "{t.text}"
+        &ldquo;{t.text}&rdquo;
       </blockquote>
     </figure>
   );

@@ -1,5 +1,3 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
@@ -28,7 +26,7 @@ const contactCards = [
   { icon: Clock, label: "Working Hours", value: siteConfig.workingHours },
 ];
 
-export default function ContactPage() {
+export default function ContactUsPage() {
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
     siteConfig.mapQuery
   )}&output=embed`;
@@ -36,9 +34,12 @@ export default function ContactPage() {
   return (
     <>
       <Helmet>
-        <title>Contact Us — Vedic Astrology</title>
-        <meta name="description" content="Contact Vedic Astrology — speak with Sampath Kumara for astrology consultation, homam booking, or a kundli report via phone, WhatsApp, or email." />
-        <link rel="canonical" href="/contact-us" />
+        <title>Contact Us — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Contact Vedic Astrology — speak with Sampath Kumara for astrology consultation, homam booking, or a kundli report via phone, WhatsApp, or email."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/contact-us`} />
       </Helmet>
       <JsonLd data={localBusinessSchema()} />
       <JsonLd

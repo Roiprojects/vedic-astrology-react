@@ -1,22 +1,31 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
 import { TestimonialsGrid } from "@/components/testimonials/TestimonialsGrid";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getTestimonials } from "@/lib/data";
 import { JsonLd, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { siteConfig } from "@/lib/site";
 
 export default function TestimonialsPage() {
-  const testimonials = getTestimonials();
+  const [testimonials, setTestimonials] = useState<Awaited<ReturnType<typeof getTestimonials>>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTestimonials(getTestimonials());
+    setLoading(false);
+  }, []);
 
   return (
     <>
       <Helmet>
-        <title>Client Testimonials — Vedic Astrology</title>
-        <meta name="description" content="Real experiences from people who received Vedic astrology guidance, homams, and spiritual remedies from Sampath Kumara." />
-        <link rel="canonical" href="/testimonials" />
+        <title>Client Testimonials — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Real experiences from people who received Vedic astrology guidance, homams, and spiritual remedies from Sampath Kumara."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/testimonials`} />
       </Helmet>
       <JsonLd
         data={breadcrumbSchema([
@@ -33,7 +42,11 @@ export default function TestimonialsPage() {
       />
 
       <Section>
-        <TestimonialsGrid items={testimonials} />
+        {loading ? (
+          <p className="text-muted">Loading…</p>
+        ) : (
+          <TestimonialsGrid items={testimonials} />
+        )}
       </Section>
 
       <ContactCta

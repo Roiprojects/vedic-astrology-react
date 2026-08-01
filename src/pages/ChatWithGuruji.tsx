@@ -1,6 +1,5 @@
-"use client";
-
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { Gift, Lock, MessagesSquare, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
@@ -24,7 +23,22 @@ const features = [
 ];
 
 export default function ChatWithGurujiPage() {
-  const content = getPageContent("chat-with-guruji");
+  const [content, setContent] = useState<Awaited<ReturnType<typeof getPageContent>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setContent(getPageContent("chat-with-guruji"));
+    setLoading(false);
+  }, []);
+
+  if (loading || !content) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted">Loading…</p>
+      </div>
+    );
+  }
+
   const wa = whatsappLink(
     siteConfig.whatsapp,
     "Namaste Guruji, I would like to start a chat consultation."
@@ -33,9 +47,12 @@ export default function ChatWithGurujiPage() {
   return (
     <>
       <Helmet>
-        <title>Chat with Guruji — Vedic Astrology</title>
-        <meta name="description" content="Get live Vedic guidance directly from Sampath Kumara. First few messages free, then continue with a paid consultation. Confidential and convenient." />
-        <link rel="canonical" href="/chat-with-guruji" />
+        <title>Chat with Guruji — {siteConfig.name}</title>
+        <meta
+          name="description"
+          content="Get live Vedic guidance directly from Sampath Kumara. First few messages free, then continue with a paid consultation. Confidential and convenient."
+        />
+        <link rel="canonical" href={`${siteConfig.url}/chat-with-guruji`} />
       </Helmet>
       <JsonLd data={faqSchema(content.faqs)} />
       <JsonLd

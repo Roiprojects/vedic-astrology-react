@@ -1,5 +1,5 @@
-import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { useEffect } from "react";
+import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -8,7 +8,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { ServiceAiChat } from "@/components/ai/ServiceAiChat";
 import AdminLayout from "@/admin/AdminLayout";
 
-// Pages
+// ── Pages ──────────────────────────────────────────────────
 import HomePage from "@/pages/HomePage";
 import AboutUs from "@/pages/AboutUs";
 import ServicesPage from "@/pages/ServicesPage";
@@ -27,7 +27,7 @@ import PrivacyPolicy from "@/pages/Legal/PrivacyPolicy";
 import RefundCancellation from "@/pages/Legal/RefundCancellation";
 import NotFound from "@/pages/NotFound";
 
-// Admin
+// ── Admin pages ────────────────────────────────────────────
 import AdminLogin from "@/admin/AdminLogin";
 import AdminDashboard from "@/admin/AdminDashboard";
 import AdminServices from "@/admin/AdminServices";
@@ -46,22 +46,7 @@ function ScrollToTop() {
   return null;
 }
 
-function PublicLayout() {
-  return (
-    <>
-      <Navbar />
-      <main className="flex-1 pt-20 lg:pt-24">
-        <PageTransition>
-          <Outlet />
-        </PageTransition>
-      </main>
-      <Footer />
-      <FloatingWhatsApp />
-      <ServiceAiChat />
-    </>
-  );
-}
-
+// ── Admin layout wrapper (renders AdminLayout + child route) ──
 function AdminLayoutRoute() {
   return (
     <AdminLayout>
@@ -78,30 +63,52 @@ export function App() {
         <meta name="theme-color" content="#faf4e8" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Helmet>
+
       <ScrollToTop />
+
       <Routes>
+        {/* ── Admin routes (no navbar/footer) ── */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route element={<AdminLayoutRoute />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/services" element={<AdminServices />} />
           <Route path="/admin/services/new" element={<AdminServiceNew />} />
-          <Route path="/admin/services/:slug" element={<AdminServiceEdit />} />
+          <Route path="/admin/services/:slug" element={<AdminServiceEdit /> as unknown as React.ReactNode} />
           <Route path="/admin/homams" element={<AdminHomams />} />
           <Route path="/admin/homams/new" element={<AdminHomamNew />} />
-          <Route path="/admin/homams/:slug" element={<AdminHomamEdit />} />
-          <Route path="/admin/pages/:page" element={<AdminPages />} />
+          <Route path="/admin/homams/:slug" element={<AdminHomamEdit /> as unknown as React.ReactNode} />
+          <Route path="/admin/pages/:page" element={<AdminPages /> as unknown as React.ReactNode} />
           <Route path="/admin" element={<Navigate to="dashboard" replace />} />
         </Route>
-        <Route element={<PublicLayout />}>
+
+        {/* ── Public routes (with navbar/footer) ── */}
+        <Route
+          element={
+            <>
+              <Navbar />
+              <main className="flex-1 pt-20 lg:pt-24">
+                <PageTransition>
+                  <Outlet />
+                </PageTransition>
+              </main>
+              <Footer />
+              <FloatingWhatsApp />
+              <ServiceAiChat />
+            </>
+          }
+        >
           <Route index element={<HomePage />} />
           <Route path="about-us" element={<AboutUs />} />
           <Route path="services" element={<ServicesPage />} />
           <Route path="services/astrology-consultations" element={<AstrologyConsultations />} />
-          <Route path="services/:slug" element={<ServiceDetail />} />
+          <Route path="services/:slug" element={<ServiceDetail /> as any} />
           <Route path="homams" element={<HomamsPage />} />
-          <Route path="homams/:slug" element={<HomamDetail />} />
+          <Route path="homams/:slug" element={<HomamDetail /> as any} />
           <Route path="birth-chart-pdf" element={<BirthChartPdf />} />
           <Route path="chat-with-guruji" element={<ChatWithGuruji />} />
           <Route path="palm-reading" element={<PalmReading />} />

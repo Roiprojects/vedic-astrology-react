@@ -1,102 +1,78 @@
-export type NavLink = {
-  label: string;
-  href: string;
-  children?: { label: string; href: string; description?: string }[];
-};
+/**
+ * Domain types. These mirror the planned Supabase tables so the data-access
+ * layer (lib/data/index.ts) can switch from local seed data to Supabase queries
+ * without touching any page/component.
+ */
 
-export type Service = {
-  id?: string;
-  title: string;
-  slug: string;
-  eyebrow?: string;
-  description?: string;
-  price: number | null;
-  priceNote?: string;
-  includes?: string[];
-  icon: string;
-  order: number;
-  active: boolean;
-  featured: boolean;
-  categorySlug?: string;
-  shortDescription?: string;
-  fullDescription?: string;
-  problem?: string;
-  duration?: string;
-  gradient?: string;
-  analysis?: string[];
-  receive?: string[];
-  benefits?: string[];
-  remedies?: string[];
-  faqs?: Faq[];
-  discountPrice?: number | null;
-};
-
-export type Homam = {
-  id: string;
-  title: string;
-  slug: string;
-  eyebrow: string;
-  description: string;
-  price: number | null;
-  priceNote: string;
-  includes: string[];
-  duration: string;
-  order: number;
-  active: boolean;
-  featured: boolean;
-  icon?: string;
-  shortBenefit?: string;
-  fullDescription?: string;
-  gradient?: string;
-  benefits?: string[];
-  suitableFor?: string[];
-  poojaItems?: string[];
-  bookingInstructions?: string;
-  faqs?: Faq[];
-  discountPrice?: number | null;
-  name?: string;
+export type Faq = {
+  question: string;
+  answer: string;
 };
 
 export type ServiceCategory = {
-  id?: string;
   slug: string;
-  label?: string;
   name: string;
-  description?: string;
-  icon?: string;
+  description: string;
+  icon: string;
   href: string;
   order: number;
 };
 
-export type Faq = {
-  id?: string;
-  question: string;
-  answer: string;
+export type Service = {
+  slug: string;
+  title: string;
+  categorySlug: string;
+  icon: string;
+  shortDescription: string;
+  fullDescription: string;
+  problem: string;
+  price: number;
+  discountPrice?: number | null;
+  duration: string;
+  gradient: string;
+  /** Astrology analysis included: houses, planets, doshas, dasha/transit, remedies. */
+  analysis: string[];
+  /** What the user will receive. */
+  receive: string[];
+  benefits: string[];
+  remedies: string[];
+  faqs: Faq[];
+  featured: boolean;
+  order: number;
+  active: boolean;
+};
+
+export type Homam = {
+  slug: string;
+  name: string;
+  icon: string;
+  shortBenefit: string;
+  fullDescription: string;
+  price: number;
+  discountPrice?: number | null;
+  duration: string;
+  gradient: string;
+  benefits: string[];
+  suitableFor: string[];
+  poojaItems: string[];
+  bookingInstructions: string;
+  faqs: Faq[];
+  featured: boolean;
+  order: number;
+  active: boolean;
 };
 
 export type Testimonial = {
   id: string;
   name: string;
   location: string;
-  text: string;
-  serviceType: string;
   rating: number;
-  date: string;
+  serviceType: string; // matches a filter key
+  text: string;
+  date: string; // ISO
+  avatarInitial: string;
   featured: boolean;
-  avatarInitial?: string;
 };
-
-export type PageContent = {
-  eyebrow: string;
-  title: string;
-  subtitle: string;
-  price: number | null;
-  priceNote: string;
-  includes: string[];
-  faqs: Faq[];
-};
-
-export type PageId = "birth-chart-pdf" | "chat-with-guruji" | "palm-reading";
 
 export type TrustHighlight = {
   icon: string;
@@ -108,17 +84,10 @@ export type Offering = {
   title: string;
   description: string;
   icon: string;
+  price?: string;
   cta: string;
   href: string;
   gradient: string;
-  price?: string;
-};
-
-export type ProcessStep = {
-  step: number;
-  title: string;
-  description: string;
-  icon: string;
 };
 
 export type Stat = {
@@ -130,4 +99,11 @@ export type ValueCard = {
   icon: string;
   title: string;
   description: string;
+};
+
+export type ProcessStep = {
+  step: number;
+  title: string;
+  description: string;
+  icon: string;
 };

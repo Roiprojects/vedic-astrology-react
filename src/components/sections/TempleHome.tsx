@@ -69,7 +69,7 @@ const trust = [
 export function TempleHome() {
   const services = getFeaturedServices(3);
   const homams = getFeaturedHomams(3);
-  const testimonialsList = getFeaturedTestimonials(3);
+  const testimonials = getFeaturedTestimonials(3);
   const faqs = getHomeFaqs();
   const wa = whatsappLink(
     siteConfig.whatsapp,
@@ -89,16 +89,14 @@ export function TempleHome() {
         {/* Banner image (desktop) */}
         <div className="absolute right-0 top-6 bottom-6 hidden w-[38%] lg:block">
           <div aria-hidden className="absolute -inset-6 rounded-[3rem] bg-[#ffb347]/20 blur-3xl animate-glow" />
-          {/* Rotating power circle radiating from behind the deity */}
           <PowerCircle className="left-1/2 top-[28%] w-[195%]" />
           <div className={`${styles.arch} relative h-full w-full bg-gradient-to-b from-[#ffe19a] via-[#e0ad4f] to-[#b9812c] p-[4px] shadow-[0_40px_95px_-40px_rgba(18,4,7,0.95)]`}>
             <div className={`${styles.arch} relative h-full w-full overflow-hidden bg-[#481c0c]`}>
               <img
-                 src="/images/dakshinamurthy-hd.jpg"
-                 alt="Lord Dakshinamurthy — Shiva as the cosmic teacher, seated beneath the banyan tree"
-                 loading="eager"
-                 className="object-cover object-[50%_28%] h-full w-full"
-               />
+                src="/images/dakshinamurthy-hd.jpg"
+                alt="Lord Dakshinamurthy — Shiva as the cosmic teacher, seated beneath the banyan tree"
+                className="absolute inset-0 w-full h-full object-cover object-[50%_28%]"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-[#2c1017]/35 via-transparent to-transparent" />
               <div className="absolute inset-0 shadow-[inset_0_0_50px_16px_rgba(30,8,10,0.22)]" />
             </div>
@@ -138,15 +136,13 @@ export function TempleHome() {
 
           {/* Banner image (mobile) */}
           <div className="relative mt-12 w-full lg:hidden">
-            {/* Rotating power circle radiating from behind the deity */}
             <PowerCircle className="left-1/2 top-[44%] w-[150%]" />
             <div className={`${styles.arch} relative mx-auto aspect-[4/5] max-w-sm bg-gradient-to-b from-[#f7d489] to-[#c88f34] p-[3px]`}>
               <div className={`${styles.arch} relative h-full w-full overflow-hidden bg-[#39141b]`}>
-                 <img
+                <img
                   src="/images/dakshinamurthy-hd.jpg"
                   alt="Lord Dakshinamurthy — Shiva as the cosmic teacher, seated beneath the banyan tree"
-                  loading="eager"
-                  className="object-cover object-[50%_20%] h-full w-full"
+                  className="absolute inset-0 w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2c1017]/45 to-transparent" />
               </div>
@@ -201,7 +197,7 @@ export function TempleHome() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a8501a]">One-to-one guidance</p>
               <span aria-hidden className="mt-4 block h-px w-16 bg-gradient-to-r from-[#b67a1b]/80 to-transparent" />
-              <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.7rem,5vw,5rem)] leading-[0.95] tracking-[-0.035em]">Clarity for life's important questions</h2>
+              <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.7rem,5vw,5rem)] leading-[0.95] tracking-[-0.035em]">Clarity for life&apos;s important questions</h2>
               <p className="mt-5 max-w-md leading-7 text-[#684a37]">Each consultation studies the relevant planets, houses, doshas, and practical spiritual remedies—not a generic horoscope.</p>
               <Button href="/services/astrology-consultations" variant="gold" size="lg" className="mt-7">Explore all services</Button>
             </div>
@@ -235,8 +231,7 @@ export function TempleHome() {
             <div className="relative mx-auto w-full max-w-[420px] pb-8">
               <div aria-hidden className="absolute -inset-5 rounded-full bg-gradient-to-br from-[#f0842e]/22 to-[#c1912f]/12 blur-2xl" />
               <div className="relative mx-auto aspect-square overflow-hidden rounded-full border-[6px] border-[#f3e0b4] ring-1 ring-[#9c6a15]/40 shadow-[0_34px_74px_-30px_rgba(74,15,26,.55)]">
-                <img src={siteConfig.gurujiPortrait} alt="Sampath Kumara, Vedic astrologer" loading="eager" className="object-cover object-[50%_18%] h-full w-full" />
-                <div className="absolute inset-0 shadow-[inset_0_0_50px_16px_rgba(30,8,10,0.22)]" />
+                <img src={siteConfig.gurujiPortrait} alt="Sampath Kumara, Vedic astrologer" className="absolute inset-0 w-full h-full object-cover object-[50%_18%]" />
               </div>
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#c1912f]/45 bg-[#fff9e9] px-6 py-2.5 shadow-[0_12px_30px_-14px_rgba(74,15,26,.4)]">
                 <p className="font-serif text-lg leading-none text-[#35180d]">Sampath Kumara</p>
@@ -273,7 +268,7 @@ export function TempleHome() {
           </div>
           <div className="border border-[#f8d487]/60 bg-[#39152a] p-5 shadow-[0_30px_80px_-35px_rgba(43,8,8,.9)] sm:p-7">
             <div className="flex items-center gap-3 border-b border-[#d7a94e]/25 pb-5">
-              <img src={siteConfig.gurujiPortrait} alt="" className="h-13 w-13 rounded-full object-cover object-[50%_20%] ring-2 ring-[#d8a94a]" />
+              <img src={siteConfig.gurujiPortrait} alt="" width={52} height={52} className="h-13 w-13 rounded-full object-cover object-[50%_20%] ring-2 ring-[#d8a94a]" />
               <div><p className="font-serif text-xl text-[#ffe1a0]">Guruji Assistant</p><p className="text-xs text-[#f0d7ad]/60">Automated astrology assistant · 3 free questions</p></div>
             </div>
             <div className="space-y-3 py-6">
@@ -300,7 +295,7 @@ export function TempleHome() {
             </div>
           </Reveal>
           <div className="grid gap-6 lg:grid-cols-3">
-            {testimonialsList.map((item, i) => (
+            {testimonials.map((item, i) => (
               <Reveal key={item.id} delay={(i % 3) * 0.08} className="h-full">
                 <figure className="group relative flex h-full flex-col rounded-3xl border border-[#c9993a]/30 bg-[#fff9ec] p-7 shadow-[0_20px_50px_-34px_rgba(74,15,26,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#c9993a]/55 hover:shadow-[0_28px_64px_-30px_rgba(74,15,26,0.42)]">
                   <Quote className="absolute right-6 top-6 h-9 w-9 text-[#c9993a]/25" />
@@ -310,7 +305,7 @@ export function TempleHome() {
                     ))}
                   </div>
                   <blockquote className="mt-5 flex-1 font-serif text-lg leading-relaxed text-[#4b2b1b]">
-                    "{item.text}"
+                    &ldquo;{item.text}&rdquo;
                   </blockquote>
                   <figcaption className="mt-6 flex items-center gap-3 border-t border-[#c9993a]/20 pt-5">
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#e8a94a] to-[#c06a1e] font-serif text-lg text-white">

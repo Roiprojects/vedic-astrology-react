@@ -8,10 +8,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+    "allowImportingTsExtensions": false,
+    "isolatedModules": false,
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": false,
@@ -20,8 +18,10 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "$lib/*": ["../lib/*"],
+      "$data/*": ["../content/*"]
     }
   },
-  "include": ["src", "server", "scripts"]
+  "include": ["src"]
 }
