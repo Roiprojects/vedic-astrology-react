@@ -1,7 +1,6 @@
 /**
- * South Indian style Vedic Astrology PDF — temple aesthetic.
- * Colors: deep vermillion, turmeric gold, sandalwood cream.
- * Bilingual Tamil/Telugu labels for South Indian readability.
+ * Premium Vedic Astrology Report — South Indian Temple Aesthetic
+ * Designed for spiritual elegance and professional readability
  */
 import PDFDocument from "pdfkit";
 import fs from "fs";
@@ -23,7 +22,6 @@ function logoPath(): string | null {
   return null;
 }
 
-/** Strip markdown symbols that pdfkit/Helvetica cannot render properly */
 function clean(text: string | undefined | null): string {
   if (!text) return "—";
   return text
@@ -36,18 +34,16 @@ function clean(text: string | undefined | null): string {
     .trim();
 }
 
-// ── Palette ────────────────────────────────────────────────────
-const VERMILLION  = "#8B0000";   // temple red header / accent
-const TURMERIC    = "#C8860A";   // gold section borders
-const KUMKUM      = "#B22222";   // bright red badges
-const CREAM       = "#FDF6E3";   // sandalwood cream rows
-const SECTION_BG  = "#FFF8E7";   // section header fill
-const REMEDY_BG   = "#FFF3E0";   // remedy card fill
-const DARK        = "#1A0A00";   // body text
-const MUTED       = "#5C3A1E";   // label text
-const GOLD_TXT    = "#F5C842";   // text on dark bands
-const FOOTER_BG   = "#4A0010";   // dark maroon footer
-const PAGE_BG     = "#FFFDF5";   // warm off-white page
+// ── Premium Spiritual Colour Palette ────────────────────────
+const DEEP_MAROON   = "#5C0A2C";   // rich, spiritual
+const SAFFRON       = "#D4821F";   // warm, vibrant
+const GOLD          = "#B8970C";   // luxury
+const CREAM         = "#F5F1E8";   // premium off-white
+const DARK_TEXT     = "#2C1810";   // readable, warm
+const MUTED_TEXT    = "#6B5D50";   // secondary text
+const ACCENT_GOLD   = "#E6B800";   // bright accents
+const HEADER_BG     = "#3E1B2E";   // dark header
+const FOOTER_BG     = "#2C0A1C";   // dark footer
 
 function formatDate(dob: string): string {
   try {
@@ -76,6 +72,13 @@ function splitToItems(text: string): string[] {
     .filter(l => l.length > 3);
 }
 
+function estimateTextHeight(text: string, width: number, fontSize: number): number {
+  if (!text) return 20;
+  const charsPerLine = Math.floor(width / (fontSize * 0.52));
+  const lines = text.split("\n").reduce((acc, l) => acc + Math.max(1, Math.ceil(l.length / charsPerLine)), 0);
+  return lines * (fontSize + 4);
+}
+
 // ── PDF Entry Point ────────────────────────────────────────────
 export function generateReportPdf(
   birth: BirthDetails,
@@ -86,8 +89,7 @@ export function generateReportPdf(
     const chunks: Buffer[] = [];
     const doc = new PDFDocument({
       size: "A4",
-      // bottom margin reserves space so content doesn't flow into footer
-      margins: { top: 0, bottom: 85, left: 0, right: 0 },
+      margins: { top: 0, bottom: 80, left: 0, right: 0 },
       bufferPages: true,
       info: {
         Title: `Vedic Astrology Report — ${birth.name}`,
@@ -100,345 +102,354 @@ export function generateReportPdf(
     doc.on("end",  () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
-    const PW = doc.page.width;   // 595
-    const PH = doc.page.height;  // 841
-    const ML = 42;               // left margin
-    const W  = PW - ML * 2;     // usable width ≈ 511
+    const PW = doc.page.width;
+    const PH = doc.page.height;
+    const ML = 45;
+    const W  = PW - ML * 2;
 
-    // Draw warm background on every new page (rect only — no text, safe in pageAdded)
+    // ════════════════════════════════════════════════════════════
+    // PAGE 1 — HEADER + BIRTH DETAILS
+    // ════════════════════════════════════════════════════════════
     doc.on("pageAdded", () => {
-      doc.rect(0, 0, PW, PH).fill(PAGE_BG);
+      doc.rect(0, 0, PW, PH).fill(CREAM);
     });
 
-    // ── PAGE BACKGROUND (first page) ──────────────────────────
-    doc.rect(0, 0, PW, PH).fill(PAGE_BG);
+    doc.rect(0, 0, PW, PH).fill(CREAM);
 
-    // ── HEADER BAND ───────────────────────────────────────────
-    doc.rect(0, 0, PW, 116).fill(VERMILLION);
+    // ── Premium Header ──────────────────────────────────────────
+    doc.rect(0, 0, PW, 110).fill(DEEP_MAROON);
 
-    // Sacred symbols row
-    doc.fontSize(11).font("Helvetica").fillColor(GOLD_TXT)
-      .text("*   OM   *   OM NAMAH SHIVAYA   *   SRI GURUBHYO NAMAH   *", ML, 9, { width: W, align: "center" });
-    doc.moveTo(20, 26).lineTo(PW - 20, 26).lineWidth(0.7).strokeColor(GOLD_TXT).stroke();
+    // Decorative top border
+    doc.moveTo(20, 8).lineTo(PW - 20, 8).lineWidth(1).strokeColor(ACCENT_GOLD).stroke();
+    doc.moveTo(20, 12).lineTo(PW - 20, 12).lineWidth(0.4).strokeColor(SAFFRON).stroke();
 
-    // Logo + Brand name
+    // Logo
     const logo = logoPath();
-    const textML = ML;
     if (logo) {
       try {
-        doc.image(logo, ML, 28, { height: 52, fit: [52, 52] });
-      } catch { /* skip if logo missing */ }
+        doc.image(logo, ML, 16, { height: 48, fit: [48, 48] });
+      } catch {}
     }
-    doc.fontSize(22).font("Helvetica-Bold").fillColor("white")
-      .text("My Vedic Astrology", textML, 32, { width: W, align: "center" });
-    doc.fontSize(9).font("Helvetica").fillColor(GOLD_TXT)
-      .text("Sampath Kumara Guruji  ·  Bangalore  ·  myvedicastrology.in  ·  +91 98861 00565", ML, 58, { width: W, align: "center" });
 
-    doc.moveTo(20, 74).lineTo(PW - 20, 74).lineWidth(0.7).strokeColor(GOLD_TXT).stroke();
+    // Brand & Contact Info
+    doc.fontSize(20).font("Helvetica-Bold").fillColor("#FFF9E6")
+      .text("My Vedic Astrology", ML + 56, 18, { width: W - 56, lineBreak: false });
+    doc.fontSize(8.5).font("Helvetica").fillColor(ACCENT_GOLD)
+      .text("Sampath Kumara Guruji", ML + 56, 42, { width: W - 56 });
+    doc.fontSize(7.5).font("Helvetica").fillColor("#E0C0A0")
+      .text("Bangalore  |  +91 98861 00565  |  myvedicastrology.in", ML + 56, 53, { width: W - 56 });
 
-    // Report title
-    doc.fontSize(10.5).font("Helvetica-Bold").fillColor(GOLD_TXT)
-      .text(serviceTitle.toUpperCase() + "  —  PERSONALIZED VEDIC CONSULTATION REPORT", ML, 80, { width: W, align: "center" });
+    // Service Title (elegant)
+    doc.fontSize(9.5).font("Helvetica-Bold").fillColor(SAFFRON)
+      .text(serviceTitle.toUpperCase(), ML, 70, { width: W, align: "center" });
+    doc.fontSize(8).font("Helvetica").fillColor("#C9A977")
+      .text("Personalized Vedic Consultation Report", ML, 82, { width: W, align: "center" });
 
-    // Turmeric band below header
-    doc.moveTo(0, 113).lineTo(PW, 113).lineWidth(3).strokeColor(TURMERIC).stroke();
+    // Decorative bottom border
+    doc.moveTo(20, 105).lineTo(PW - 20, 105).lineWidth(0.4).strokeColor(SAFFRON).stroke();
+    doc.moveTo(20, 108).lineTo(PW - 20, 108).lineWidth(1).strokeColor(ACCENT_GOLD).stroke();
 
-    // ── NAME BAND ─────────────────────────────────────────────
-    doc.rect(0, 116, PW, 40).fill("#3D0009");
-    doc.fontSize(13).font("Helvetica-Bold").fillColor("white")
-      .text("Prepared Specially For:  " + birth.name.toUpperCase(), ML, 125, { width: W, align: "center" });
-    doc.fontSize(8.5).font("Helvetica").fillColor(GOLD_TXT)
-      .text(
-        "Date of Preparation:  " + new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }),
-        ML, 140, { width: W, align: "center" },
-      );
+    // ── Prepared For Band ───────────────────────────────────────
+    const prepY = 120;
+    doc.rect(0, prepY, PW, 35).fill(SAFFRON);
+    doc.fontSize(9).font("Helvetica").fillColor(DARK_TEXT)
+      .text("PREPARED FOR", ML, prepY + 6, { width: W, align: "center" });
+    doc.fontSize(16).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+      .text(birth.name.toUpperCase(), ML, prepY + 13, { width: W, align: "center" });
+    doc.fontSize(8).font("Helvetica").fillColor(MUTED_TEXT)
+      .text(formatDate(birth.dob) + "  |  " + formatTime(birth.tob), ML, prepY + 24, { width: W, align: "center" });
 
-    doc.y = 165;
+    doc.y = prepY + 45;
 
-    // ── BIRTH DETAILS TABLE (full width, clean rows) ─────────
-    secHeader(doc, "Your Birth Details", "Jaataka Vivaram  /  Nakshatra, Rashi, Lagna & Dasha", ML, W, PW);
+    // ── Birth Details Table (premium layout) ─────────────────────
+    const tableTitle = "YOUR BIRTH DETAILS & COSMIC IDENTITY";
+    doc.fontSize(10).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+      .text(tableTitle, ML, doc.y, { width: W, align: "center" });
+    doc.moveDown(0.8);
 
-    // All rows in one clean full-width table — no fixed-height cards, no overlap
-    const allRows: { label: string; value: string; highlight?: boolean }[] = [
-      { label: "Name",              value: birth.name },
-      { label: "Date of Birth",     value: formatDate(birth.dob) },
-      { label: "Time of Birth",     value: formatTime(birth.tob) },
-      { label: "Place of Birth",    value: birth.pob },
-      { label: "Gender",            value: birth.gender || "—" },
-      ...(birth.concern ? [{ label: "Your Concern / Question", value: birth.concern }] : []),
-      { label: "Nakshatra (Birth Star)",  value: report.nakshatra,    highlight: true },
-      { label: "Rashi (Moon Sign)",       value: report.rashi,        highlight: true },
-      { label: "Lagna (Ascendant)",       value: report.lagna,        highlight: true },
-      { label: "Ruling Planet / Dasha",   value: report.ruling_planet, highlight: true },
-    ];
-
-    const LABEL_W = 175;
+    const LABEL_W = 140;
     const VALUE_W = W - LABEL_W - 16;
 
-    allRows.forEach(({ label, value, highlight }, i) => {
-      const rowBg = highlight
-        ? (i % 2 === 0 ? "#FFF0DC" : "#FFF8EC")
-        : (i % 2 === 0 ? CREAM : "#FFFDF5");
+    const allRows: { label: string; value: string; cosmic?: boolean }[] = [
+      { label: "Full Name",            value: birth.name },
+      { label: "Date of Birth",        value: formatDate(birth.dob) },
+      { label: "Time of Birth",        value: formatTime(birth.tob) },
+      { label: "Place of Birth",       value: birth.pob },
+      { label: "Gender",               value: birth.gender || "—" },
+      ...(birth.concern ? [{ label: "Your Concern",  value: birth.concern }] : []),
+      { label: "Nakshatra (Birth Star)", value: report.nakshatra,    cosmic: true },
+      { label: "Rashi (Moon Sign)",      value: report.rashi,        cosmic: true },
+      { label: "Lagna (Ascendant)",      value: report.lagna,        cosmic: true },
+      { label: "Ruling Planet",          value: report.ruling_planet, cosmic: true },
+    ];
 
-      // Measure value text height to make each row tall enough
-      const valLines = Math.max(1, Math.ceil((value || "—").length / 42));
-      const rH = Math.max(26, valLines * 14 + 12);
-
+    const tableY = doc.y;
+    allRows.forEach(({ label, value, cosmic }, i) => {
+      const rH = 22;
       const ry = doc.y;
+      const bgColor = cosmic ? "#F5E6D3" : (i % 2 === 0 ? CREAM : "#FFFCF7");
 
-      // Row background
-      doc.save().rect(ML, ry, W, rH).fill(rowBg).restore();
+      doc.save().rect(ML, ry, W, rH).fill(bgColor).restore();
 
-      // Left accent strip for highlight rows
-      if (highlight) {
-        doc.save().rect(ML, ry, 4, rH).fill(KUMKUM).restore();
+      if (cosmic) {
+        doc.save().rect(ML, ry, 3, rH).fill(SAFFRON).restore();
       }
 
-      // Divider line (not before first row)
+      // Divider
       if (i > 0) {
         doc.save()
           .moveTo(ML, ry).lineTo(ML + W, ry)
-          .lineWidth(0.4).strokeColor(TURMERIC).stroke()
+          .lineWidth(0.3).strokeColor(ACCENT_GOLD).stroke()
           .restore();
       }
 
       // Label
       doc.save()
-        .fontSize(8).font("Helvetica-Bold").fillColor(MUTED)
-        .text(label, ML + (highlight ? 10 : 6), ry + (rH - 10) / 2, {
-          width: LABEL_W, lineBreak: false,
-        })
+        .fontSize(8).font("Helvetica-Bold").fillColor(cosmic ? SAFFRON : MUTED_TEXT)
+        .text(label, ML + 8, ry + 6, { width: LABEL_W - 12, lineBreak: false })
         .restore();
 
       // Value
       doc.save()
-        .fontSize(highlight ? 10.5 : 10).font("Helvetica-Bold")
-        .fillColor(highlight ? VERMILLION : DARK)
-        .text(value || "—", ML + LABEL_W + 10, ry + (rH - valLines * 14) / 2, {
-          width: VALUE_W, lineBreak: true,
-        })
+        .fontSize(cosmic ? 10 : 9.5).font("Helvetica-Bold")
+        .fillColor(cosmic ? DEEP_MAROON : DARK_TEXT)
+        .text(value || "—", ML + LABEL_W + 10, ry + 6, { width: VALUE_W - 12, lineBreak: true })
         .restore();
 
       doc.y = ry + rH;
     });
 
-    // Outer border around the whole table
+    // Table border
     const tableEnd = doc.y;
-    const tableStart = tableEnd - allRows.reduce((sum, { value, highlight }, i) => {
-      const valLines = Math.max(1, Math.ceil((value || "—").length / 42));
-      return sum + Math.max(26, valLines * 14 + 12);
-    }, 0);
     doc.save()
-      .lineWidth(1).rect(ML, tableStart, W, tableEnd - tableStart)
-      .strokeColor(TURMERIC).stroke()
+      .lineWidth(1.2).rect(ML, tableY, W, tableEnd - tableY)
+      .strokeColor(GOLD).stroke()
       .restore();
 
-    // Vertical divider between label and value columns
+    // Vertical divider
     doc.save()
-      .moveTo(ML + LABEL_W + 6, tableStart)
-      .lineTo(ML + LABEL_W + 6, tableEnd)
-      .lineWidth(0.5).strokeColor(TURMERIC).stroke()
+      .moveTo(ML + LABEL_W + 5, tableY)
+      .lineTo(ML + LABEL_W + 5, tableEnd)
+      .lineWidth(0.6).strokeColor(SAFFRON).stroke()
       .restore();
 
-    doc.y = tableEnd + 14;
+    doc.y = tableEnd + 16;
 
-    // ── Force page 2 — analysis always starts on a fresh page ─
+    // ════════════════════════════════════════════════════════════
+    // PAGE 2+ — ANALYSIS & GUIDANCE
+    // ════════════════════════════════════════════════════════════
     doc.addPage();
 
-    // Slim continuation header on page 2+
-    doc.rect(0, 0, PW, 36).fill(VERMILLION);
-    doc.fontSize(10).font("Helvetica-Bold").fillColor(GOLD_TXT)
-      .text("My Vedic Astrology  —  " + birth.name + "'s Consultation Report  (continued)", ML, 12, { width: W, align: "center" });
-    doc.y = 48;
+    // Page header on page 2+
+    doc.rect(0, 0, PW, 40).fill(DEEP_MAROON);
+    doc.fontSize(10).font("Helvetica-Bold").fillColor(ACCENT_GOLD)
+      .text(birth.name + "'s Vedic Astrology Report  —  Detailed Analysis", ML, 12, { width: W, align: "center" });
+    doc.y = 50;
 
-    // ── PROBLEM ANALYSIS ─────────────────────────────────────
-    secHeader(doc, "Your Problem — In Simple Words", "Nimma Samasye  /  Explained in plain, clear language", ML, W, PW);
-    simpleBox(doc, report.problem_analysis, ML, W);
+    // ── Problem Analysis ────────────────────────────────────────
+    sectionBox(doc, "THE ISSUE YOU'RE FACING", clean(report.problem_analysis), ML, W, PW, PH);
 
-    // ── ASTROLOGICAL REASON ───────────────────────────────────
-    secHeader(doc, "Why This Is Happening  (Astrological Reason)", "Jyotisha Karana  /  Based on Parasara Hora Shastra", ML, W, PW);
-    simpleBox(doc, report.astrological_reason, ML, W);
+    // ── Astrological Reason ────────────────────────────────────
+    sectionBox(doc, "WHY THIS IS HAPPENING", clean(report.astrological_reason), ML, W, PW, PH);
 
-    // ── PLANETARY POSITIONS ───────────────────────────────────
-    secHeader(doc, "Planetary Positions & Yogas", "Graha Nilagalu  /  Current planetary influences in your chart", ML, W, PW);
-    simpleBox(doc, report.planetary_positions, ML, W);
+    // ── Planetary Positions ────────────────────────────────────
+    sectionBox(doc, "YOUR PLANETARY POSITIONS", clean(report.planetary_positions), ML, W, PW, PH);
 
-    // ── REMEDIES ─────────────────────────────────────────────
-    secHeader(doc, "Remedies — Easy to Follow", "Parikara / Upaay  /  Perform these daily for best results", ML, W, PW);
-    remedyBoxes(doc, report.remedies, ML, W);
+    // ════════════════════════════════════════════════════════════
+    // PAGE 3+ — REMEDIES & MANTRAS
+    // ════════════════════════════════════════════════════════════
+    doc.addPage();
+    doc.rect(0, 0, PW, 40).fill(DEEP_MAROON);
+    doc.fontSize(10).font("Helvetica-Bold").fillColor(ACCENT_GOLD)
+      .text(birth.name + "'s Remedies & Spiritual Practices", ML, 12, { width: W, align: "center" });
+    doc.y = 50;
 
-    // ── MANTRA ───────────────────────────────────────────────
-    secHeader(doc, "Your Prescribed Mantra", "Mantra Japa  /  Recite daily for divine blessings and relief", ML, W, PW);
-    mantraBox(doc, report.mantras, ML, W);
+    // ── Remedies (proper pagination) ──────────────────────────
+    const remedyItems = splitToItems(report.remedies);
+    if (remedyItems.length > 0) {
+      remedySection(doc, remedyItems, ML, W, PW, PH);
+    }
 
-    // ── GEMSTONE ─────────────────────────────────────────────
-    secHeader(doc, "Gemstone Recommendation", "Ratna Dharana  /  Wear these gems for planetary strength", ML, W, PW);
-    gemstoneBox(doc, report.gemstone_advice, ML, W);
+    // ── Mantra ────────────────────────────────────────────────
+    mantraSection(doc, report.mantras, ML, W, PH);
 
-    // ── AUSPICIOUS DAYS ──────────────────────────────────────
-    secHeader(doc, "Auspicious Days & Lucky Dates This Month", "Shubha Dinagalu  /  Best dates for important decisions and rituals", ML, W, PW);
-    auspiciousPills(doc, report.auspicious_days, ML, W);
+    // ════════════════════════════════════════════════════════════
+    // PAGE 4+ — GEMSTONE & AUSPICIOUS DAYS
+    // ════════════════════════════════════════════════════════════
+    doc.addPage();
+    doc.rect(0, 0, PW, 40).fill(DEEP_MAROON);
+    doc.fontSize(10).font("Helvetica-Bold").fillColor(ACCENT_GOLD)
+      .text(birth.name + "'s Gemstone & Auspicious Dates", ML, 12, { width: W, align: "center" });
+    doc.y = 50;
 
-    // ── CLOSING BLESSING ─────────────────────────────────────
-    doc.moveDown(1);
+    // ── Gemstone ──────────────────────────────────────────────
+    gemstoneSection(doc, report.gemstone_advice, ML, W, PH);
+
+    // ── Auspicious Days ───────────────────────────────────────
+    auspiciousSection(doc, report.auspicious_days, ML, W, PH);
+
+    // ── Closing Blessing ──────────────────────────────────────
+    doc.moveDown(1.5);
     const bY = doc.y;
-    doc.lineWidth(1).rect(ML, bY, W, 46).fillAndStroke("#FFF3E0", TURMERIC);
-    doc.moveTo(ML + 10, bY + 3).lineTo(ML + W - 10, bY + 3).lineWidth(0.8).strokeColor(TURMERIC).stroke();
-    doc.moveTo(ML + 10, bY + 43).lineTo(ML + W - 10, bY + 43).lineWidth(0.8).strokeColor(TURMERIC).stroke();
-    doc.fontSize(9).font("Helvetica-Bold").fillColor(VERMILLION)
+    doc.save()
+      .lineWidth(1).rect(ML, bY, W, 50)
+      .fillAndStroke("#F5E6D3", GOLD)
+      .restore();
+    doc.moveTo(ML + 12, bY + 4).lineTo(ML + W - 12, bY + 4).lineWidth(0.6).strokeColor(SAFFRON).stroke();
+    doc.moveTo(ML + 12, bY + 46).lineTo(ML + W - 12, bY + 46).lineWidth(0.6).strokeColor(SAFFRON).stroke();
+
+    doc.fontSize(9).font("Helvetica-Bold").fillColor(DEEP_MAROON)
       .text(
-        "\"The planets influence, but the soul decides. Follow these remedies with full devotion and God\'s grace will remove all obstacles from your path.\"",
-        ML + 16, bY + 10, { width: W - 32, align: "center", lineGap: 2 },
+        "The planets guide, but your devotion decides. Follow these remedies with sincerity and faith.",
+        ML + 14, bY + 12, { width: W - 28, align: "center", lineGap: 1.5 }
       );
-    doc.fontSize(8).font("Helvetica").fillColor(MUTED)
+    doc.fontSize(8).font("Helvetica").fillColor(MUTED_TEXT)
       .text("— Sampath Kumara Guruji", ML, bY + 34, { width: W, align: "center" });
 
-    // ── Stamp footer on every buffered page ───────────────────
+    // ── Footers on all pages ───────────────────────────────────
     const range = doc.bufferedPageRange();
-    const totalPages = range.count;
-    for (let i = 0; i < totalPages; i++) {
+    for (let i = 0; i < range.count; i++) {
       doc.switchToPage(range.start + i);
       const fY = PH - 74;
       doc.rect(0, fY, PW, 74).fill(FOOTER_BG);
-      doc.moveTo(0, fY + 2).lineTo(PW, fY + 2).lineWidth(2).strokeColor(TURMERIC).stroke();
-      doc.fontSize(8).font("Helvetica-Bold").fillColor(GOLD_TXT)
-        .text(`Prepared exclusively for ${birth.name} by Sampath Kumara Guruji`, ML, fY + 10, { width: W, align: "center" });
-      doc.fontSize(7.5).font("Helvetica").fillColor("#E8C88A")
-        .text("Brihat Parasara Hora Shastra  |  Lahiri / Chitra Paksha Ayanamsa  |  Vimshottari Dasha System", ML, fY + 22, { width: W, align: "center" });
-      doc.fontSize(7.5).font("Helvetica").fillColor(GOLD_TXT)
-        .text("info@myvedicastrology.in  |  +91 98861 00565  |  myvedicastrology.in  |  Bangalore", ML, fY + 34, { width: W, align: "center" });
-      doc.moveTo(ML, fY + 48).lineTo(PW - ML, fY + 48).lineWidth(0.5).strokeColor(TURMERIC).stroke();
-      doc.fontSize(7).font("Helvetica").fillColor("#A07848")
-        .text("For spiritual guidance only. Not medical, legal or financial advice.", ML, fY + 53, { width: W - 50, align: "center" });
-      // Page number
-      doc.fontSize(7).font("Helvetica-Bold").fillColor(GOLD_TXT)
-        .text(`${i + 1} / ${totalPages}`, PW - ML - 28, fY + 53, { width: 28, align: "right" });
+      doc.moveTo(0, fY + 2).lineTo(PW, fY + 2).lineWidth(1.5).strokeColor(ACCENT_GOLD).stroke();
+
+      doc.fontSize(7.5).font("Helvetica-Bold").fillColor(ACCENT_GOLD)
+        .text(`Report for ${birth.name}  |  Parasara Hora Shastra  |  Lahiri Ayanamsa`, ML, fY + 10, { width: W, align: "center" });
+      doc.fontSize(7).font("Helvetica").fillColor("#B8972E")
+        .text("info@myvedicastrology.in  |  +91 98861 00565  |  myvedicastrology.in  |  Bangalore, India", ML, fY + 22, { width: W, align: "center" });
+      doc.fontSize(6.5).font("Helvetica").fillColor("#8B7D76")
+        .text("For spiritual guidance only. Not medical, legal or financial advice.", ML, fY + 33, { width: W, align: "center" });
+      doc.fontSize(6.5).font("Helvetica").fillColor(MUTED_TEXT)
+        .text(`© 2026 My Vedic Astrology  |  Page ${i + 1} of ${range.count}`, ML, fY + 42, { width: W, align: "center" });
+      doc.moveTo(ML, fY + 48).lineTo(PW - ML, fY + 48).lineWidth(0.4).strokeColor(SAFFRON).stroke();
+      doc.fontSize(6).font("Helvetica").fillColor(MUTED_TEXT)
+        .text("Report generated on " + new Date().toLocaleDateString("en-IN"), ML, fY + 54, { width: W, align: "center" });
     }
 
     doc.end();
   });
 }
 
-// ── Section Header ─────────────────────────────────────────────
-function secHeader(
-  doc:      typeof PDFDocument.prototype,
-  title:    string,
-  subtitle: string,
-  ML:       number,
-  W:        number,
-  PW:       number,
-) {
-  doc.moveDown(0.5);
-  const y = doc.y;
-  const h = subtitle ? 34 : 24;
-  doc.rect(0, y, PW, h).fill(SECTION_BG);
-  doc.rect(0, y, 6, h).fill(VERMILLION);
-  doc.rect(PW - 6, y, 6, h).fill(VERMILLION);
-  doc.moveTo(0, y + h).lineTo(PW, y + h).lineWidth(1.5).strokeColor(TURMERIC).stroke();
+// ── Premium Section Box ─────────────────────────────────────────
+function sectionBox(doc: InstanceType<typeof PDFDocument>, title: string, text: string, ML: number, W: number, PW: number, PH: number) {
+  // Check if we need page break
+  if (doc.y > PH - 180) doc.addPage();
 
-  doc.fontSize(11).font("Helvetica-Bold").fillColor(VERMILLION)
-    .text(title, ML + 4, y + 5, { width: W });
-  if (subtitle) {
-    doc.fontSize(7.5).font("Helvetica").fillColor(MUTED)
-      .text(subtitle, ML + 4, y + 20, { width: W });
-  }
-  doc.y = y + h + 8;
+  const y = doc.y;
+  const h = 28;
+  doc.rect(0, y, PW, h).fill("#F5E6D3");
+  doc.rect(0, y, 5, h).fill(SAFFRON);
+  doc.moveTo(0, y + h).lineTo(PW, y + h).lineWidth(0.8).strokeColor(GOLD).stroke();
+
+  doc.fontSize(11).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+    .text(title, ML + 8, y + 7, { width: W - 16 });
+  doc.y = y + h + 10;
+
+  const boxH = estimateTextHeight(text, W - 24, 10) + 24;
+  doc.save()
+    .rect(ML, doc.y, W, boxH).fillAndStroke("#FFFCF7", GOLD)
+    .restore();
+  doc.rect(ML, doc.y, 4, boxH).fill(SAFFRON);
+
+  doc.fontSize(10).font("Helvetica").fillColor(DARK_TEXT)
+    .text(text, ML + 14, doc.y + 12, { width: W - 28, align: "justify", lineGap: 2.5 });
+  doc.y += boxH + 12;
 }
 
-// ── Plain explanation paragraph ────────────────────────────────
-function simpleBox(
-  doc:  typeof PDFDocument.prototype,
-  text: string,
-  ML:   number,
-  W:    number,
-) {
-  const cleaned = clean(text);
-  const y = doc.y;
-  const textH = estimateTextHeight(cleaned, W, 10) + 20;
-  doc.lineWidth(0.8).rect(ML, y, W, textH).fillAndStroke("#FFFAF0", TURMERIC);
-  doc.rect(ML, y, 4, textH).fill(TURMERIC);
-  doc.fontSize(10).font("Helvetica").fillColor(DARK)
-    .text(cleaned, ML + 12, y + 10, { width: W - 20, align: "justify", lineGap: 3 });
-  doc.y = y + textH + 8;
-}
-
-// ── Numbered remedy cards ──────────────────────────────────────
-function remedyBoxes(
-  doc:  typeof PDFDocument.prototype,
-  text: string,
-  ML:   number,
-  W:    number,
-) {
-  const items = splitToItems(text);
-  if (!items.length) { simpleBox(doc, text, ML, W); return; }
+// ── Remedy Cards (with proper pagination) ───────────────────────
+function remedySection(doc: InstanceType<typeof PDFDocument>, items: string[], ML: number, W: number, PW: number, PH: number = 841) {
+  doc.fontSize(10).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+    .text("HEALING PRACTICES & REMEDIES", ML, doc.y, { width: W, align: "center" });
+  doc.moveDown(1);
 
   items.forEach((item, i) => {
-    const cardH = Math.max(44, estimateTextHeight(item, W - 50, 9.5) + 22);
+    // Check page space
+    if (doc.y > PH - 130) doc.addPage();
+
+    const cardH = Math.max(50, estimateTextHeight(item, W - 70, 9) + 24);
     const cy = doc.y;
-    doc.lineWidth(1).rect(ML, cy, W, cardH).fillAndStroke(REMEDY_BG, TURMERIC);
-    // Number badge
-    doc.rect(ML, cy, 36, cardH).fill(KUMKUM);
-    doc.fontSize(14).font("Helvetica-Bold").fillColor("white")
-      .text(String(i + 1), ML, cy + cardH / 2 - 10, { width: 36, align: "center" });
+
+    // Card background
+    doc.save().rect(ML, cy, W, cardH).fill("#FFFCF7").restore();
+    doc.save().lineWidth(1).rect(ML, cy, W, cardH).strokeColor(GOLD).stroke().restore();
+
+    // Number badge (left side)
+    doc.save()
+      .rect(ML, cy, 42, cardH).fill(SAFFRON)
+      .fontSize(16).font("Helvetica-Bold").fillColor("white")
+      .text(String(i + 1), ML, cy + cardH / 2 - 10, { width: 42, align: "center" })
+      .restore();
+
     // Text
-    doc.fontSize(9.5).font("Helvetica").fillColor(DARK)
-      .text(clean(item), ML + 44, cy + 10, { width: W - 52, lineGap: 2.5 });
-    doc.y = cy + cardH + 6;
+    doc.fontSize(9.5).font("Helvetica").fillColor(DARK_TEXT)
+      .text(clean(item), ML + 50, cy + 10, { width: W - 60, lineGap: 2 });
+
+    doc.y = cy + cardH + 8;
   });
-  doc.moveDown(0.3);
 }
 
-// ── Mantra banner ──────────────────────────────────────────────
-function mantraBox(
-  doc:  typeof PDFDocument.prototype,
-  text: string,
-  ML:   number,
-  W:    number,
-) {
-  const lines   = clean(text).split(/\n+/).filter(Boolean);
-  const mantra  = lines[0] || text;
-  const instruct = lines.slice(1).join("  ·  ") || "Chant 108 times daily at sunrise, facing East";
-  const h = 90;
-  const y = doc.y;
+// ── Mantra Section ──────────────────────────────────────────────
+function mantraSection(doc: InstanceType<typeof PDFDocument>, text: string, ML: number, W: number, PH: number = 841) {
+  if (doc.y > PH - 140) doc.addPage();
 
-  doc.lineWidth(1.5).rect(ML, y, W, h).fillAndStroke("#FFF3E0", KUMKUM);
-  doc.moveTo(ML + 10, y + 5).lineTo(ML + W - 10, y + 5).lineWidth(1).strokeColor(TURMERIC).stroke();
-  doc.moveTo(ML + 10, y + h - 5).lineTo(ML + W - 10, y + h - 5).lineWidth(1).strokeColor(TURMERIC).stroke();
+  doc.moveDown(0.5);
+  const lines = clean(text).split(/\n+/).filter(Boolean);
+  const mantra = lines[0] || text;
 
-  doc.fontSize(17).font("Helvetica-Bold").fillColor(VERMILLION)
-    .text(mantra, ML, y + 16, { width: W, align: "center" });
-  doc.fontSize(8.5).font("Helvetica").fillColor(MUTED)
-    .text(instruct, ML, y + 48, { width: W, align: "center", lineGap: 2 });
-  doc.fontSize(7.5).font("Helvetica").fillColor(TURMERIC)
-    .text("108 times  ·  Daily  ·  Sunrise  ·  Facing East", ML, y + 70, { width: W, align: "center" });
+  const mantY = doc.y;
+  doc.save()
+    .rect(ML, mantY, W, 85)
+    .fill("#F5E6D3")
+    .lineWidth(1.5).strokeColor(SAFFRON).stroke()
+    .restore();
 
-  doc.y = y + h + 10;
+  doc.moveTo(ML + 12, mantY + 5).lineTo(ML + W - 12, mantY + 5).lineWidth(0.8).strokeColor(GOLD).stroke();
+  doc.moveTo(ML + 12, mantY + 80).lineTo(ML + W - 12, mantY + 80).lineWidth(0.8).strokeColor(GOLD).stroke();
+
+  doc.fontSize(13).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+    .text(mantra, ML, mantY + 18, { width: W, align: "center" });
+  doc.fontSize(8).font("Helvetica").fillColor(MUTED_TEXT)
+    .text("Chant 108 times daily at sunrise, facing East  |  With full devotion", ML, mantY + 48, { width: W, align: "center" });
+  doc.fontSize(7.5).font("Helvetica").fillColor(SAFFRON)
+    .text("Duration: 40-108 consecutive days for best results", ML, mantY + 63, { width: W, align: "center" });
+
+  doc.y = mantY + 95;
 }
 
-// ── Gemstone grid cards ────────────────────────────────────────
-function gemstoneBox(
-  doc:  typeof PDFDocument.prototype,
-  text: string,
-  ML:   number,
-  W:    number,
-) {
+// ── Gemstone Section ────────────────────────────────────────────
+function gemstoneSection(doc: InstanceType<typeof PDFDocument>, text: string, ML: number, W: number, PH: number = 841) {
   const items = splitToItems(text);
-  if (items.length < 2) { simpleBox(doc, text, ML, W); return; }
+  if (items.length === 0) return;
+
+  doc.fontSize(10).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+    .text("GEMSTONE RECOMMENDATIONS", ML, doc.y, { width: W, align: "center" });
+  doc.moveDown(0.8);
 
   const colW = (W - 8) / 2;
   let cx = ML, cy = doc.y;
+
   items.forEach((line, i) => {
+    if (cy > PH - 140) {
+      doc.addPage();
+      cx = ML;
+      cy = doc.y;
+    }
+
     const parts = line.split(/[:–\-]+/);
     const label = parts[0]?.trim() || "";
     const value = parts.slice(1).join(" ").trim() || line;
-    const cH = 40;
-    const fill = i % 2 === 0 ? SECTION_BG : CREAM;
-    doc.lineWidth(0.8).rect(cx, cy, colW, cH).fillAndStroke(fill, TURMERIC);
-    doc.rect(cx, cy, 4, cH).fill(TURMERIC);
-    doc.fontSize(7.5).font("Helvetica").fillColor(MUTED)
-      .text(label, cx + 10, cy + 5, { width: colW - 14 });
-    doc.fontSize(10).font("Helvetica-Bold").fillColor(DARK)
-      .text(value, cx + 10, cy + 17, { width: colW - 14 });
+    const cH = 45;
+    const fill = i % 2 === 0 ? "#F5E6D3" : "#FFFCF7";
+
+    doc.save().rect(cx, cy, colW, cH).fill(fill).restore();
+    doc.save().lineWidth(0.8).rect(cx, cy, colW, cH).strokeColor(GOLD).stroke().restore();
+    doc.save().rect(cx, cy, 3, cH).fill(SAFFRON).restore();
+
+    doc.fontSize(7.5).font("Helvetica-Bold").fillColor(SAFFRON)
+      .text(label, cx + 10, cy + 6, { width: colW - 14 });
+    doc.fontSize(9).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+      .text(value, cx + 10, cy + 18, { width: colW - 14 });
 
     if (cx === ML) {
       cx = ML + colW + 8;
@@ -447,39 +458,39 @@ function gemstoneBox(
       cy += cH + 4;
     }
   });
-  // If odd number of cards, advance y
-  if (items.length % 2 !== 0) cy += 44;
-  doc.y = cy + 6;
+
+  doc.y = cy + 50;
 }
 
-// ── Auspicious day pills ───────────────────────────────────────
-function auspiciousPills(
-  doc:  typeof PDFDocument.prototype,
-  text: string,
-  ML:   number,
-  W:    number,
-) {
+// ── Auspicious Days Section ──────────────────────────────────────
+function auspiciousSection(doc: InstanceType<typeof PDFDocument>, text: string, ML: number, W: number, PH: number = 841) {
   const items = splitToItems(text);
-  if (!items.length) { simpleBox(doc, text, ML, W); return; }
+  if (items.length === 0) return;
+
+  doc.fontSize(10).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+    .text("AUSPICIOUS DATES THIS MONTH", ML, doc.y, { width: W, align: "center" });
+  doc.moveDown(0.8);
 
   let cx = ML, cy = doc.y;
-  const pillH = 30;
-  items.forEach(day => {
-    const pillW = Math.min(Math.max(doc.widthOfString(day) + 32, 80), W);
-    if (cx + pillW > ML + W + 4) { cx = ML; cy += pillH + 6; }
-    doc.lineWidth(1).rect(cx, cy, pillW, pillH).fillAndStroke(CREAM, TURMERIC);
-    doc.rect(cx, cy, 4, pillH).fill(TURMERIC);
-    doc.fontSize(8.5).font("Helvetica-Bold").fillColor(DARK)
-      .text(">> " + day, cx + 10, cy + 9, { width: pillW - 14 });
-    cx += pillW + 8;
-  });
-  doc.y = cy + pillH + 10;
-}
+  const pillH = 28;
 
-// ── Rough text height estimate for pre-sizing boxes ───────────
-function estimateTextHeight(text: string, width: number, fontSize: number): number {
-  if (!text) return 20;
-  const charsPerLine = Math.floor(width / (fontSize * 0.52));
-  const lines = text.split("\n").reduce((acc, l) => acc + Math.max(1, Math.ceil(l.length / charsPerLine)), 0);
-  return lines * (fontSize + 4);
+  items.forEach(day => {
+    if (cx + 100 > ML + W + 4) { cx = ML; cy += pillH + 6; }
+    if (cy > PH - 140) {
+      doc.addPage();
+      cx = ML;
+      cy = doc.y;
+    }
+
+    const pillW = Math.min(Math.max(doc.widthOfString(day) + 24, 85), 140);
+    doc.save().rect(cx, cy, pillW, pillH).fill("#F5E6D3").restore();
+    doc.save().lineWidth(0.8).rect(cx, cy, pillW, pillH).strokeColor(SAFFRON).stroke().restore();
+    doc.rect(cx, cy, 3, pillH).fill(SAFFRON);
+
+    doc.fontSize(8.5).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+      .text(day, cx + 8, cy + 8, { width: pillW - 12 });
+    cx += pillW + 6;
+  });
+
+  doc.y = cy + pillH + 16;
 }
