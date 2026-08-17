@@ -41,3 +41,6 @@ npm-debug.log*
 /ios/App/Pods
 /ios/App/build
 /ios/DerivedData
+
+.vercel
+.env*
