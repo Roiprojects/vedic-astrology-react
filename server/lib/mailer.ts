@@ -17,11 +17,20 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || SMTP_USER || "";
 
 function createTransport() {
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null;
+  const isSSL = SMTP_PORT === 465;
   return nodemailer.createTransport({
     host: SMTP_HOST,
     port: SMTP_PORT,
-    secure: SMTP_PORT === 465,
+    secure: isSSL,
     auth: { user: SMTP_USER, pass: SMTP_PASS },
+    tls: {
+      // cPanel/shared hosting servers often use self-signed or mismatched certs
+      rejectUnauthorized: false,
+      ciphers: "SSLv3",
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 }
 
