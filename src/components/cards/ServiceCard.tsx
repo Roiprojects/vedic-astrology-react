@@ -6,8 +6,10 @@ import { PriceBadge } from "@/components/ui/Badge";
 import { VedicSymbol } from "@/components/icons/VedicSymbol";
 import { getServiceSymbol } from "@/lib/presentation/vedic-symbols";
 import { cn } from "@/lib/utils";
+import { useConsultation } from "@/components/booking/ConsultationContext";
 
 export function ServiceCard({ service }: { service: Service }) {
+  const { openConsultation } = useConsultation();
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gold/20 bg-surface/60 transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/50 hover:shadow-[var(--shadow-glow-gold)]">
       {/* accent glow */}
@@ -62,7 +64,17 @@ export function ServiceCard({ service }: { service: Service }) {
       </p>
 
         <div className="relative z-10 mt-6 grid gap-2 grid-cols-2">
-          <Button href={`/services/${service.slug}`} variant="primary" size="md" className="w-full">
+          <Button
+            variant="primary" size="md" className="w-full"
+            onClick={() => openConsultation({
+              slug: service.slug,
+              title: service.title,
+              price: service.price,
+              discountPrice: service.discountPrice,
+              duration: service.duration,
+              icon: service.icon,
+            })}
+          >
             Book
             <ArrowRight className="h-4 w-4" />
           </Button>

@@ -22,6 +22,7 @@ import chatRoutes from "./routes/chat";
 import palmReadingRoutes from "./routes/palm-reading";
 import enquiryRoutes from "./routes/enquiry";
 import razorpayRoutes from "./routes/razorpay";
+import consultationRoutes from "./routes/consultation";
 
 // Admin routes
 import adminServicesRoutes from "./routes/admin/services";
@@ -91,6 +92,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/palm-reading", palmReadingRoutes);
 app.use("/api/enquiry", enquiryRoutes);
 app.use("/api/razorpay", razorpayRoutes);
+app.use("/api/consultation", consultationRoutes);
 
 // Admin routes (all protected)
 app.use("/api/admin/seed", adminAuthMiddleware, adminSeedRoutes);

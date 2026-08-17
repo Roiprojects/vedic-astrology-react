@@ -8,6 +8,7 @@ import { ServiceAiChat } from "@/components/ai/ServiceAiChat";
 import AdminLayout from "@/admin/AdminLayout";
 import { isNativePlatform } from "@/lib/platform";
 import { AppUserProvider } from "@/hooks/useAppUser";
+import { ConsultationProvider } from "@/components/booking/ConsultationContext";
 import { AppShell } from "@/app/AppShell";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
@@ -130,6 +131,7 @@ function RouteFallback() {
 
 export function App() {
   return (
+    <ConsultationProvider>
     <AppUserProvider>
       <Helmet>
         <html lang="en" />
@@ -200,5 +202,6 @@ export function App() {
         </Routes>
       </Suspense>
     </AppUserProvider>
+    </ConsultationProvider>
   );
 }

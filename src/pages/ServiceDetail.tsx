@@ -16,6 +16,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getServiceBySlug } from "@/lib/data";
+import { useConsultation } from "@/components/booking/ConsultationContext";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import {
@@ -29,6 +30,7 @@ export default function ServiceDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [service, setService] = useState<Awaited<ReturnType<typeof getServiceBySlug>> | null>(null);
   const [loading, setLoading] = useState(true);
+  const { openConsultation } = useConsultation();
 
   useEffect(() => {
     let cancelled = false;
@@ -138,7 +140,17 @@ export default function ServiceDetailPage() {
             </Reveal>
             <Reveal delay={0.22}>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Button href="#book" variant="primary" size="lg" className="w-full sm:w-auto">
+                <Button
+                  variant="primary" size="lg" className="w-full sm:w-auto"
+                  onClick={() => service && openConsultation({
+                    slug: service.slug,
+                    title: service.title,
+                    price: service.price,
+                    discountPrice: service.discountPrice,
+                    duration: service.duration,
+                    icon: service.icon,
+                  })}
+                >
                   Book Consultation
                 </Button>
                 <AskGurujiButton serviceTitle={service.title} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
