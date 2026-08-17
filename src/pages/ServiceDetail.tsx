@@ -14,11 +14,10 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { BookingForm } from "@/components/forms/BookingForm";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getServiceBySlug } from "@/lib/data";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -68,10 +67,6 @@ export default function ServiceDetailPage() {
   }
 
   const url = `${siteConfig.url}/services/${service.slug}`;
-  const wa = whatsappLink(
-    siteConfig.whatsapp,
-    `Namaste Guruji, I would like a consultation for ${service.title}.`
-  );
 
   return (
     <>
@@ -149,9 +144,6 @@ export default function ServiceDetailPage() {
                 <AskGurujiButton serviceTitle={service.title} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
                   <MessageCircleMore className="h-5 w-5" /> Ask Guruji
                 </AskGurujiButton>
-                <Button href={wa} external variant="whatsapp" size="lg" className="w-full sm:w-auto">
-                  <WhatsAppIcon className="h-5 w-5" /> WhatsApp Now
-                </Button>
                 <Button href={siteConfig.phoneHref} variant="gold" size="lg" className="w-full border-[#f2c55e]/50 bg-[#5c1f12]/60 text-[#fff1c7] hover:bg-[#7a2a17] sm:w-auto">
                   <Phone className="h-5 w-5" /> Call Now
                 </Button>
@@ -162,18 +154,35 @@ export default function ServiceDetailPage() {
           <Reveal delay={0.2}>
             <div className="relative">
               <div className="divine-glow absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-saffron/25 to-gold/15 blur-2xl" />
-              <div className="relative rounded-[2rem] border border-gold/25 bg-[#3a151f]/75 p-8 text-center backdrop-blur-md">
-                <div
-                  className={cn(
-                    "mx-auto grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br text-5xl ring-2 ring-gold/40",
-                    service.gradient
-                  )}
-                >
-                  {service.icon}
-                </div>
-                <p className="mt-6 text-sm leading-relaxed text-[#fff2d0]/80">
-                  {service.fullDescription}
-                </p>
+              <div className="relative overflow-hidden rounded-[2rem] border border-gold/25 backdrop-blur-md">
+                {service.image ? (
+                  <>
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="h-64 w-full object-cover"
+                    />
+                    <div className="bg-[#3a151f]/85 p-6">
+                      <p className="text-sm leading-relaxed text-[#fff2d0]/80">
+                        {service.fullDescription}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-[#3a151f]/75 p-8 text-center">
+                    <div
+                      className={cn(
+                        "mx-auto grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br text-5xl ring-2 ring-gold/40",
+                        service.gradient
+                      )}
+                    >
+                      {service.icon}
+                    </div>
+                    <p className="mt-6 text-sm leading-relaxed text-[#fff2d0]/80">
+                      {service.fullDescription}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </Reveal>
@@ -226,7 +235,7 @@ export default function ServiceDetailPage() {
       {/* Booking form */}
       <Section id="book" className="scroll-mt-24 pt-0">
         <div className="mx-auto max-w-3xl rounded-3xl border border-gold/25 bg-surface/60 p-6 sm:p-9">
-          <BookingForm variant="consultation" subject={service.title} />
+          <BookingForm variant="consultation" subject={service.title} price={service.price} />
         </div>
       </Section>
 

@@ -16,12 +16,15 @@ export function rateLimit(key: string, limit: number, windowMs: number): { ok: b
 }
 
 export function clientIp(request: { headers?: Record<string, string | string[] | undefined>; ip?: string }): string {
+  // Take the LAST value in x-forwarded-for (set by our trusted reverse proxy),
+  // not the first (which can be spoofed by the client).
   const fwd = request.headers?.["x-forwarded-for"];
   if (fwd) {
-    const value = Array.isArray(fwd) ? fwd[0] : fwd;
-    return value.split(",")[0].trim();
+    const value = Array.isArray(fwd) ? fwd.join(",") : fwd;
+    const parts = value.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 0) return parts[parts.length - 1];
   }
   const realIp = request.headers?.["x-real-ip"];
-  if (realIp) return Array.isArray(realIp) ? realIp[0] : realIp;
+  if (realIp) return Array.isArray(realIp) ? realIp[realIp.length - 1] : realIp;
   return request.ip || "anon";
 }

@@ -9,6 +9,7 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
+import { PanchangaWidget } from "@/components/panchanga/PanchangaWidget";
 import { useEffect, useState } from "react";
 import { VedicSymbol } from "@/components/icons/VedicSymbol";
 import { HomamCard } from "@/components/cards/HomamCard";
@@ -31,7 +32,6 @@ import {
 import type { Homam, Service, Testimonial } from "@/lib/data/types";
 import { gurujiProfile } from "@/lib/data/content";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 import styles from "./TempleHome.module.css";
 
 const pathways = [
@@ -73,10 +73,6 @@ export function TempleHome() {
   const [homams, setHomams] = useState<Homam[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const faqs = getHomeFaqs();
-  const wa = whatsappLink(
-    siteConfig.whatsapp,
-    "Namaste Guruji, I would like personalized Vedic astrology guidance."
-  );
 
   useEffect(() => {
     let cancelled = false;
@@ -116,7 +112,7 @@ export function TempleHome() {
             <div className={`${styles.arch} relative h-full w-full overflow-hidden bg-[#481c0c]`}>
               <img
                 src="/images/dakshinamurthy-hd.jpg"
-                alt="Lord Dakshinamurthy — Shiva as the cosmic teacher, seated beneath the banyan tree"
+                alt="Vedic rishi — spiritual guide"
                 className="absolute inset-0 w-full h-full object-cover object-[50%_28%]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#2c1017]/35 via-transparent to-transparent" />
@@ -141,7 +137,7 @@ export function TempleHome() {
             <Reveal delay={0.2}>
               <p className="mt-5 max-w-xl text-base leading-7 text-[#fff2d0]/88 sm:text-lg">
                 Personal astrology consultations, sacred homams, birth-chart analysis,
-                and remedies guided by Sampath Kumara.
+                and remedies guided by Guruji.
               </p>
             </Reveal>
             <Reveal delay={0.3}>
@@ -163,7 +159,7 @@ export function TempleHome() {
               <div className={`${styles.arch} relative h-full w-full overflow-hidden bg-[#39141b]`}>
                 <img
                   src="/images/dakshinamurthy-hd.jpg"
-                  alt="Lord Dakshinamurthy — Shiva as the cosmic teacher, seated beneath the banyan tree"
+                  alt="Vedic rishi — spiritual guide"
                   className="absolute inset-0 w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2c1017]/45 to-transparent" />
@@ -191,15 +187,19 @@ export function TempleHome() {
 
       <section className={`${styles.paper} py-20 text-[#35180d] sm:py-28`}>
         <Container>
+          {/* Panchanga widget */}
           <Reveal>
-            <div className="mb-12 text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a8501a]">
-                Begin your journey
-              </p>
-              <h2 className="mt-3 font-serif text-[clamp(2rem,3.6vw,3.25rem)] leading-tight text-[#35180d]">
-                Guidance for every path
-              </h2>
-              <OrnamentDivider className="mt-5 text-[#b67a1b]" width="w-16" />
+            <div className="mb-12 grid gap-6 lg:grid-cols-[1fr_320px]">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a8501a]">
+                  Begin your journey
+                </p>
+                <h2 className="mt-3 font-serif text-[clamp(2rem,3.6vw,3.25rem)] leading-tight text-[#35180d]">
+                  Guidance for every path
+                </h2>
+                <OrnamentDivider className="mt-5 text-[#b67a1b]" width="w-16" />
+              </div>
+              <PanchangaWidget />
             </div>
           </Reveal>
           <div className="grid border-y border-[#9c6a15]/25 sm:grid-cols-2 lg:grid-cols-4">
@@ -252,16 +252,16 @@ export function TempleHome() {
           <div className="grid items-center gap-12 lg:grid-cols-[.86fr_1.14fr]">
             <div className="relative mx-auto w-full max-w-[420px] pb-8">
               <div aria-hidden className="absolute -inset-5 rounded-full bg-gradient-to-br from-[#f0842e]/22 to-[#c1912f]/12 blur-2xl" />
-              <div className="relative mx-auto aspect-square overflow-hidden rounded-full border-[6px] border-[#f3e0b4] ring-1 ring-[#9c6a15]/40 shadow-[0_34px_74px_-30px_rgba(74,15,26,.55)]">
-                <img src={siteConfig.gurujiPortrait} alt="Sampath Kumara, Vedic astrologer" className="absolute inset-0 w-full h-full object-cover object-[50%_18%]" />
-              </div>
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#c1912f]/45 bg-[#fff9e9] px-6 py-2.5 shadow-[0_12px_30px_-14px_rgba(74,15,26,.4)]">
-                <p className="font-serif text-lg leading-none text-[#35180d]">Sampath Kumara</p>
+              <div className="relative mx-auto aspect-square overflow-hidden rounded-full border-[6px] border-[#f3e0b4] ring-1 ring-[#9c6a15]/40 shadow-[0_34px_74px_-30px_rgba(74,15,26,.55)] bg-gradient-to-br from-[#f5e6c8] to-[#e8c88a]">
+                <img
+                  src="/images/rishi.jpg"
+                  alt="Guruji, Vedic astrologer"
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                />
               </div>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a8501a]">Meet your astrologer</p>
-              <span aria-hidden className="mt-4 block h-px w-16 bg-gradient-to-r from-[#b67a1b]/80 to-transparent" />
+              <span aria-hidden className="block h-px w-16 bg-gradient-to-r from-[#b67a1b]/80 to-transparent" />
               <h2 className="mt-4 font-serif text-[clamp(3rem,5vw,5.5rem)] leading-[0.95] text-[#35180d]">Guidance rooted in devotion and honesty</h2>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#684a37]">{gurujiProfile.longBio}</p>
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
@@ -269,7 +269,7 @@ export function TempleHome() {
                   <p key={item} className="flex items-center gap-2 text-sm text-[#5d3d2d]"><CheckCircle2 className="h-4 w-4 text-[#b15a1a]" />{item}</p>
                 ))}
               </div>
-              <Button href="/about-us" variant="gold" size="lg" className="mt-8">Know Sampath Kumara</Button>
+              <Button href="/about-us" variant="gold" size="lg" className="mt-8">Know Guruji</Button>
             </div>
           </div>
         </Container>
@@ -282,15 +282,15 @@ export function TempleHome() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#ffe0a2]">Automated service guide</p>
             <span aria-hidden className="mt-4 block h-px w-16 bg-gradient-to-r from-[#ffe0a2]/80 to-transparent" />
             <h2 className="mt-4 max-w-[12ch] font-serif text-[clamp(3rem,5vw,5.5rem)] leading-[0.94]">Ask three questions. Continue with Guruji when it matters.</h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#fff2dc]/85">Guruji Assistant can explain services, doshas, homams, remedies, and birth-chart basics. For personal analysis, it hands you directly to Sampath Kumara.</p>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#fff2dc]/85">Guruji Assistant can explain services, doshas, homams, remedies, and birth-chart basics. For personal analysis, it hands you directly to Guruji.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <AskGurujiButton className="bg-[#7a1f14] text-[#ffe1a0] hover:bg-[#94271a]"><MessageCircleMore className="h-5 w-5" />Ask Guruji</AskGurujiButton>
-              <Button href={wa} external variant="ghost" size="lg" className="border border-[#ffe0a2]/60 text-white">Continue on WhatsApp</Button>
+              <Button href="/contact-us" variant="ghost" size="lg" className="border border-[#ffe0a2]/60 text-white">Book Consultation</Button>
             </div>
           </div>
           <div className="border border-[#f8d487]/60 bg-[#39152a] p-5 shadow-[0_30px_80px_-35px_rgba(43,8,8,.9)] sm:p-7">
             <div className="flex items-center gap-3 border-b border-[#d7a94e]/25 pb-5">
-              <img src={siteConfig.gurujiPortrait} alt="" width={52} height={52} className="h-13 w-13 rounded-full object-cover object-[50%_20%] ring-2 ring-[#d8a94a]" />
+              <img src="/images/dakshinamurthy-hd.jpg" alt="" width={52} height={52} className="h-13 w-13 rounded-full object-cover object-[50%_20%] ring-2 ring-[#d8a94a]" />
               <div><p className="font-serif text-xl text-[#ffe1a0]">Guruji Assistant</p><p className="text-xs text-[#f0d7ad]/60">Automated astrology assistant · 3 free questions</p></div>
             </div>
             <div className="space-y-3 py-6">
@@ -350,8 +350,8 @@ export function TempleHome() {
       <section className="bg-[#2e1526] py-20 text-center text-[#f7e7bf]">
         <Container>
           <h2 className="font-serif text-[clamp(2.8rem,5vw,5rem)] text-[#ffe0a0]">Ready for personal guidance?</h2>
-          <p className="mx-auto mt-5 max-w-2xl leading-7 text-[#eadbbd]/70">Speak with Sampath Kumara for a confidential consultation rooted in authentic Vedic practice.</p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Button href="/contact-us" size="lg">Book Consultation</Button><Button href={wa} external variant="whatsapp" size="lg">WhatsApp Guruji</Button></div>
+          <p className="mx-auto mt-5 max-w-2xl leading-7 text-[#eadbbd]/70">Speak with Guruji for a confidential consultation rooted in authentic Vedic practice.</p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Button href="/contact-us" size="lg">Book Consultation</Button><Button href="tel:+919886100565" variant="gold" size="lg">Call Guruji</Button></div>
           <p className="mx-auto mt-10 max-w-3xl border-t border-[#d5a94f]/20 pt-6 text-xs leading-5 text-[#eadbbd]/55">{siteConfig.disclaimer}</p>
         </Container>
       </section>

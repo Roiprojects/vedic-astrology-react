@@ -23,6 +23,7 @@ export type Service = {
   title: string;
   categorySlug: string;
   icon: string;
+  image?: string;
   shortDescription: string;
   fullDescription: string;
   problem: string;
