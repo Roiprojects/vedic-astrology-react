@@ -15,6 +15,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getHomamBySlug } from "@/lib/data";
+import { getHomamImage } from "@/lib/presentation/vedic-symbols";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import {
@@ -151,18 +152,35 @@ export default function HomamDetailPage() {
           <Reveal delay={0.2}>
             <div className="relative">
               <div className="divine-glow absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-orange-700/30 to-saffron-deep/20 blur-2xl" />
-              <div className="relative rounded-[2rem] border border-gold/25 bg-[#3a151f]/75 p-8 text-center backdrop-blur-md">
-                <div
-                  className={cn(
-                    "mx-auto grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br text-5xl ring-2 ring-gold/40",
-                    homam.gradient
-                  )}
-                >
-                  {homam.icon}
-                </div>
-                <p className="mt-6 text-sm leading-relaxed text-[#fff2d0]/80">
-                  {homam.fullDescription}
-                </p>
+              <div className="relative overflow-hidden rounded-[2rem] border border-gold/25 backdrop-blur-md">
+                {getHomamImage(homam.slug) ? (
+                  <>
+                    <img
+                      src={getHomamImage(homam.slug)}
+                      alt={homam.name}
+                      className="h-64 w-full object-cover"
+                    />
+                    <div className="bg-[#3a151f]/85 p-6">
+                      <p className="text-sm leading-relaxed text-[#fff2d0]/80">
+                        {homam.fullDescription}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-[#3a151f]/75 p-8 text-center">
+                    <div
+                      className={cn(
+                        "mx-auto grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br text-5xl ring-2 ring-gold/40",
+                        homam.gradient
+                      )}
+                    >
+                      {homam.icon}
+                    </div>
+                    <p className="mt-6 text-sm leading-relaxed text-[#fff2d0]/80">
+                      {homam.fullDescription}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </Reveal>

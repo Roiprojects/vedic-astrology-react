@@ -98,7 +98,26 @@ const serviceSlugToSymbol: Record<string, VedicSymbolKind> = {
 };
 
 
-const homamSlugToImage: Record<string, string> = {};
+const homamSlugToImage: Record<string, string> = {
+  "ganapathi-homam": "/images/homams/ganapathi-homam.jpg",
+  "navagraha-homam": "/images/homams/navagraha-homam.jpg",
+  "lakshmi-kubera-homam": "/images/homams/lakshmi-kubera-homam.jpg",
+  "surya-homam": "/images/homams/surya-homam.jpg",
+  "chandra-homam": "/images/homams/chandra-homam.jpg",
+  "rudra-homam": "/images/homams/rudra-homam.jpg",
+  "maha-mrityunjaya-homam": "/images/homams/maha-mrityunjaya-homam.jpg",
+  "saraswati-homam": "/images/homams/saraswati-homam.jpg",
+  "durga-homam": "/images/homams/durga-homam.jpg",
+  "sudarshana-homam": "/images/homams/sudarshana-homam.jpg",
+  "dhanvantari-homam": "/images/homams/dhanvantari-homam.jpg",
+  "ayushya-homam": "/images/homams/ayushya-homam.jpg",
+  "shani-shanti-homam": "/images/homams/shani-shanti-homam.jpg",
+  "rahu-ketu-shanti-homam": "/images/homams/rahu-ketu-shanti-homam.jpg",
+  "mangal-dosha-homam": "/images/homams/mangal-dosha-homam.jpg",
+  "kadali-vivaha": "/images/homams/kadali-vivaha.jpg",
+  "kumbha-vivaha": "/images/homams/kumbha-vivaha.jpg",
+  "moksha-narayana-bali-tila-homa": "/images/homams/moksha-narayana-bali-tila-homa.jpg",
+};
 
 export function getHomamSymbol(slug: string): VedicSymbolKind {
   return homamSlugToSymbol[slug] ?? "sacred-flame";
