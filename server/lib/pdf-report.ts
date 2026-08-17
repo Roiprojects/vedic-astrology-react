@@ -161,79 +161,118 @@ export function generateReportPdf(
 
     doc.y = prepY + 45;
 
-    // ── Birth Details Table (premium layout) ─────────────────────
-    const tableTitle = "YOUR BIRTH DETAILS & COSMIC IDENTITY";
+    // ── BIRTH INFORMATION (compact, no overlap) ───────────
     doc.fontSize(10).font("Helvetica-Bold").fillColor(DEEP_MAROON)
-      .text(tableTitle, ML, doc.y, { width: W, align: "center" });
-    doc.moveDown(0.8);
+      .text("BIRTH INFORMATION", ML, doc.y, { width: W, align: "center" });
+    doc.moveDown(0.6);
 
     const LABEL_W = 140;
     const VALUE_W = W - LABEL_W - 16;
-
-    const allRows: { label: string; value: string; cosmic?: boolean }[] = [
-      { label: "Full Name",            value: birth.name },
-      { label: "Date of Birth",        value: formatDate(birth.dob) },
-      { label: "Time of Birth",        value: formatTime(birth.tob) },
-      { label: "Place of Birth",       value: birth.pob },
-      { label: "Gender",               value: birth.gender || "—" },
-      ...(birth.concern ? [{ label: "Your Concern",  value: birth.concern }] : []),
-      { label: "Nakshatra (Birth Star)", value: report.nakshatra,    cosmic: true },
-      { label: "Rashi (Moon Sign)",      value: report.rashi,        cosmic: true },
-      { label: "Lagna (Ascendant)",      value: report.lagna,        cosmic: true },
-      { label: "Ruling Planet",          value: report.ruling_planet, cosmic: true },
+    const birthInfo = [
+      { label: "Full Name", value: birth.name },
+      { label: "Date of Birth", value: formatDate(birth.dob) },
+      { label: "Time of Birth", value: formatTime(birth.tob) },
+      { label: "Place of Birth", value: birth.pob },
+      { label: "Gender", value: birth.gender || "—" },
     ];
 
-    const tableY = doc.y;
-    allRows.forEach(({ label, value, cosmic }, i) => {
-      const rH = 22;
+    const birthTableTop = doc.y;
+    birthInfo.forEach(({ label, value }, i) => {
+      const rH = 18;
       const ry = doc.y;
-      const bgColor = cosmic ? "#F5E6D3" : (i % 2 === 0 ? CREAM : "#FFFCF7");
+      const bgColor = i % 2 === 0 ? CREAM : "#FFFCF7";
 
       doc.save().rect(ML, ry, W, rH).fill(bgColor).restore();
-
-      if (cosmic) {
-        doc.save().rect(ML, ry, 3, rH).fill(SAFFRON).restore();
-      }
-
-      // Divider
       if (i > 0) {
         doc.save()
           .moveTo(ML, ry).lineTo(ML + W, ry)
-          .lineWidth(0.3).strokeColor(ACCENT_GOLD).stroke()
+          .lineWidth(0.2).strokeColor(ACCENT_GOLD).stroke()
           .restore();
       }
 
-      // Label
-      doc.save()
-        .fontSize(8).font("Helvetica-Bold").fillColor(cosmic ? SAFFRON : MUTED_TEXT)
-        .text(label, ML + 8, ry + 6, { width: LABEL_W - 12, lineBreak: false })
-        .restore();
-
-      // Value
-      doc.save()
-        .fontSize(cosmic ? 10 : 9.5).font("Helvetica-Bold")
-        .fillColor(cosmic ? DEEP_MAROON : DARK_TEXT)
-        .text(value || "—", ML + LABEL_W + 10, ry + 6, { width: VALUE_W - 12, lineBreak: true })
-        .restore();
+      doc.fontSize(7.5).font("Helvetica-Bold").fillColor(MUTED_TEXT)
+        .text(label, ML + 8, ry + 4, { width: LABEL_W - 12, lineBreak: false });
+      doc.fontSize(9).font("Helvetica-Bold").fillColor(DARK_TEXT)
+        .text(value, ML + LABEL_W + 10, ry + 4, { width: VALUE_W - 12, lineBreak: false });
 
       doc.y = ry + rH;
     });
 
-    // Table border
-    const tableEnd = doc.y;
+    const birthTableEnd = doc.y;
     doc.save()
-      .lineWidth(1.2).rect(ML, tableY, W, tableEnd - tableY)
+      .lineWidth(1).rect(ML, birthTableTop, W, birthTableEnd - birthTableTop)
+      .strokeColor(GOLD).stroke()
+      .restore();
+    doc.save()
+      .moveTo(ML + LABEL_W + 5, birthTableTop)
+      .lineTo(ML + LABEL_W + 5, birthTableEnd)
+      .lineWidth(0.5).strokeColor(SAFFRON).stroke()
+      .restore();
+
+    doc.y = birthTableEnd + 12;
+
+    // ── COSMIC IDENTITY (separate, no overlap) ─────────────
+    doc.fontSize(10).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+      .text("YOUR COSMIC IDENTITY", ML, doc.y, { width: W, align: "center" });
+    doc.moveDown(0.6);
+
+    const cosmicCards = [
+      { label: "Nakshatra (Birth Star)", value: report.nakshatra },
+      { label: "Rashi (Moon Sign)", value: report.rashi },
+      { label: "Lagna (Ascendant)", value: report.lagna },
+      { label: "Ruling Planet / Dasha", value: report.ruling_planet },
+    ];
+
+    const cosmicTableTop = doc.y;
+    cosmicCards.forEach(({ label, value }, i) => {
+      const rH = 20;
+      const ry = doc.y;
+
+      doc.save().rect(ML, ry, W, rH).fill("#F5E6D3").restore();
+      doc.save().rect(ML, ry, 3, rH).fill(SAFFRON).restore();
+
+      if (i > 0) {
+        doc.save()
+          .moveTo(ML, ry).lineTo(ML + W, ry)
+          .lineWidth(0.2).strokeColor(ACCENT_GOLD).stroke()
+          .restore();
+      }
+
+      doc.fontSize(7.5).font("Helvetica-Bold").fillColor(SAFFRON)
+        .text(label, ML + 10, ry + 3, { width: LABEL_W - 18, lineBreak: false });
+      doc.fontSize(9.5).font("Helvetica-Bold").fillColor(DEEP_MAROON)
+        .text(value, ML + LABEL_W + 10, ry + 3, { width: VALUE_W - 12, lineBreak: false });
+
+      doc.y = ry + rH;
+    });
+
+    const cosmicTableEnd = doc.y;
+    doc.save()
+      .lineWidth(1).rect(ML, cosmicTableTop, W, cosmicTableEnd - cosmicTableTop)
       .strokeColor(GOLD).stroke()
       .restore();
 
-    // Vertical divider
-    doc.save()
-      .moveTo(ML + LABEL_W + 5, tableY)
-      .lineTo(ML + LABEL_W + 5, tableEnd)
-      .lineWidth(0.6).strokeColor(SAFFRON).stroke()
-      .restore();
+    doc.y = cosmicTableEnd + 12;
 
-    doc.y = tableEnd + 16;
+    // ── YOUR CONCERN (separate elegant box) ────────────────
+    if (birth.concern) {
+      const concernText = clean(birth.concern);
+      const concernBoxH = Math.min(estimateTextHeight(concernText, W - 24, 9) + 20, 80);
+      const cBy = doc.y;
+
+      doc.save().rect(ML, cBy, W, concernBoxH).fill("#FFF8E7").restore();
+      doc.save()
+        .lineWidth(1).rect(ML, cBy, W, concernBoxH).strokeColor(SAFFRON).stroke()
+        .restore();
+      doc.save().rect(ML, cBy, 4, concernBoxH).fill(SAFFRON).restore();
+
+      doc.fontSize(8).font("Helvetica-Bold").fillColor(SAFFRON)
+        .text("YOUR CONCERN / QUESTION", ML + 12, cBy + 6);
+      doc.fontSize(8.5).font("Helvetica").fillColor(DARK_TEXT)
+        .text(concernText, ML + 12, cBy + 18, { width: W - 24, align: "left", lineGap: 1.5 });
+
+      doc.y = cBy + concernBoxH + 12;
+    }
 
     // ════════════════════════════════════════════════════════════
     // PAGE 2+ — ANALYSIS & GUIDANCE
