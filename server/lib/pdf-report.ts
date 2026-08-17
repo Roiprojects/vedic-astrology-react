@@ -57,6 +57,17 @@ function formatDate(dob: string): string {
   } catch { return dob; }
 }
 
+function formatTime(tob: string): string {
+  if (!tob) return "—";
+  const [hStr, mStr] = tob.split(":");
+  const h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  if (isNaN(h) || isNaN(m)) return tob;
+  const period = h >= 12 ? "PM" : "AM";
+  const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${String(hour12).padStart(2, "0")}:${String(m).padStart(2, "0")} ${period}`;
+}
+
 function splitToItems(text: string): string[] {
   if (!text) return [];
   return text
@@ -75,7 +86,9 @@ export function generateReportPdf(
     const chunks: Buffer[] = [];
     const doc = new PDFDocument({
       size: "A4",
-      margins: { top: 0, bottom: 80, left: 0, right: 0 },
+      // bottom margin reserves space so content doesn't flow into footer
+      margins: { top: 0, bottom: 85, left: 0, right: 0 },
+      bufferPages: true,
       info: {
         Title: `Vedic Astrology Report — ${birth.name}`,
         Author: "Sampath Kumara Guruji — My Vedic Astrology",
@@ -92,30 +105,13 @@ export function generateReportPdf(
     const ML = 42;               // left margin
     const W  = PW - ML * 2;     // usable width ≈ 511
 
-    // Draw footer on every page (first + subsequent)
-    const drawFooter = () => {
-      const fY = PH - 74;
-      doc.rect(0, fY, PW, 74).fill(FOOTER_BG);
-      doc.moveTo(0, fY + 2).lineTo(PW, fY + 2).lineWidth(2).strokeColor(TURMERIC).stroke();
-      doc.fontSize(8).font("Helvetica-Bold").fillColor(GOLD_TXT)
-        .text("This report is prepared exclusively for " + birth.name + " by Sampath Kumara Guruji", ML, fY + 10, { width: W, align: "center" });
-      doc.fontSize(7.5).font("Helvetica").fillColor("#E8C88A")
-        .text("Brihat Parasara Hora Shastra  ·  Lahiri / Chitra Paksha Ayanamsa  ·  Vimshottari Dasha System", ML, fY + 23, { width: W, align: "center" });
-      doc.fontSize(7.5).font("Helvetica").fillColor(GOLD_TXT)
-        .text("info@myvedicastrology.in   |   +91 98861 00565   |   myvedicastrology.in   |   Bangalore", ML, fY + 36, { width: W, align: "center" });
-      doc.moveTo(ML, fY + 50).lineTo(PW - ML, fY + 50).lineWidth(0.5).strokeColor(TURMERIC).stroke();
-      doc.fontSize(7).font("Helvetica").fillColor("#A07848")
-        .text("For spiritual guidance only. This is not medical, legal or financial advice.", ML, fY + 56, { width: W, align: "center" });
-    };
-
+    // Draw warm background on every new page (rect only — no text, safe in pageAdded)
     doc.on("pageAdded", () => {
       doc.rect(0, 0, PW, PH).fill(PAGE_BG);
-      drawFooter();
     });
 
     // ── PAGE BACKGROUND (first page) ──────────────────────────
     doc.rect(0, 0, PW, PH).fill(PAGE_BG);
-    drawFooter();
 
     // ── HEADER BAND ───────────────────────────────────────────
     doc.rect(0, 0, PW, 116).fill(VERMILLION);
@@ -159,62 +155,101 @@ export function generateReportPdf(
 
     doc.y = 165;
 
-    // ── BIRTH DETAILS + COSMIC IDENTITY ───────────────────────
+    // ── BIRTH DETAILS TABLE (full width, clean rows) ─────────
     secHeader(doc, "Your Birth Details", "Jaataka Vivaram  /  Nakshatra, Rashi, Lagna & Dasha", ML, W, PW);
 
-    const tableTop = doc.y;
-    const COL1 = ML;
-    const COL2 = ML + W / 2 + 8;
-    const CW   = W / 2 - 10;
-
-    // Left column — birth facts
-    const birthRows: [string, string][] = [
-      ["Name (Hesaru)", birth.name],
-      ["Date of Birth (Huttida Dinanka)", formatDate(birth.dob)],
-      ["Time of Birth (Huttida Samaya)", birth.tob],
-      ["Place of Birth (Huttida Uru)", birth.pob],
-      ["Gender (Linga)", birth.gender || "-"],
+    // All rows in one clean full-width table — no fixed-height cards, no overlap
+    const allRows: { label: string; value: string; highlight?: boolean }[] = [
+      { label: "Name",              value: birth.name },
+      { label: "Date of Birth",     value: formatDate(birth.dob) },
+      { label: "Time of Birth",     value: formatTime(birth.tob) },
+      { label: "Place of Birth",    value: birth.pob },
+      { label: "Gender",            value: birth.gender || "—" },
+      ...(birth.concern ? [{ label: "Your Concern / Question", value: birth.concern }] : []),
+      { label: "Nakshatra (Birth Star)",  value: report.nakshatra,    highlight: true },
+      { label: "Rashi (Moon Sign)",       value: report.rashi,        highlight: true },
+      { label: "Lagna (Ascendant)",       value: report.lagna,        highlight: true },
+      { label: "Ruling Planet / Dasha",   value: report.ruling_planet, highlight: true },
     ];
 
-    const rowH = 24;
-    const leftH = birthRows.length * rowH + 6;
-    doc.lineWidth(1).rect(COL1, tableTop, CW, leftH).fillAndStroke(CREAM, TURMERIC);
+    const LABEL_W = 175;
+    const VALUE_W = W - LABEL_W - 16;
 
-    birthRows.forEach(([label, value], i) => {
-      const ry = tableTop + 6 + i * rowH;
-      if (i > 0) {
-        doc.moveTo(COL1 + 4, ry - 1).lineTo(COL1 + CW - 4, ry - 1)
-          .lineWidth(0.3).strokeColor(TURMERIC).stroke();
+    allRows.forEach(({ label, value, highlight }, i) => {
+      const rowBg = highlight
+        ? (i % 2 === 0 ? "#FFF0DC" : "#FFF8EC")
+        : (i % 2 === 0 ? CREAM : "#FFFDF5");
+
+      // Measure value text height to make each row tall enough
+      const valLines = Math.max(1, Math.ceil((value || "—").length / 42));
+      const rH = Math.max(26, valLines * 14 + 12);
+
+      const ry = doc.y;
+
+      // Row background
+      doc.save().rect(ML, ry, W, rH).fill(rowBg).restore();
+
+      // Left accent strip for highlight rows
+      if (highlight) {
+        doc.save().rect(ML, ry, 4, rH).fill(KUMKUM).restore();
       }
-      doc.fontSize(7).font("Helvetica").fillColor(MUTED)
-        .text(label, COL1 + 8, ry, { width: CW - 12 });
-      doc.fontSize(9.5).font("Helvetica-Bold").fillColor(DARK)
-        .text(value || "—", COL1 + 8, ry + 9, { width: CW - 12 });
+
+      // Divider line (not before first row)
+      if (i > 0) {
+        doc.save()
+          .moveTo(ML, ry).lineTo(ML + W, ry)
+          .lineWidth(0.4).strokeColor(TURMERIC).stroke()
+          .restore();
+      }
+
+      // Label
+      doc.save()
+        .fontSize(8).font("Helvetica-Bold").fillColor(MUTED)
+        .text(label, ML + (highlight ? 10 : 6), ry + (rH - 10) / 2, {
+          width: LABEL_W, lineBreak: false,
+        })
+        .restore();
+
+      // Value
+      doc.save()
+        .fontSize(highlight ? 10.5 : 10).font("Helvetica-Bold")
+        .fillColor(highlight ? VERMILLION : DARK)
+        .text(value || "—", ML + LABEL_W + 10, ry + (rH - valLines * 14) / 2, {
+          width: VALUE_W, lineBreak: true,
+        })
+        .restore();
+
+      doc.y = ry + rH;
     });
 
-    // Right column — cosmic identity cards
-    const cosmicCards: [string, string, string][] = [
-      ["Nakshatra  (Janma Nakshatra)", report.nakshatra,     "Your birth star — foundation of all predictions"],
-      ["Rashi  (Moon Sign / Rasi)",    report.rashi,          "Your moon sign — emotional nature"],
-      ["Lagna  (Ascendant / Udaya)",   report.lagna,          "Your rising sign — personality & destiny"],
-      ["Ruling Planet / Dasha",        report.ruling_planet,  "Current dasha lord — influences present life"],
-    ];
+    // Outer border around the whole table
+    const tableEnd = doc.y;
+    const tableStart = tableEnd - allRows.reduce((sum, { value, highlight }, i) => {
+      const valLines = Math.max(1, Math.ceil((value || "—").length / 42));
+      return sum + Math.max(26, valLines * 14 + 12);
+    }, 0);
+    doc.save()
+      .lineWidth(1).rect(ML, tableStart, W, tableEnd - tableStart)
+      .strokeColor(TURMERIC).stroke()
+      .restore();
 
-    let ry2 = tableTop;
-    cosmicCards.forEach(([label, value, hint]) => {
-      const cH = (leftH / 4) - 3;
-      doc.lineWidth(1).rect(COL2, ry2, CW, cH).fillAndStroke(SECTION_BG, TURMERIC);
-      doc.rect(COL2, ry2, 5, cH).fill(KUMKUM);
-      doc.fontSize(7).font("Helvetica").fillColor(MUTED)
-        .text(label, COL2 + 10, ry2 + 4, { width: CW - 14 });
-      doc.fontSize(12).font("Helvetica-Bold").fillColor(VERMILLION)
-        .text(value || "—", COL2 + 10, ry2 + 14, { width: CW - 14 });
-      doc.fontSize(6.5).font("Helvetica").fillColor(MUTED)
-        .text(hint, COL2 + 10, ry2 + cH - 12, { width: CW - 14 });
-      ry2 += cH + 3;
-    });
+    // Vertical divider between label and value columns
+    doc.save()
+      .moveTo(ML + LABEL_W + 6, tableStart)
+      .lineTo(ML + LABEL_W + 6, tableEnd)
+      .lineWidth(0.5).strokeColor(TURMERIC).stroke()
+      .restore();
 
-    doc.y = Math.max(tableTop + leftH, ry2) + 14;
+    doc.y = tableEnd + 14;
+
+    // ── Force page 2 — analysis always starts on a fresh page ─
+    doc.addPage();
+
+    // Slim continuation header on page 2+
+    doc.rect(0, 0, PW, 36).fill(VERMILLION);
+    doc.fontSize(10).font("Helvetica-Bold").fillColor(GOLD_TXT)
+      .text("My Vedic Astrology  —  " + birth.name + "'s Consultation Report  (continued)", ML, 12, { width: W, align: "center" });
+    doc.y = 48;
 
     // ── PROBLEM ANALYSIS ─────────────────────────────────────
     secHeader(doc, "Your Problem — In Simple Words", "Nimma Samasye  /  Explained in plain, clear language", ML, W, PW);
@@ -257,6 +292,28 @@ export function generateReportPdf(
       );
     doc.fontSize(8).font("Helvetica").fillColor(MUTED)
       .text("— Sampath Kumara Guruji", ML, bY + 34, { width: W, align: "center" });
+
+    // ── Stamp footer on every buffered page ───────────────────
+    const range = doc.bufferedPageRange();
+    const totalPages = range.count;
+    for (let i = 0; i < totalPages; i++) {
+      doc.switchToPage(range.start + i);
+      const fY = PH - 74;
+      doc.rect(0, fY, PW, 74).fill(FOOTER_BG);
+      doc.moveTo(0, fY + 2).lineTo(PW, fY + 2).lineWidth(2).strokeColor(TURMERIC).stroke();
+      doc.fontSize(8).font("Helvetica-Bold").fillColor(GOLD_TXT)
+        .text(`Prepared exclusively for ${birth.name} by Sampath Kumara Guruji`, ML, fY + 10, { width: W, align: "center" });
+      doc.fontSize(7.5).font("Helvetica").fillColor("#E8C88A")
+        .text("Brihat Parasara Hora Shastra  |  Lahiri / Chitra Paksha Ayanamsa  |  Vimshottari Dasha System", ML, fY + 22, { width: W, align: "center" });
+      doc.fontSize(7.5).font("Helvetica").fillColor(GOLD_TXT)
+        .text("info@myvedicastrology.in  |  +91 98861 00565  |  myvedicastrology.in  |  Bangalore", ML, fY + 34, { width: W, align: "center" });
+      doc.moveTo(ML, fY + 48).lineTo(PW - ML, fY + 48).lineWidth(0.5).strokeColor(TURMERIC).stroke();
+      doc.fontSize(7).font("Helvetica").fillColor("#A07848")
+        .text("For spiritual guidance only. Not medical, legal or financial advice.", ML, fY + 53, { width: W - 50, align: "center" });
+      // Page number
+      doc.fontSize(7).font("Helvetica-Bold").fillColor(GOLD_TXT)
+        .text(`${i + 1} / ${totalPages}`, PW - ML - 28, fY + 53, { width: 28, align: "right" });
+    }
 
     doc.end();
   });
