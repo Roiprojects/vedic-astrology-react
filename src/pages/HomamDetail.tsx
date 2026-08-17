@@ -13,11 +13,10 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { BookingForm } from "@/components/forms/BookingForm";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getHomamBySlug } from "@/lib/data";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -67,10 +66,6 @@ export default function HomamDetailPage() {
   }
 
   const url = `${siteConfig.url}/homams/${homam.slug}`;
-  const wa = whatsappLink(
-    siteConfig.whatsapp,
-    `Namaste Guruji, I would like to book the ${homam.name}.`
-  );
 
   return (
     <>
@@ -146,9 +141,6 @@ export default function HomamDetailPage() {
                 <AskGurujiButton serviceTitle={homam.name} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
                   <MessageCircleMore className="h-5 w-5" /> Ask Guruji
                 </AskGurujiButton>
-                <Button href={wa} external variant="whatsapp" size="lg" className="w-full sm:w-auto">
-                  <WhatsAppIcon className="h-5 w-5" /> WhatsApp Now
-                </Button>
                 <Button href={siteConfig.phoneHref} variant="gold" size="lg" className="w-full border-[#f2c55e]/50 bg-[#381523]/70 text-[#fff1c7] hover:bg-[#481c2e] sm:w-auto">
                   <Phone className="h-5 w-5" /> Call Now
                 </Button>
@@ -207,7 +199,7 @@ export default function HomamDetailPage() {
       {/* Booking form */}
       <Section id="book" className="scroll-mt-24 pt-0">
         <div className="mx-auto max-w-3xl rounded-3xl border border-gold/25 bg-surface/60 p-6 sm:p-9">
-          <BookingForm variant="homam" subject={homam.name} />
+          <BookingForm variant="homam" subject={homam.name} price={homam.price} />
         </div>
       </Section>
 

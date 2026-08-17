@@ -3,32 +3,16 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/effects/Reveal";
 import { StarField } from "@/components/effects/StarField";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { heroContent, homeStats } from "@/lib/data/content";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <StarField count={70} seed={11} />
 
-      {/* Rotating brand zodiac wheel */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-32 top-1/2 hidden -translate-y-1/2 opacity-[0.14] lg:block"
-      >
-        <div className="relative h-[42rem] w-[42rem] animate-spin-slow">
-          <img
-            src="/logo.jpg"
-            alt=""
-            className="absolute inset-0 w-full h-full rounded-full object-cover mix-blend-luminosity"
-          />
-        </div>
-      </div>
-
       <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
-        {/* Left */}
+        {/* Left — headline + CTAs */}
         <div className="text-center lg:text-left">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-[#b67a1b]/[0.04] px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-gold-light">
@@ -55,19 +39,6 @@ export function Hero() {
               <Button href="/contact-us" variant="primary" size="lg" className="w-full sm:w-auto">
                 Book Consultation
               </Button>
-              <Button
-                href={whatsappLink(
-                  siteConfig.whatsapp,
-                  "Namaste Guruji, I would like astrology guidance."
-                )}
-                external
-                variant="whatsapp"
-                size="lg"
-                className="w-full sm:w-auto"
-              >
-                <WhatsAppIcon className="h-5 w-5" />
-                Chat on WhatsApp
-              </Button>
               <Button href="/services" variant="gold" size="lg" className="w-full sm:w-auto">
                 View Services
               </Button>
@@ -80,75 +51,56 @@ export function Hero() {
               {homeStats.slice(0, 3).map((s) => (
                 <div key={s.label} className="text-center lg:text-left">
                   <div className="font-serif text-2xl text-gold-light">{s.value}</div>
-                  <div className="text-xs uppercase tracking-wide text-faint">
-                    {s.label}
-                  </div>
+                  <div className="text-xs uppercase tracking-wide text-faint">{s.label}</div>
                 </div>
               ))}
             </div>
           </Reveal>
         </div>
 
-        {/* Right — floating Guruji card */}
+        {/* Right — Dakshinamurthy divine image */}
         <Reveal delay={0.2} className="mx-auto w-full max-w-sm">
           <div className="relative animate-float">
-            <div className="divine-glow absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-saffron/25 to-gold/18 blur-2xl" />
-            <div className="glass-card relative rounded-[2rem] p-6">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-purple-700 to-saffron-deep text-3xl ring-1 ring-gold/40">
-                    🕉️
-                  </div>
-                  <span className="absolute -bottom-1 -right-1 flex items-center gap-1 rounded-full bg-overlay px-2 py-0.5 text-[0.6rem] font-medium text-online ring-1 ring-online/40">
-                    <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-online opacity-75" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-online" />
-                    </span>
-                    Online
-                  </span>
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-gold">
-                    Your Astrologer
-                  </p>
-                  <h3 className="mt-1 font-serif text-2xl text-ink">
-                    {heroContent.gurujiName}
-                  </h3>
-                  <p className="text-sm text-online">{heroContent.gurujiStatus}</p>
-                </div>
-              </div>
+            {/* Outer glow */}
+            <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-saffron/30 to-gold/20 blur-3xl" />
 
-              <div className="mt-6 flex items-center gap-2 rounded-2xl border border-gold/20 bg-[#b67a1b]/[0.035] px-4 py-3">
-                <div className="flex">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-gold text-gold" />
-                  ))}
-                </div>
-                <span className="text-sm text-muted">Trusted by 50,000+ souls</span>
+            {/* Golden ring frame */}
+            <div className="relative mx-auto aspect-square w-full max-w-[360px] rounded-full border-[5px] border-[#d4a017] p-1.5 shadow-[0_30px_80px_-20px_rgba(74,15,26,0.55)] ring-1 ring-[#f5c842]/30">
+              <div className="relative h-full w-full overflow-hidden rounded-full bg-[#2a0e18]">
+                <img
+                  src="/images/dakshinamurthy-hd.jpg"
+                  alt="Lord Dakshinamurthy — Shiva as the cosmic teacher of Vedic wisdom"
+                  className="h-full w-full object-cover object-[50%_18%]"
+                />
+                {/* Subtle inner vignette */}
+                <div className="absolute inset-0 rounded-full shadow-[inset_0_0_60px_20px_rgba(20,5,10,0.28)]" />
               </div>
+            </div>
 
-              <dl className="mt-4 grid grid-cols-2 gap-3">
-                {homeStats.slice(0, 2).map((s) => (
-                  <div
-                    key={s.label}
-                    className="rounded-2xl border border-gold/15 bg-[#b67a1b]/[0.025] px-4 py-3 text-center"
-                  >
-                    <dt className="font-serif text-xl text-gold-light">{s.value}</dt>
-                    <dd className="text-[0.7rem] uppercase tracking-wide text-faint">
-                      {s.label}
-                    </dd>
-                  </div>
+            {/* Name label below the image */}
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-gold/40 bg-[#fff9e9] px-6 py-2.5 shadow-[0_10px_28px_-12px_rgba(74,15,26,.4)]">
+              <p className="font-serif text-base leading-none text-[#35180d]">
+                Lord Dakshinamurthy
+              </p>
+            </div>
+
+            {/* Rating badge */}
+            <div className="absolute -right-4 top-6 flex items-center gap-1.5 rounded-2xl border border-gold/30 bg-overlay/90 px-3 py-2 shadow-md backdrop-blur-sm">
+              <div className="flex">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-3.5 w-3.5 fill-gold text-gold" />
                 ))}
-              </dl>
+              </div>
+              <span className="text-xs text-muted">50K+ guided</span>
+            </div>
 
-              <Button
-                href="/chat-with-guruji"
-                variant="primary"
-                size="md"
-                className="mt-5 w-full"
-              >
-                Start Free Chat
-              </Button>
+            {/* Online badge */}
+            <div className="absolute -left-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-full border border-online/40 bg-overlay/90 px-3 py-1.5 shadow-md backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-online opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-online" />
+              </span>
+              <span className="text-xs font-medium text-online">Available Now</span>
             </div>
           </div>
         </Reveal>

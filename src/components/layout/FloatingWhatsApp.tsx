@@ -1,24 +1,23 @@
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { siteConfig } from "@/lib/site";
 import { whatsappLink } from "@/lib/utils";
+import { isNativePlatform } from "@/lib/platform";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 
 export function FloatingWhatsApp() {
+  if (isNativePlatform()) return null;
+  const href = whatsappLink(
+    siteConfig.whatsapp,
+    "Namaste Guruji, I would like guidance from Vedic Astrology."
+  );
   return (
     <a
-      href={whatsappLink(
-        siteConfig.whatsapp,
-        "Namaste Guruji, I would like astrology guidance."
-      )}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with Guruji on WhatsApp"
-      className="group fixed bottom-5 right-5 z-40 flex items-center gap-3 rounded-full bg-[#25D366] p-3.5 text-[#052e16] shadow-[0_12px_40px_-8px_rgba(37,211,102,0.7)] transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+      className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-[#052e16] shadow-lg"
+      aria-label="Chat on WhatsApp"
     >
-      <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366] opacity-30" />
-      <WhatsAppIcon className="relative h-6 w-6" />
-      <span className="relative hidden pr-1 text-sm font-semibold sm:group-hover:block">
-        Chat with Guruji
-      </span>
+      <WhatsAppIcon className="h-7 w-7" />
     </a>
   );
 }

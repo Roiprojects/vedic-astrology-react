@@ -1,11 +1,9 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { InstagramIcon } from "@/components/icons/InstagramIcon";
 import { Container } from "@/components/ui/Container";
 import { footerLinks, siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -33,15 +31,6 @@ export function Footer() {
               {siteConfig.description}
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
-              <a
-                href={whatsappLink(siteConfig.whatsapp)}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className={iconLink}
-              >
-                <WhatsAppIcon className="h-4 w-4" />
-              </a>
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"

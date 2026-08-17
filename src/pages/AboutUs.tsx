@@ -31,7 +31,7 @@ export default function AboutUs() {
         <title>About Us — {siteConfig.name}</title>
         <meta
           name="description"
-          content="Learn about Sampath Kumara — an experienced Vedic astrologer offering authentic consultations, homams, and spiritual guidance rooted in Vedic wisdom."
+          content="Learn about Guruji — an experienced Vedic astrologer offering authentic consultations, homams, and spiritual guidance rooted in Vedic wisdom."
         />
         <link rel="canonical" href={`${siteConfig.url}/about-us`} />
       </Helmet>

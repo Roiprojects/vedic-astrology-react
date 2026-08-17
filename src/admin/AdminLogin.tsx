@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { siteConfig } from "@/lib/site";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -19,24 +20,10 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const supabase = createSupabaseBrowserClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-      if (signInError) {
-        setError(signInError.message);
-        return;
-      }
-      const { data: isAdmin } = await supabase.rpc("is_admin");
-      if (!isAdmin) {
-        await supabase.auth.signOut();
-        setError("This account does not have admin access.");
-        return;
-      }
-      navigate("/admin/services");
-    } catch {
-      setError("Something went wrong. Please try again.");
+      await signIn(email, password);
+      navigate("/admin/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -51,13 +38,10 @@ export default function AdminLoginPage() {
         <div className="mb-8 flex flex-col items-center text-center">
           <BrandLogo href={null} showText={false} size={64} />
           <h1 className="mt-5 font-serif text-2xl text-ink">Admin Panel</h1>
-          <p className="mt-1 text-sm text-muted">Sign in to manage services</p>
+          <p className="mt-1 text-sm text-muted">Sign in to manage your site</p>
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="rounded-3xl border border-gold/25 bg-surface/70 p-6 sm:p-8"
-        >
+        <form onSubmit={onSubmit} className="rounded-3xl border border-gold/25 bg-surface/70 p-6 sm:p-8">
           <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-ink">
             Email
           </label>
@@ -67,11 +51,11 @@ export default function AdminLoginPage() {
               id="email"
               type="email"
               autoFocus
-              autoComplete="email"
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-gold/30 bg-overlay px-10 py-2.5 text-sm text-ink outline-none focus:border-gold/70"
-              placeholder="you@example.com"
+              placeholder="admin@example.com"
             />
           </div>
 
@@ -87,19 +71,13 @@ export default function AdminLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-gold/30 bg-overlay px-10 py-2.5 text-sm text-ink outline-none focus:border-gold/70"
-              placeholder="Enter your password"
+              placeholder="Enter admin password"
             />
           </div>
 
           {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            className="mt-6 w-full"
-            disabled={loading}
-          >
+          <Button type="submit" variant="primary" size="lg" className="mt-6 w-full" disabled={loading}>
             {loading ? "Signing in…" : "Sign In"}
           </Button>
         </form>

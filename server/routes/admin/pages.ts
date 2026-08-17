@@ -1,58 +1,37 @@
-/**
- * Admin Pages routes — Express port of app/api/admin/pages/[page]/route.ts
- *
- * Handles page content for informational pages (birth-chart-pdf, chat-with-guruji, palm-reading).
- * All routes protected by adminAuthMiddleware.
- */
-
-import { Request, Response, Router } from "express";
-import { isPageId, readPageContent, writePageContent } from "../../lib/data/pages-store";
+// Admin Pages routes — PostgreSQL-backed
+import { Router } from "express";
+import { query } from "../../lib/db";
+import { isPageId } from "../../../src/lib/data/pages-store";
 import { pageContentSchema } from "../../lib/admin/page-content-schema";
 
 const router = Router();
 
-/** GET /api/admin/pages/:page — read page content */
-router.get("/:page", async (req: Request, res: Response) => {
+router.get("/:page", async (req, res) => {
   const { page } = req.params;
-  if (!isPageId(page)) {
-    return res.status(404).json({ error: "Unknown page." });
-  }
-
+  if (!isPageId(page)) return res.status(404).json({ error: "Unknown page." });
   try {
-    const content = await readPageContent(page);
-    return res.json({ page, content });
-  } catch (err) {
-    console.error("[admin/pages] GET error", err);
-    return res.status(500).json({ error: "Failed to read page content." });
+    const { rows } = await query("SELECT content FROM pages WHERE slug = $1", [page]);
+    res.json({ page, content: rows[0]?.content ?? {} });
+  } catch {
+    res.status(500).json({ error: "DB error" });
   }
 });
 
-/** PUT /api/admin/pages/:page — update page content */
-router.put("/:page", async (req: Request, res: Response) => {
+router.put("/:page", async (req, res) => {
   const { page } = req.params;
-  if (!isPageId(page)) {
-    return res.status(404).json({ error: "Unknown page." });
-  }
-
-  const body = req.body;
-  const parsed = pageContentSchema.safeParse(body);
-  if (!parsed.success) {
-    return res.status(400).json({
-      error: "Please fix the highlighted fields.",
-      issues: parsed.error.flatten(),
-    });
-  }
-
+  if (!isPageId(page)) return res.status(404).json({ error: "Unknown page." });
+  const parsed = pageContentSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Validation failed", issues: parsed.error.flatten() });
+  const content = { ...parsed.data, price: parsed.data.price ?? null };
   try {
-    await writePageContent(page, {
-      ...parsed.data,
-      price: parsed.data.price ?? null,
-    });
-
-    return res.json({ ok: true });
-  } catch (err) {
-    console.error("[admin/pages] PUT error", err);
-    return res.status(500).json({ error: "Failed to write page content." });
+    await query(
+      `INSERT INTO pages (slug, title, content, active) VALUES ($1,$2,$3,true)
+       ON CONFLICT (slug) DO UPDATE SET title=$2, content=$3, updated_at=now()`,
+      [page, content.title ?? page, JSON.stringify(content)]
+    );
+    res.json({ ok: true });
+  } catch {
+    res.status(500).json({ error: "DB error" });
   }
 });
 

@@ -8,11 +8,9 @@ import { Reveal } from "@/components/effects/Reveal";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { BookingForm } from "@/components/forms/BookingForm";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getPageContent } from "@/lib/data";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 import { JsonLd, breadcrumbSchema, faqSchema } from "@/components/seo/JsonLd";
 
 const features = [
@@ -40,10 +38,6 @@ export default function ChatWithGurujiPage() {
     );
   }
 
-  const wa = whatsappLink(
-    siteConfig.whatsapp,
-    "Namaste Guruji, I would like to start a chat consultation."
-  );
 
   return (
     <>
@@ -51,7 +45,7 @@ export default function ChatWithGurujiPage() {
         <title>Chat with Guruji — {siteConfig.name}</title>
         <meta
           name="description"
-          content="Get live Vedic guidance directly from Sampath Kumara. First few messages free, then continue with a paid consultation. Confidential and convenient."
+          content="Get live Vedic guidance directly from Guruji. First few messages free, then continue with a paid consultation. Confidential and convenient."
         />
         <link rel="canonical" href={`${siteConfig.url}/chat-with-guruji`} />
       </Helmet>
@@ -78,8 +72,8 @@ export default function ChatWithGurujiPage() {
             </span>
             Guruji is Available Now
           </span>
-          <Button href={wa} external variant="whatsapp" size="lg">
-            <WhatsAppIcon className="h-5 w-5" /> Start Chat on WhatsApp
+          <Button href="/contact-us" variant="gold" size="lg">
+            Book Consultation
           </Button>
         </div>
       </PageHero>
@@ -115,7 +109,7 @@ export default function ChatWithGurujiPage() {
 
       <ContactCta
         title="Ready to Chat with Guruji?"
-        subtitle="Ask three free questions, then continue personally with Sampath Kumara."
+        subtitle="Ask three free questions, then continue personally with Guruji."
       />
     </>
   );

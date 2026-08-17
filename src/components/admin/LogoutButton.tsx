@@ -1,15 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { apiFetch } from "@/lib/api";
 
 export function LogoutButton() {
   const navigate = useNavigate();
 
   async function logout() {
-    const supabase = createSupabaseBrowserClient();
-    await supabase.auth.signOut();
+    await apiFetch("/api/auth/logout", { method: "POST" });
     navigate("/admin/login");
-    window.location.reload();
   }
 
   return (

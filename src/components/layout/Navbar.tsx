@@ -4,9 +4,109 @@ import { ChevronDown, Menu, Phone } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
 import { mainNav, siteConfig } from "@/lib/site";
-import { cn, whatsappLink } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { MobileDrawer } from "@/components/layout/MobileDrawer";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
+
+const CONSULTATION_ITEMS = [
+  { label: "Love & Relationship", href: "/services/love-relationship-problems", icon: "💖", desc: "Compatibility & harmony guidance" },
+  { label: "Marriage & Delay Issues", href: "/services/marriage-delay-divorce-issues", icon: "💍", desc: "Manglik, delay & divorce guidance" },
+  { label: "Career & Job Problems", href: "/services/career-confusion-job-problems", icon: "💼", desc: "Job change, growth & confusion" },
+  { label: "Jataka Matching", href: "/services/jataka-matching-kundali-compatibility", icon: "🔗", desc: "Kundali compatibility analysis" },
+  { label: "Janna Jataka (Full Chart)", href: "/services/janna-jataka-comprehensive-birth-chart", icon: "📜", desc: "Complete birth chart — ₹3000" },
+  { label: "Rahu & Kuja Dosha", href: "/services/rahu-kuja-dosha-analysis", icon: "🌑", desc: "Dosha analysis & remedies" },
+  { label: "Pitra Dosha Relief", href: "/services/pitra-dosha-rahu-dasha-relief", icon: "🙏", desc: "Ancestral dosha & Rahu dasha" },
+  { label: "Health & Wellness", href: "/services/health-wellness-astrology", icon: "🌿", desc: "Health, recovery & well-being" },
+  { label: "Financial Prosperity", href: "/services/financial-instability-debt-problems", icon: "💰", desc: "Wealth, debt & finance guidance" },
+];
+
+const OTHER_SERVICES = [
+  { label: "Sacred Homams", href: "/homams", icon: "🔥", desc: "15 Vedic fire rituals" },
+  { label: "Birth Chart PDF", href: "/birth-chart-pdf", icon: "📄", desc: "Detailed kundli report — 48hr" },
+  { label: "Chat with Guruji", href: "/chat-with-guruji", icon: "💬", desc: "3 free questions, then personal" },
+  { label: "Instant Palm Reader", href: "/palm-reading", icon: "🖐", desc: "Upload photo, get reading instantly" },
+  { label: "Gemstone Guidance", href: "/services/gemstone-recommendation", icon: "💎", desc: "Right stone for your chart" },
+  { label: "Black Magic Removal", href: "/services/black-magic-removal", icon: "🛡️", desc: "Protection & removal — ₹5000" },
+];
+
+function ServicesMegaMenu() {
+  return (
+    <div className="invisible absolute left-1/2 top-full w-[720px] max-w-[calc(100vw-2rem)] -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+      <div className="glass-card overflow-hidden rounded-2xl shadow-xl">
+        <div className="grid grid-cols-2 divide-x divide-gold/15">
+          {/* Left — Astrology Consultations */}
+          <div className="p-4">
+            <p className="mb-3 px-2 text-[0.6rem] font-bold uppercase tracking-[0.22em] text-gold">
+              Astrology Consultations
+            </p>
+            <div className="space-y-0.5">
+              {CONSULTATION_ITEMS.map((item) => (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-start gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-[#b67a1b]/[0.06]",
+                      isActive && "text-gold-light"
+                    )
+                  }
+                >
+                  <span className="mt-0.5 text-base leading-none">{item.icon}</span>
+                  <span>
+                    <span className="block text-[0.8rem] font-medium leading-snug text-ink">
+                      {item.label}
+                    </span>
+                    <span className="block text-[0.68rem] leading-snug text-faint">
+                      {item.desc}
+                    </span>
+                  </span>
+                </NavLink>
+              ))}
+            </div>
+            <div className="mt-3 border-t border-gold/15 pt-3">
+              <NavLink
+                to="/services"
+                className="block rounded-xl px-3 py-2 text-[0.75rem] font-semibold text-gold-light hover:bg-[#b67a1b]/[0.06]"
+              >
+                View all services →
+              </NavLink>
+            </div>
+          </div>
+
+          {/* Right — Other Services */}
+          <div className="p-4">
+            <p className="mb-3 px-2 text-[0.6rem] font-bold uppercase tracking-[0.22em] text-gold">
+              Other Services
+            </p>
+            <div className="space-y-0.5">
+              {OTHER_SERVICES.map((item) => (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-start gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-[#b67a1b]/[0.06]",
+                      isActive && "text-gold-light"
+                    )
+                  }
+                >
+                  <span className="mt-0.5 text-base leading-none">{item.icon}</span>
+                  <span>
+                    <span className="block text-[0.8rem] font-medium leading-snug text-ink">
+                      {item.label}
+                    </span>
+                    <span className="block text-[0.68rem] leading-snug text-faint">
+                      {item.desc}
+                    </span>
+                  </span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Navbar() {
   const { pathname } = useLocation();
@@ -63,7 +163,9 @@ export function Navbar() {
                     )}
                   </NavLink>
 
-                  {item.children && (
+                  {item.label === "Services" ? (
+                    <ServicesMegaMenu />
+                  ) : item.children ? (
                     <div className="invisible absolute left-1/2 top-full w-72 -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                       <div className="glass-card overflow-hidden rounded-2xl p-2">
                         {item.children.map((child) => (
@@ -89,25 +191,13 @@ export function Navbar() {
                         ))}
                       </div>
                     </div>
-                  )}
+                  ) : null}
                 </li>
               ))}
             </ul>
 
             {/* Desktop actions */}
             <div className="hidden items-center gap-2 lg:flex">
-              <Button
-                href={whatsappLink(
-                  siteConfig.whatsapp,
-                  "Namaste Guruji, I would like astrology guidance."
-                )}
-                external
-                variant="whatsapp"
-                size="sm"
-              >
-                <WhatsAppIcon className="h-4 w-4" />
-                WhatsApp
-              </Button>
               <Button href="/contact-us" variant="primary" size="sm">
                 Book Now
               </Button>

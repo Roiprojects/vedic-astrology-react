@@ -9,11 +9,10 @@ import {
   type BookingVariant,
 } from "@/lib/validation";
 import { Button } from "@/components/ui/Button";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Input, Label, Select, Textarea, FieldError } from "@/components/forms/fields";
-import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
+import { RazorpayButton } from "@/components/payment/RazorpayButton";
 import { apiFetch } from "@/lib/api";
+import { siteConfig } from "@/lib/site";
 
 const titles: Record<BookingVariant, string> = {
   consultation: "Book Your Consultation",
@@ -28,10 +27,13 @@ type FieldErrors = Record<string, { message?: string }>;
 export function BookingForm({
   variant,
   subject,
+  price,
   className,
 }: {
   variant: BookingVariant;
   subject?: string;
+  /** If provided, a Razorpay Pay Now button will be shown after successful enquiry. */
+  price?: number;
   className?: string;
 }) {
   const schema = useMemo(
@@ -40,6 +42,8 @@ export function BookingForm({
   );
   const [reference, setReference] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   // @ts-ignore react-hook-form / zod type mismatch (zod v3 + rhf v7)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,40 +79,84 @@ export function BookingForm({
     }
   }
 
-  function waFallback() {
-    const v = getValues();
-    const lines = [
-      `Namaste Guruji, I would like to enquire${subject ? ` about ${subject}` : ""}.`,
-      v.name && `Name: ${v.name}`,
-      v.phone && `Phone: ${v.phone}`,
-      v.dob && `DOB: ${v.dob}`,
-      v.tob && `Time of birth: ${v.tob}`,
-      v.pob && `Place of birth: ${v.pob}`,
-      v.message && `Message: ${v.message}`,
-    ].filter(Boolean);
-    return whatsappLink(siteConfig.whatsapp, lines.join("\n"));
-  }
+  const formValues = reference ? getValues() : null;
 
   if (reference) {
     return (
       <div className="glass-card rounded-3xl p-8 text-center">
-        <CheckCircle2 className="mx-auto h-14 w-14 text-online" />
-        <h3 className="mt-4 font-serif text-2xl text-ink">Request Received</h3>
-        <p className="mt-2 text-sm text-muted">
-          Your reference is{" "}
-          <span className="font-semibold text-gold-light">{reference}</span>. Guruji
-          will review your details and reach out to you shortly.
-        </p>
+        {paymentId ? (
+          <>
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle2 className="h-9 w-9 text-green-600" />
+            </div>
+            <h3 className="mt-4 font-serif text-2xl text-ink">Payment Successful!</h3>
+            <p className="mt-1 text-sm text-muted">
+              Your booking is confirmed. Guruji will reach out to you shortly.
+            </p>
+            <div className="mt-5 rounded-2xl border border-gold/20 bg-[#b67a1b]/[0.04] p-4 text-left text-sm">
+              <div className="flex justify-between border-b border-gold/15 pb-2">
+                <span className="text-faint">Enquiry Reference</span>
+                <span className="font-semibold text-gold-light">{reference}</span>
+              </div>
+              <div className="flex justify-between border-b border-gold/15 py-2">
+                <span className="text-faint">Payment ID</span>
+                <span className="font-mono text-xs text-ink">{paymentId}</span>
+              </div>
+              {subject && (
+                <div className="flex justify-between pt-2">
+                  <span className="text-faint">Service</span>
+                  <span className="text-ink">{subject}</span>
+                </div>
+              )}
+            </div>
+            <p className="mt-3 text-xs text-faint">
+              A confirmation has been sent to Guruji. Keep your reference number safe.
+            </p>
+          </>
+        ) : (
+          <>
+            <CheckCircle2 className="mx-auto h-14 w-14 text-online" />
+            <h3 className="mt-4 font-serif text-2xl text-ink">Request Received</h3>
+            <p className="mt-2 text-sm text-muted">
+              Your reference is{" "}
+              <span className="font-semibold text-gold-light">{reference}</span>. Guruji
+              will review your details and reach out to you shortly.
+            </p>
+            {price && price > 0 && (
+              <div className="mt-6">
+                <p className="mb-3 text-sm font-medium text-ink">
+                  Complete your booking by paying ₹{price.toLocaleString("en-IN")}:
+                </p>
+                <RazorpayButton
+                  amount={price}
+                  serviceName={subject || "Consultation"}
+                  reference={reference}
+                  customerName={formValues?.name}
+                  customerPhone={formValues?.phone}
+                  customerEmail={formValues?.email}
+                  onSuccess={(payload) => setPaymentId(payload.razorpay_payment_id)}
+                  onError={(msg) => setPaymentError(msg)}
+                  label={`Pay ₹${price.toLocaleString("en-IN")} via Razorpay`}
+                  className="w-full"
+                />
+                {paymentError && (
+                  <p className="mt-2 text-xs text-danger">{paymentError}</p>
+                )}
+                <p className="mt-2 text-xs text-faint">
+                  Or pay via UPI / bank transfer and share screenshot on call.
+                </p>
+              </div>
+            )}
+          </>
+        )}
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Button href={waFallback()} external variant="whatsapp" size="md">
-            <WhatsAppIcon className="h-4 w-4" />
-            Confirm on WhatsApp
-          </Button>
           <Button
             variant="gold"
             size="md"
             onClick={() => {
               setReference(null);
+              setPaymentId(null);
+              setPaymentError(null);
             }}
           >
             Submit Another
@@ -275,18 +323,6 @@ export function BookingForm({
               <Send className="h-4 w-4" /> Submit Request
             </>
           )}
-        </Button>
-        <Button
-          href={whatsappLink(
-            siteConfig.whatsapp,
-            `Namaste Guruji, I would like to enquire${subject ? ` about ${subject}` : ""}.`
-          )}
-          external
-          variant="whatsapp"
-          size="lg"
-        >
-          <WhatsAppIcon className="h-5 w-5" />
-          WhatsApp Instead
         </Button>
       </div>
       <p className="mt-3 text-center text-xs text-faint sm:text-left">

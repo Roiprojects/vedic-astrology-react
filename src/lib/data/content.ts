@@ -10,7 +10,7 @@ export const heroContent = {
   title: "Authentic Vedic Astrology Guidance for Every Soul",
   subtitle:
     "Personalized astrology consultations, birth chart analysis, homams, and spiritual remedies by experienced Vedic astrologer.",
-  gurujiName: "Sampath Kumara",
+  gurujiName: "Guruji",
   gurujiStatus: "Available Now",
 };
 
@@ -182,7 +182,7 @@ export const whyChooseUs: string[] = [
 ];
 
 export const gurujiProfile = {
-  name: "Sampath Kumara",
+  name: "Guruji",
   experience: "15+ years",
   specialization: [
     "Kundli analysis",
@@ -200,9 +200,9 @@ export const gurujiProfile = {
   approach:
     "A spiritual, honest, and compassionate approach rooted in classical Vedic wisdom.",
   shortBio:
-    "Sampath Kumara is an experienced Vedic astrologer devoted to horoscope reading, kundli analysis, remedies, homams, and spiritual counseling.",
+    "Guruji is an experienced Vedic astrologer devoted to horoscope reading, kundli analysis, remedies, homams, and spiritual counseling.",
   longBio:
-    "With over 15 years of dedicated practice, Sampath Kumara has guided more than 50,000 souls across India and abroad. His expertise spans kundli analysis, marriage matching, career and finance astrology, health-related guidance, Navagraha dosha analysis, and the performance of sacred homams. Guruji is known for his honesty — he offers grounded, compassionate guidance and time-tested remedies, never false guarantees. His mission is to make authentic Vedic astrology accessible to everyone seeking clarity and peace.",
+    "With over 15 years of dedicated practice, Guruji has guided more than 50,000 souls across India and abroad. His expertise spans kundli analysis, marriage matching, career and finance astrology, health-related guidance, Navagraha dosha analysis, and the performance of sacred homams. Guruji is known for his honesty — he offers grounded, compassionate guidance and time-tested remedies, never false guarantees. His mission is to make authentic Vedic astrology accessible to everyone seeking clarity and peace.",
 };
 
 export const aboutContent = {
@@ -211,7 +211,7 @@ export const aboutContent = {
   vision:
     "To make authentic Vedic astrology and sacred rituals accessible online to people across India and abroad.",
   brandIntro:
-    "Vedic Astrology is a devotional platform led by Sampath Kumara, offering authentic astrology consultations, sacred homams, detailed birth chart reports, and live guidance. Rooted in classical Vedic wisdom, our purpose is to help you find clarity for love, marriage, career, finance, health, and every important life decision — with honesty, compassion, and confidentiality at the heart of everything we do.",
+    "Vedic Astrology is a devotional platform led by Guruji, offering authentic astrology consultations, sacred homams, detailed birth chart reports, and live guidance. Rooted in classical Vedic wisdom, our purpose is to help you find clarity for love, marriage, career, finance, health, and every important life decision — with honesty, compassion, and confidentiality at the heart of everything we do.",
 };
 
 export const birthChartReportIncludes = [

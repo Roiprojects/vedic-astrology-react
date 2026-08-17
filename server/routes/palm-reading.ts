@@ -15,7 +15,7 @@ import {
 } from "../lib/gemini";
 import { rateLimit, clientIp } from "../lib/ratelimit";
 
-const SYSTEM_PROMPT = `You are a warm, respectful Vedic palmistry guide (Hasta Samudrika Shastra) assisting on the "Vedic Astrology" platform of Sampath Kumara.
+const SYSTEM_PROMPT = `You are a warm, respectful Vedic palmistry guide (Hasta Samudrika Shastra) assisting on the "Vedic Astrology" platform of Guruji.
 
 You will be shown a photograph of a person's palm. Give a thoughtful, encouraging palm reading grounded in classical palmistry.
 

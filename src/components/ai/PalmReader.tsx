@@ -2,9 +2,7 @@ import { useRef, useState } from "react";
 import { Hand, Loader2, RefreshCw, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input, Label, Textarea } from "@/components/forms/fields";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";
 
 type Status = "idle" | "loading" | "done" | "error";
@@ -185,16 +183,8 @@ export function PalmReader() {
               <Button href="/contact-us" variant="primary" size="md">
                 Book a Full Consultation
               </Button>
-              <Button
-                href={whatsappLink(
-                  siteConfig.whatsapp,
-                  "Namaste Guruji, I scanned my palm and would like a personal consultation."
-                )}
-                external
-                variant="whatsapp"
-                size="md"
-              >
-                <WhatsAppIcon className="h-4 w-4" /> Ask Guruji
+              <Button href={siteConfig.phoneHref} variant="gold" size="md">
+                Call Guruji
               </Button>
             </div>
           </div>

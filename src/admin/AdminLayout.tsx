@@ -53,6 +53,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               Homams
             </a>
             <a
+              href="/admin/testimonials"
+              className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-ink lg:inline"
+            >
+              Testimonials
+            </a>
+            <a
+              href="/admin/enquiries"
+              className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-ink lg:inline"
+            >
+              Enquiries
+            </a>
+            <a
               href="/"
               target="_blank"
               className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-ink md:inline"

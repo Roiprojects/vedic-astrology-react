@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -172,11 +172,6 @@ export function ServiceAiChat() {
     ? "Session ended"
     : `Free chat · ${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-  const waText = activeService
-    ? `Namaste Guruji, I was chatting with AI assistant about ${activeService} and would like to continue with a personal consultation.`
-    : "Namaste Guruji, I would like to continue with a personal consultation.";
-  const wa = whatsappLink(siteConfig.whatsapp, waText);
-
   return (
     <>
       {/* Persistent launcher — bottom-left on every page */}
@@ -274,13 +269,11 @@ export function ServiceAiChat() {
                       <Phone className="h-4 w-4" /> Call {siteConfig.phone}
                     </a>
                     <a
-                      href={wa}
-                      target="_blank"
-                      rel="noreferrer"
+                      href="/contact-us"
                       className="flex min-h-12 items-center justify-between rounded-xl border border-[#dbb25c]/50 bg-[#311523] px-4 text-sm font-semibold text-[#ffe0a0] transition-colors hover:border-[#f2c55e]"
                     >
                       <span className="flex items-center gap-2">
-                        <MessageCircle className="h-4 w-4" /> Chat on WhatsApp
+                        <MessageCircle className="h-4 w-4" /> Book Consultation
                       </span>
                       <ArrowRight className="h-4 w-4" />
                     </a>

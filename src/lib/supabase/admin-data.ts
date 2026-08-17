@@ -1,50 +1,12 @@
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+/**
+ * Admin data access — all calls go to the Express API (PostgreSQL-backed).
+ * No Supabase dependency.
+ */
+import { apiFetch } from "@/lib/api";
 import { pageDefaults, type PageContent, type PageId } from "@/lib/data/pages-store";
 import type { Homam, Service } from "@/lib/data/types";
 
-type ServiceRow = {
-  slug: string;
-  title: string;
-  category_slug: string | null;
-  icon: string | null;
-  short_description: string | null;
-  full_description: string | null;
-  problem: string | null;
-  price: number | null;
-  discount_price: number | null;
-  duration: string | null;
-  gradient: string | null;
-  analysis: string[] | null;
-  receive: string[] | null;
-  benefits: string[] | null;
-  remedies: string[] | null;
-  faqs: { question: string; answer: string }[] | null;
-  featured: boolean | null;
-  display_order: number | null;
-  active: boolean | null;
-};
-
-type HomamRow = {
-  slug: string;
-  name: string;
-  icon: string | null;
-  short_benefit: string | null;
-  full_description: string | null;
-  price: number | null;
-  discount_price: number | null;
-  duration: string | null;
-  gradient: string | null;
-  benefits: string[] | null;
-  suitable_for: string[] | null;
-  pooja_items: string[] | null;
-  booking_instructions: string | null;
-  faqs: { question: string; answer: string }[] | null;
-  featured: boolean | null;
-  display_order: number | null;
-  active: boolean | null;
-};
-
-function mapService(row: ServiceRow): Service {
+function mapServiceRow(row: Record<string, any>): Service {
   return {
     slug: row.slug,
     title: row.title,
@@ -54,7 +16,7 @@ function mapService(row: ServiceRow): Service {
     fullDescription: row.full_description ?? "",
     problem: row.problem ?? "",
     price: row.price ?? 0,
-    discountPrice: row.discount_price,
+    discountPrice: row.discount_price ?? null,
     duration: row.duration ?? "",
     gradient: row.gradient ?? "",
     analysis: row.analysis ?? [],
@@ -68,31 +30,7 @@ function mapService(row: ServiceRow): Service {
   };
 }
 
-function toServiceRow(service: Service) {
-  return {
-    slug: service.slug,
-    title: service.title,
-    category_slug: service.categorySlug,
-    icon: service.icon,
-    short_description: service.shortDescription,
-    full_description: service.fullDescription,
-    problem: service.problem,
-    price: service.price,
-    discount_price: service.discountPrice ?? null,
-    duration: service.duration,
-    gradient: service.gradient,
-    analysis: service.analysis,
-    receive: service.receive,
-    benefits: service.benefits,
-    remedies: service.remedies,
-    faqs: service.faqs,
-    featured: service.featured,
-    display_order: service.order,
-    active: service.active,
-  };
-}
-
-function mapHomam(row: HomamRow): Homam {
+function mapHomamRow(row: Record<string, any>): Homam {
   return {
     slug: row.slug,
     name: row.name,
@@ -100,7 +38,7 @@ function mapHomam(row: HomamRow): Homam {
     shortBenefit: row.short_benefit ?? "",
     fullDescription: row.full_description ?? "",
     price: row.price ?? 0,
-    discountPrice: row.discount_price,
+    discountPrice: row.discount_price ?? null,
     duration: row.duration ?? "",
     gradient: row.gradient ?? "",
     benefits: row.benefits ?? [],
@@ -114,106 +52,96 @@ function mapHomam(row: HomamRow): Homam {
   };
 }
 
-function toHomamRow(homam: Homam) {
-  return {
-    slug: homam.slug,
-    name: homam.name,
-    icon: homam.icon,
-    short_benefit: homam.shortBenefit,
-    full_description: homam.fullDescription,
-    price: homam.price,
-    discount_price: homam.discountPrice ?? null,
-    duration: homam.duration,
-    gradient: homam.gradient,
-    benefits: homam.benefits,
-    suitable_for: homam.suitableFor,
-    pooja_items: homam.poojaItems,
-    booking_instructions: homam.bookingInstructions,
-    faqs: homam.faqs,
-    featured: homam.featured,
-    display_order: homam.order,
-    active: homam.active,
+export async function getAdminServices(): Promise<Service[]> {
+  const res = await apiFetch("/api/admin/services");
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to load services");
+  return (data.services ?? []).map(mapServiceRow);
+}
+
+export async function getAdminService(slug: string): Promise<Service | null> {
+  const res = await apiFetch(`/api/admin/services/${slug}`);
+  const data = await res.json();
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(data.error || "Failed to load service");
+  return mapServiceRow(data.service);
+}
+
+export async function saveAdminService(service: Service): Promise<void> {
+  const existing = await getAdminService(service.slug);
+  const method = existing ? "PUT" : "POST";
+  const url = existing ? `/api/admin/services/${service.slug}` : "/api/admin/services";
+  const body = {
+    slug: service.slug, title: service.title, categorySlug: service.categorySlug,
+    icon: service.icon, shortDescription: service.shortDescription, fullDescription: service.fullDescription,
+    problem: service.problem, price: service.price, discountPrice: service.discountPrice ?? null,
+    duration: service.duration, gradient: service.gradient, analysis: service.analysis,
+    receive: service.receive, benefits: service.benefits, remedies: service.remedies,
+    faqs: service.faqs, featured: service.featured, order: service.order, active: service.active,
   };
+  const res = await apiFetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to save service");
 }
 
-export async function getAdminServices() {
-  const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase
-    .from("services")
-    .select("*")
-    .order("display_order", { ascending: true })
-    .order("title", { ascending: true });
-  if (error) throw error;
-  return (data as ServiceRow[]).map(mapService);
+export async function deleteAdminService(slug: string): Promise<void> {
+  const res = await apiFetch(`/api/admin/services/${slug}`, { method: "DELETE" });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to delete service");
 }
 
-export async function getAdminService(slug: string) {
-  const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase.from("services").select("*").eq("slug", slug).maybeSingle();
-  if (error) throw error;
-  return data ? mapService(data as ServiceRow) : null;
+export async function getAdminHomams(): Promise<Homam[]> {
+  const res = await apiFetch("/api/admin/homams");
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to load homams");
+  return (data.homams ?? []).map(mapHomamRow);
 }
 
-export async function saveAdminService(service: Service) {
-  const supabase = createSupabaseBrowserClient();
-  const { error } = await supabase.from("services").upsert(toServiceRow(service), { onConflict: "slug" });
-  if (error) throw error;
+export async function getAdminHomam(slug: string): Promise<Homam | null> {
+  const res = await apiFetch(`/api/admin/homams/${slug}`);
+  const data = await res.json();
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(data.error || "Failed to load homam");
+  return mapHomamRow(data.homam);
 }
 
-export async function deleteAdminService(slug: string) {
-  const supabase = createSupabaseBrowserClient();
-  const { error } = await supabase.from("services").delete().eq("slug", slug);
-  if (error) throw error;
+export async function saveAdminHomam(homam: Homam): Promise<void> {
+  const existing = await getAdminHomam(homam.slug);
+  const method = existing ? "PUT" : "POST";
+  const url = existing ? `/api/admin/homams/${homam.slug}` : "/api/admin/homams";
+  const body = {
+    slug: homam.slug, name: homam.name, icon: homam.icon, shortBenefit: homam.shortBenefit,
+    fullDescription: homam.fullDescription, price: homam.price, discountPrice: homam.discountPrice ?? null,
+    duration: homam.duration, gradient: homam.gradient, benefits: homam.benefits,
+    suitableFor: homam.suitableFor, poojaItems: homam.poojaItems,
+    bookingInstructions: homam.bookingInstructions, faqs: homam.faqs,
+    featured: homam.featured, order: homam.order, active: homam.active,
+  };
+  const res = await apiFetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to save homam");
 }
 
-export async function getAdminHomams() {
-  const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase
-    .from("homams")
-    .select("*")
-    .order("display_order", { ascending: true })
-    .order("name", { ascending: true });
-  if (error) throw error;
-  return (data as HomamRow[]).map(mapHomam);
-}
-
-export async function getAdminHomam(slug: string) {
-  const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase.from("homams").select("*").eq("slug", slug).maybeSingle();
-  if (error) throw error;
-  return data ? mapHomam(data as HomamRow) : null;
-}
-
-export async function saveAdminHomam(homam: Homam) {
-  const supabase = createSupabaseBrowserClient();
-  const { error } = await supabase.from("homams").upsert(toHomamRow(homam), { onConflict: "slug" });
-  if (error) throw error;
-}
-
-export async function deleteAdminHomam(slug: string) {
-  const supabase = createSupabaseBrowserClient();
-  const { error } = await supabase.from("homams").delete().eq("slug", slug);
-  if (error) throw error;
+export async function deleteAdminHomam(slug: string): Promise<void> {
+  const res = await apiFetch(`/api/admin/homams/${slug}`, { method: "DELETE" });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to delete homam");
 }
 
 export async function getAdminPageContent(pageId: PageId): Promise<PageContent> {
-  const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase.from("pages").select("content").eq("slug", pageId).maybeSingle();
-  if (error) throw error;
-  const content = data?.content && typeof data.content === "object" ? data.content : {};
+  const res = await apiFetch(`/api/admin/pages/${pageId}`);
+  const data = await res.json();
+  if (!res.ok) return pageDefaults(pageId);
+  const content = data.content && typeof data.content === "object" ? data.content : {};
   return { ...pageDefaults(pageId), ...content } as PageContent;
 }
 
-export async function saveAdminPageContent(pageId: PageId, content: PageContent) {
-  const supabase = createSupabaseBrowserClient();
-  const { error } = await supabase.from("pages").upsert(
-    {
-      slug: pageId,
-      title: content.title,
-      content,
-      active: true,
-    },
-    { onConflict: "slug" },
-  );
-  if (error) throw error;
+export async function saveAdminPageContent(pageId: PageId, content: PageContent): Promise<void> {
+  const res = await apiFetch(`/api/admin/pages/${pageId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(content),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to save page content");
 }

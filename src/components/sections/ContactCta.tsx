@@ -3,9 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/effects/Reveal";
 import { StarField } from "@/components/effects/StarField";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 
 export function ContactCta({
   title = "Need Guidance Today?",
@@ -30,19 +28,6 @@ export function ContactCta({
             </Reveal>
             <Reveal delay={0.16}>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
-                <Button
-                  href={whatsappLink(
-                    siteConfig.whatsapp,
-                    "Namaste Guruji, I would like astrology guidance."
-                  )}
-                  external
-                  variant="whatsapp"
-                  size="lg"
-                  className="w-full sm:w-auto"
-                >
-                  <WhatsAppIcon className="h-5 w-5" />
-                  WhatsApp Now
-                </Button>
                 <Button
                   href={siteConfig.phoneHref}
                   variant="gold"

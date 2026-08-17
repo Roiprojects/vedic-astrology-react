@@ -6,19 +6,27 @@ import { getAdminHomams, getAdminServices } from "@/lib/supabase/admin-data";
 import type { Homam, Service } from "@/lib/data/types";
 import { Link } from "react-router-dom";
 import { siteConfig } from "@/lib/site";
+import { apiFetch } from "@/lib/api";
 
 export default function AdminDashboard() {
   const [services, setServices] = useState<Service[]>([]);
   const [homams, setHomams] = useState<Homam[]>([]);
+  const [enquiryCount, setEnquiryCount] = useState<number | null>(null);
+  const [testimonialCount, setTestimonialCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getAdminServices(), getAdminHomams()])
-      .then(([nextServices, nextHomams]) => {
-        setServices(nextServices);
-        setHomams(nextHomams);
-      })
-      .finally(() => setLoading(false));
+    Promise.all([
+      getAdminServices(),
+      getAdminHomams(),
+      apiFetch("/api/admin/enquiries").then(r => r.json()).then(d => d.enquiries?.length ?? 0).catch(() => 0),
+      apiFetch("/api/admin/testimonials").then(r => r.json()).then(d => d.testimonials?.length ?? 0).catch(() => 0),
+    ]).then(([nextServices, nextHomams, eCount, tCount]) => {
+      setServices(nextServices);
+      setHomams(nextHomams);
+      setEnquiryCount(eCount);
+      setTestimonialCount(tCount);
+    }).finally(() => setLoading(false));
   }, []);
 
   const cards = [
@@ -40,6 +48,18 @@ export default function AdminDashboard() {
       title: PAGE_CONFIG[id].label,
       desc: "Hero copy, content & FAQs",
     })),
+    {
+      href: "/admin/testimonials",
+      icon: "⭐",
+      title: "Testimonials",
+      desc: loading ? "…" : `${testimonialCount ?? 0} testimonials — add, edit, feature reviews`,
+    },
+    {
+      href: "/admin/enquiries",
+      icon: "📩",
+      title: "Enquiries",
+      desc: loading ? "…" : `${enquiryCount ?? 0} booking requests — view & update status`,
+    },
   ];
 
   return (

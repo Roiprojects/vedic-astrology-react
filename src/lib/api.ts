@@ -1,3 +1,5 @@
+import { Capacitor } from "@capacitor/core";
+
 const functionBase = (() => {
   const explicit = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL;
   if (explicit) return explicit.replace(/\/$/, "");
@@ -16,17 +18,47 @@ function toFunctionUrl(path: string) {
   return `${functionBase}/${name}`;
 }
 
+export function apiBaseUrl(): string {
+  const explicit = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
+  if (explicit) return explicit;
+  if (Capacitor.isNativePlatform()) {
+    return (import.meta.env.VITE_SITE_URL || "").replace(/\/$/, "");
+  }
+  return "";
+}
+
+export function resolveApiUrl(path: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  if (shouldUseSupabaseFunctions() && path.startsWith("/api/")) return toFunctionUrl(path);
+  return `${apiBaseUrl()}${path}`;
+}
+
+function visitorId(): string {
+  const key = "vedic_ai_visitor";
+  try {
+    const existing = localStorage.getItem(key);
+    if (existing) return existing;
+    const id = crypto.randomUUID();
+    localStorage.setItem(key, id);
+    return id;
+  } catch {
+    return "anonymous";
+  }
+}
+
 export function apiFetch(path: string, init: RequestInit = {}) {
-  if (!shouldUseSupabaseFunctions() || !path.startsWith("/api/")) {
-    return fetch(path, init);
-  }
-
   const headers = new Headers(init.headers);
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  if (anonKey) {
-    headers.set("Authorization", `Bearer ${anonKey}`);
-    headers.set("apikey", anonKey);
+  headers.set("X-Visitor-Id", visitorId());
+  if (shouldUseSupabaseFunctions() && path.startsWith("/api/")) {
+    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (anonKey) {
+      headers.set("Authorization", `Bearer ${anonKey}`);
+      headers.set("apikey", anonKey);
+    }
   }
-
-  return fetch(toFunctionUrl(path), { ...init, headers });
+  return fetch(resolveApiUrl(path), {
+    ...init,
+    headers,
+    credentials: init.credentials ?? "include",
+  });
 }

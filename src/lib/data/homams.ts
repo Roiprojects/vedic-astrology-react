@@ -37,7 +37,7 @@ export const homams: Homam[] = [
     shortBenefit: "Removes obstacles and blesses new beginnings.",
     fullDescription:
       "Ganapathi Homam invokes Lord Ganesha, the remover of obstacles, before any important venture. It clears hurdles, invites auspicious beginnings, and is the traditional first step before other rituals.",
-    price: 0,
+    price: 2000,
     duration: "1.5 – 2 hours",
     benefits: [
       "Removes obstacles from important ventures",
@@ -64,7 +64,7 @@ export const homams: Homam[] = [
     shortBenefit: "Balances all 9 planets and their doshas.",
     fullDescription:
       "Navagraha Homam propitiates all nine planets to harmonize their influence in your life. It reduces the effects of malefic planetary periods and doshas, restoring balance and smoothing life's difficulties.",
-    price: 0,
+    price: 3500,
     duration: "2 – 3 hours",
     benefits: [
       "Balances the influence of all nine planets",
@@ -91,7 +91,7 @@ export const homams: Homam[] = [
     shortBenefit: "Wealth, abundance and debt relief.",
     fullDescription:
       "Lakshmi Kubera Homam invokes Goddess Lakshmi and Lord Kubera, the treasurer of the gods, to attract wealth, remove financial blockages, and support debt relief and lasting prosperity.",
-    price: 0,
+    price: 3000,
     duration: "2 – 3 hours",
     benefits: [
       "Attracts wealth and abundance",
@@ -118,7 +118,7 @@ export const homams: Homam[] = [
     shortBenefit: "Authority, confidence and father-related blessings.",
     fullDescription:
       "Surya Homam honours the Sun God to strengthen a weak Sun, boosting confidence, authority, leadership, and vitality, while blessing matters related to the father and one's public standing.",
-    price: 0,
+    price: 2000,
     duration: "1.5 – 2 hours",
     benefits: [
       "Strengthens confidence and leadership",
@@ -145,7 +145,7 @@ export const homams: Homam[] = [
     shortBenefit: "Mind peace, emotional balance and mother-related blessings.",
     fullDescription:
       "Chandra Homam propitiates the Moon to calm the mind, balance emotions, and ease anxiety and restlessness, while blessing matters related to the mother and inner peace.",
-    price: 0,
+    price: 2000,
     duration: "1.5 – 2 hours",
     benefits: [
       "Calms the mind and balances emotions",
@@ -172,7 +172,7 @@ export const homams: Homam[] = [
     shortBenefit: "Removes negativity, evil eye and grants inner peace.",
     fullDescription:
       "Rudra Homam invokes Lord Shiva in his Rudra form to destroy negativity, dispel the evil eye and negative energies, and bestow protection, courage, and profound inner peace.",
-    price: 0,
+    price: 3000,
     duration: "2 – 3 hours",
     benefits: [
       "Removes negativity and evil-eye effects",
@@ -199,7 +199,7 @@ export const homams: Homam[] = [
     shortBenefit: "Longevity, healing and protection from illness.",
     fullDescription:
       "Maha Mrityunjaya Homam chants the powerful Mrityunjaya mantra to invoke Lord Shiva's healing grace — supporting longevity, recovery from illness, and protection from untimely dangers.",
-    price: 0,
+    price: 3500,
     duration: "2 – 3 hours",
     benefits: [
       "Supports healing and recovery",
@@ -226,7 +226,7 @@ export const homams: Homam[] = [
     shortBenefit: "Knowledge, education, focus and exam success.",
     fullDescription:
       "Saraswati Homam invokes Goddess Saraswati, the deity of knowledge and wisdom, to bless students and seekers with focus, memory, clarity, and success in education and exams.",
-    price: 0,
+    price: 2000,
     duration: "1.5 – 2 hours",
     benefits: [
       "Improves focus, memory and clarity",
@@ -253,7 +253,7 @@ export const homams: Homam[] = [
     shortBenefit: "Protection, courage and removal of negative energy.",
     fullDescription:
       "Durga Homam invokes Goddess Durga to grant protection from enemies and negative forces, courage in adversity, and the removal of obstacles and fear.",
-    price: 0,
+    price: 3000,
     duration: "2 – 3 hours",
     benefits: [
       "Protection from enemies and negativity",
@@ -280,7 +280,7 @@ export const homams: Homam[] = [
     shortBenefit: "Protection from enemies and obstacles.",
     fullDescription:
       "Sudarshana Homam invokes Lord Vishnu's Sudarshana Chakra to destroy negative influences, remove obstacles, and provide powerful protection from enemies and hidden dangers.",
-    price: 0,
+    price: 3500,
     duration: "2 – 3 hours",
     benefits: [
       "Powerful protection from enemies",
@@ -307,7 +307,7 @@ export const homams: Homam[] = [
     shortBenefit: "Health and healing blessings.",
     fullDescription:
       "Dhanvantari Homam invokes Lord Dhanvantari, the divine physician, to bless health, support recovery from illness, and promote overall wellbeing and vitality.",
-    price: 0,
+    price: 2500,
     duration: "2 – 3 hours",
     benefits: [
       "Blesses health and healing",
@@ -334,7 +334,7 @@ export const homams: Homam[] = [
     shortBenefit: "Long life and wellness.",
     fullDescription:
       "Ayushya Homam is performed for longevity, health, and protection — traditionally done for children and family members to bless them with a long, healthy, and prosperous life.",
-    price: 0,
+    price: 2000,
     duration: "2 hours",
     benefits: [
       "Blesses long life and wellness",
@@ -361,7 +361,7 @@ export const homams: Homam[] = [
     shortBenefit: "Relief from Saturn's difficulties; discipline and stability.",
     fullDescription:
       "Shani Shanti Homam propitiates Lord Shani (Saturn) to ease the hardships of Sade Sati, Dhaiya, and Saturn's difficult periods — bringing discipline, patience, and relief from delays and struggles.",
-    price: 0,
+    price: 2500,
     duration: "2 hours",
     benefits: [
       "Eases Sade Sati and Saturn difficulties",
@@ -388,7 +388,7 @@ export const homams: Homam[] = [
     shortBenefit: "Dosha relief and spiritual balance.",
     fullDescription:
       "Rahu Ketu Shanti Homam pacifies the shadow planets Rahu and Ketu to relieve their doshas — reducing confusion, sudden obstacles, and instability, while restoring spiritual balance.",
-    price: 0,
+    price: 3000,
     duration: "2 – 3 hours",
     benefits: [
       "Relieves Rahu-Ketu doshas",
@@ -415,7 +415,7 @@ export const homams: Homam[] = [
     shortBenefit: "Relief from marriage obstacles and Manglik dosha.",
     fullDescription:
       "Mangal Dosha Homam propitiates Mars (Mangal) to reduce the effects of Manglik dosha — easing marriage delays and obstacles, and supporting harmony in married life.",
-    price: 0,
+    price: 2500,
     duration: "2 hours",
     benefits: [
       "Reduces Manglik (Mangal) dosha effects",
@@ -442,7 +442,7 @@ export const homams: Homam[] = [
     shortBenefit: "Sacred Vedic ritual to nullify Manglik dosha and marriage obstacles.",
     fullDescription:
       "Kadali Vivaha is a sacred Vedic ritual performed primarily for men affected by Manglik Dosha or severe planetary obstacles in marriage. By symbolically marrying a plantain (banana) tree, the malefic planetary influences are absorbed by the tree, paving the way for a smooth and harmonious real marriage.",
-    price: 0,
+    price: 3000,
     duration: "2 – 3 hours",
     benefits: [
       "Removes severe Manglik dosha effects for marriage",
@@ -469,7 +469,7 @@ export const homams: Homam[] = [
     shortBenefit: "Spiritual ritual to overcome Manglik & Vidhava dosha for marriage harmony.",
     fullDescription:
       "Kumbha Vivaha is an authentic Vedic ritual performed for individuals (especially women) having strong Manglik Dosha, double Manglik, or Vidhava Dosha in their birth chart. The bride is symbolically married to a sacred mud pot (Kumbha) or idol of Lord Vishnu, transferring the malefic energy and blessing her real marriage with longevity and peace.",
-    price: 0,
+    price: 3000,
     duration: "2 – 3 hours",
     benefits: [
       "Neutralizes strong Manglik and Vidhava doshas",
@@ -496,7 +496,7 @@ export const homams: Homam[] = [
     shortBenefit: "Pitr dosha relief, ancestral peace, and liberation from ancestral curses.",
     fullDescription:
       "Moksha Narayana Bali (Tila Homa) is a powerful Vedic ritual performed for the peace and liberation (moksha) of departed ancestors and departed souls. It removes Pitru Dosha, relieves unfulfilled ancestral desires causing family or career blockages, and brings divine peace, lineage blessings, and prosperity.",
-    price: 0,
+    price: 5000,
     duration: "3 – 4 hours",
     benefits: [
       "Removes Pitru Dosha and ancestral curses",

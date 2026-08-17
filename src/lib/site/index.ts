@@ -11,16 +11,16 @@ export const siteConfig = {
   name: "Vedic Astrology",
   shortName: "Vedic Astrology",
   tagline: "Ancient Wisdom • Cosmic Guidance",
-  guruji: "Sampath Kumara",
-  gurujiPortrait: "/images/sampanth-guruji.png",
+  guruji: "Guruji",
+  gurujiPortrait: "/images/rishi-guruji.svg",
   description:
-    "Authentic Vedic astrology consultations, birth chart analysis, sacred homams, and spiritual remedies by experienced Vedic astrologer Sampath Kumara.",
+    "Authentic Vedic astrology consultations, birth chart analysis, sacred homams, and spiritual remedies by an experienced Vedic astrologer.",
   url: import.meta.env.VITE_SITE_URL || "https://vedicastrology.example.com",
 
   phone: "+91 98861 00565",
   phoneHref: "tel:+919886100565",
   whatsapp: WHATSAPP_NUMBER,
-  email: "guruji@vedicastrology.com",
+  email: "info@myvedicastrology.in",
   location:
     "No 100 21 st main 8thCross Rajarajeshwari nagar Bengaluru - 560098",
   workingHours: "Mon – Sun · 8:00 AM – 9:00 PM IST",

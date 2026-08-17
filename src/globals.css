@@ -218,6 +218,344 @@
   }
 }
 
+.app-root {
+  --color-midnight: #080A18;
+  --color-indigo: #11152F;
+  --color-violet: #27205B;
+  --color-antique: #D6AE57;
+  --color-champagne: #F3D899;
+  --color-ivory: #FFF9EE;
+  --color-charcoal: #161616;
+  background: #080A18;
+  color: #FFF9EE;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-root input,
+.app-root select,
+.app-root textarea {
+  color-scheme: dark;
+  font: inherit;
+}
+
+.app-screen {
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+  padding: 1rem 1.25rem 1.5rem;
+}
+
+.app-kicker {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, #D6AE57 85%, transparent);
+}
+
+.app-title {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  line-height: 1.15;
+  color: #FFF9EE;
+}
+
+.app-sub {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: color-mix(in oklab, #F3D899 72%, transparent);
+}
+
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-btn:active {
+  transform: scale(0.98);
+}
+
+.app-btn-sm {
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  font-size: 0.75rem;
+}
+
+.app-btn:disabled {
+  opacity: 0.4;
+}
+
+.app-btn-primary {
+  background: linear-gradient(180deg, #F3D899, #D6AE57);
+  color: #080A18;
+}
+
+.app-btn-gold,
+.app-btn-ghost {
+  background: transparent;
+  border-color: color-mix(in oklab, #D6AE57 40%, transparent);
+  color: #F3D899;
+}
+
+.app-btn-whatsapp {
+  background: #25D366;
+  color: #052e16;
+}
+
+.app-btn-danger {
+  background: transparent;
+  border-color: color-mix(in oklab, #e5484d 45%, transparent);
+  color: #e5484d;
+}
+
+.app-btn-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.app-btn-row > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.app-icon-btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, #D6AE57 32%, transparent);
+  background: #11152F;
+  color: #F3D899;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #D6AE57;
+}
+
+.app-chip {
+  flex: 0 0 auto;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, #D6AE57 28%, transparent);
+  background: transparent;
+  color: #F3D899;
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.app-chip-active {
+  background: #D6AE57;
+  border-color: #D6AE57;
+  color: #080A18;
+}
+
+.app-hscroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-hscroll::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+.app-field {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #D6AE57;
+}
+
+.app-field input,
+.app-field select,
+.app-input {
+  width: 100%;
+  margin-top: 0.4rem;
+  min-height: 3rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, #D6AE57 28%, transparent);
+  background: #11152F;
+  padding: 0 0.95rem;
+  font-size: 0.9rem;
+  color: #FFF9EE;
+  outline: none;
+  appearance: none;
+}
+
+.app-field select,
+.app-input-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23D6AE57' d='M1.2.6 6 5.4 10.8.6 12 1.8 6 7.8 0 1.8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 11px;
+  padding-right: 2.4rem;
+}
+
+.app-card {
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, #D6AE57 22%, transparent);
+  background: #11152F;
+}
+
+.app-card-ivory {
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, #D6AE57 18%, transparent);
+  background: #FFF9EE;
+  color: #161616;
+}
+
+.app-list {
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, #D6AE57 22%, transparent);
+}
+
+.app-list a,
+.app-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.35rem;
+  padding: 0.85rem 1rem;
+  background: #11152F;
+  border-bottom: 1px solid color-mix(in oklab, #D6AE57 12%, transparent);
+  font-size: 0.9rem;
+}
+
+.app-list a:last-child,
+.app-list-row:last-child {
+  border-bottom: 0;
+}
+
+.app-composer {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-composer input {
+  min-height: 2.75rem;
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, #D6AE57 28%, transparent);
+  background: #11152F;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  color: #FFF9EE;
+  outline: none;
+}
+
+.app-tile {
+  display: flex;
+  min-height: 5.6rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 1.15rem;
+  border: 1px solid color-mix(in oklab, #D6AE57 20%, transparent);
+  background: #11152F;
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+}
+
+.app-discover-card {
+  display: flex;
+  min-height: 9.25rem;
+  flex-direction: column;
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in oklab, #D6AE57 18%, transparent);
+  background: #FFF9EE;
+  padding: 1rem;
+  color: #161616;
+}
+
+.va-skeleton {
+  border-radius: 1rem;
+  background: linear-gradient(90deg, #11152F 0%, #1b2144 50%, #11152F 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+.va-stars {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(243, 216, 153, 0.45), transparent),
+    radial-gradient(1px 1px at 78% 22%, rgba(214, 174, 87, 0.35), transparent),
+    radial-gradient(1.4px 1.4px at 64% 68%, rgba(243, 216, 153, 0.28), transparent);
+}
+
+.va-pulse-online {
+  animation: va-online 1.8s ease-out infinite;
+}
+
+@keyframes va-online {
+  0% { box-shadow: 0 0 0 0 rgba(58, 214, 127, 0.55); }
+  100% { box-shadow: 0 0 0 8px rgba(58, 214, 127, 0); }
+}
+
+.va-orbit {
+  animation: va-orbit-spin 12s linear infinite;
+}
+
+@keyframes va-orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.va-scan {
+  animation: va-scan-move 1.2s ease-in-out infinite;
+}
+
+@keyframes va-scan-move {
+  0% { top: 12%; opacity: 0.3; }
+  50% { top: 70%; opacity: 1; }
+  100% { top: 12%; opacity: 0.3; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;

@@ -1,8 +1,11 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { isNativePlatform } from "@/lib/platform";
+
+let cached: SupabaseClient | null = null;
 
 /**
- * Browser Supabase client (anon key). Used in client components.
- * Safe to import; only fails if invoked without env.
+ * Browser / Capacitor Supabase client (anon key only).
+ * Service-role keys must never be used here.
  */
 export function createSupabaseBrowserClient() {
   const url = import.meta.env.VITE_SUPABASE_URL;
@@ -12,5 +15,13 @@ export function createSupabaseBrowserClient() {
       "Supabase env vars missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
     );
   }
-  return createBrowserClient(url, key);
+  if (cached) return cached;
+  cached = createClient(url, key, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: !isNativePlatform(),
+    },
+  });
+  return cached;
 }

@@ -24,7 +24,7 @@ export default function TestimonialsPage() {
         <title>Client Testimonials — {siteConfig.name}</title>
         <meta
           name="description"
-          content="Real experiences from people who received Vedic astrology guidance, homams, and spiritual remedies from Sampath Kumara."
+          content="Real experiences from people who received Vedic astrology guidance, homams, and spiritual remedies from Guruji."
         />
         <link rel="canonical" href={`${siteConfig.url}/testimonials`} />
       </Helmet>

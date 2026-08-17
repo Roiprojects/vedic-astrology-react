@@ -6,21 +6,12 @@ import { Button } from "@/components/ui/Button";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { contactFaqs } from "@/lib/data/faqs";
 import { siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
 import { JsonLd, breadcrumbSchema, localBusinessSchema } from "@/components/seo/JsonLd";
 
 const contactCards = [
   { icon: Phone, label: "Phone", value: siteConfig.phone, href: siteConfig.phoneHref },
-  {
-    icon: WhatsAppIcon,
-    label: "WhatsApp",
-    value: siteConfig.phone,
-    href: whatsappLink(siteConfig.whatsapp, "Namaste Guruji"),
-    external: true,
-  },
   { icon: Mail, label: "Email", value: siteConfig.email, href: `mailto:${siteConfig.email}` },
   { icon: MapPin, label: "Location", value: siteConfig.location },
   { icon: Clock, label: "Working Hours", value: siteConfig.workingHours },
@@ -37,7 +28,7 @@ export default function ContactUsPage() {
         <title>Contact Us — {siteConfig.name}</title>
         <meta
           name="description"
-          content="Contact Vedic Astrology — speak with Sampath Kumara for astrology consultation, homam booking, or a kundli report via phone, WhatsApp, or email."
+          content="Contact Vedic Astrology — speak with Guruji for astrology consultation, homam booking, or a kundli report via phone, WhatsApp, or email."
         />
         <link rel="canonical" href={`${siteConfig.url}/contact-us`} />
       </Helmet>
@@ -57,14 +48,6 @@ export default function ContactUsPage() {
         seed={31}
       >
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button
-            href={whatsappLink(siteConfig.whatsapp, "Namaste Guruji, I would like guidance.")}
-            external
-            variant="whatsapp"
-            size="lg"
-          >
-            <WhatsAppIcon className="h-5 w-5" /> WhatsApp Now
-          </Button>
           <Button href={siteConfig.phoneHref} variant="gold" size="lg">
             <Phone className="h-5 w-5" /> Call Now
           </Button>
@@ -92,8 +75,8 @@ export default function ContactUsPage() {
                   <a
                     key={c.label}
                     href={c.href}
-                    target={c.external ? "_blank" : undefined}
-                    rel={c.external ? "noopener noreferrer" : undefined}
+                    target={"external" in c && c.external ? "_blank" : undefined}
+                    rel={"external" in c && c.external ? "noopener noreferrer" : undefined}
                   >
                     {Inner}
                   </a>

@@ -1,12 +1,25 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Phone, X } from "lucide-react";
+import { ChevronDown, Phone, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
-import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { mainNav, siteConfig } from "@/lib/site";
-import { whatsappLink } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+const CONSULTATION_ITEMS = [
+  { label: "Love & Relationship", href: "/services/love-relationship-problems" },
+  { label: "Marriage & Delay Issues", href: "/services/marriage-delay-divorce-issues" },
+  { label: "Career & Job Problems", href: "/services/career-confusion-job-problems" },
+  { label: "Jataka Matching", href: "/services/jataka-matching-kundali-compatibility" },
+  { label: "Janna Jataka (Full Chart)", href: "/services/janna-jataka-comprehensive-birth-chart" },
+  { label: "Rahu & Kuja Dosha", href: "/services/rahu-kuja-dosha-analysis" },
+  { label: "Pitra Dosha Relief", href: "/services/pitra-dosha-rahu-dasha-relief" },
+  { label: "Health & Wellness", href: "/services/health-wellness-astrology" },
+  { label: "Financial Prosperity", href: "/services/financial-instability-debt-problems" },
+  { label: "Gemstone Guidance", href: "/services/gemstone-recommendation" },
+  { label: "Black Magic Removal", href: "/services/black-magic-removal" },
+];
 
 export function MobileDrawer({
   open,
@@ -16,14 +29,12 @@ export function MobileDrawer({
   onClose: () => void;
 }) {
   const { pathname } = useLocation();
+  const [servicesOpen, setServicesOpen] = useState(false);
 
-  // Close on route change
   useEffect(() => {
     onClose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Lock body scroll while open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -31,11 +42,8 @@ export function MobileDrawer({
     };
   }, [open]);
 
-  const links = mainNav.flatMap((item) =>
-    item.children
-      ? [{ label: item.label, href: item.href }, ...item.children]
-      : [item]
-  );
+  // Top-level nav items (non-Services)
+  const topLinks = mainNav.filter((item) => item.label !== "Services");
 
   return (
     <AnimatePresence>
@@ -68,20 +76,86 @@ export function MobileDrawer({
 
             <nav className="container-x flex-1 overflow-y-auto py-6">
               <ul className="space-y-1">
-                {links.map((link, i) => (
+                {/* Home & other top links before Services */}
+                {topLinks.slice(0, 2).map((link, i) => (
                   <motion.li
                     key={link.href}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.06 * i + 0.1 }}
                   >
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.href}
                       onClick={onClose}
                       className="flex items-center justify-between rounded-2xl px-4 py-3.5 text-lg font-medium text-ink transition-colors hover:bg-[#b67a1b]/[0.04]"
                     >
                       {link.label}
-                    </a>
+                    </Link>
+                  </motion.li>
+                ))}
+
+                {/* Services — expandable */}
+                <motion.li
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.18 }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setServicesOpen((v) => !v)}
+                    className="flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-lg font-medium text-ink transition-colors hover:bg-[#b67a1b]/[0.04]"
+                  >
+                    Services
+                    <ChevronDown
+                      className={cn(
+                        "h-5 w-5 text-gold transition-transform duration-200",
+                        servicesOpen && "rotate-180"
+                      )}
+                    />
+                  </button>
+                  {servicesOpen && (
+                    <div className="mt-1 ml-3 space-y-0.5 rounded-2xl border border-gold/15 bg-[#b67a1b]/[0.03] p-3">
+                      <p className="px-3 pb-1 text-[0.6rem] font-bold uppercase tracking-widest text-gold">
+                        Astrology Consultations
+                      </p>
+                      {CONSULTATION_ITEMS.map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          onClick={onClose}
+                          className="block rounded-xl px-3 py-2 text-sm text-muted transition-colors hover:bg-[#b67a1b]/[0.06] hover:text-ink"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                      <div className="border-t border-gold/15 pt-2 mt-2">
+                        <p className="px-3 pb-1 text-[0.6rem] font-bold uppercase tracking-widest text-gold">
+                          Other Services
+                        </p>
+                        <Link to="/homams" onClick={onClose} className="block rounded-xl px-3 py-2 text-sm text-muted hover:bg-[#b67a1b]/[0.06] hover:text-ink">Sacred Homams</Link>
+                        <Link to="/birth-chart-pdf" onClick={onClose} className="block rounded-xl px-3 py-2 text-sm text-muted hover:bg-[#b67a1b]/[0.06] hover:text-ink">Birth Chart PDF</Link>
+                        <Link to="/chat-with-guruji" onClick={onClose} className="block rounded-xl px-3 py-2 text-sm text-muted hover:bg-[#b67a1b]/[0.06] hover:text-ink">Chat with Guruji</Link>
+                        <Link to="/palm-reading" onClick={onClose} className="block rounded-xl px-3 py-2 text-sm text-muted hover:bg-[#b67a1b]/[0.06] hover:text-ink">Instant Palm Reader</Link>
+                      </div>
+                    </div>
+                  )}
+                </motion.li>
+
+                {/* Remaining links */}
+                {topLinks.slice(2).map((link, i) => (
+                  <motion.li
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.06 * (i + 3) + 0.1 }}
+                  >
+                    <Link
+                      to={link.href}
+                      onClick={onClose}
+                      className="flex items-center justify-between rounded-2xl px-4 py-3.5 text-lg font-medium text-ink transition-colors hover:bg-[#b67a1b]/[0.04]"
+                    >
+                      {link.label}
+                    </Link>
                   </motion.li>
                 ))}
               </ul>
@@ -91,24 +165,10 @@ export function MobileDrawer({
               <Button href="/contact-us" variant="primary" size="lg" onClick={onClose}>
                 Book Consultation
               </Button>
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  href={whatsappLink(
-                    siteConfig.whatsapp,
-                    "Namaste Guruji, I would like astrology guidance."
-                  )}
-                  external
-                  variant="whatsapp"
-                  size="md"
-                >
-                  <WhatsAppIcon className="h-4 w-4" />
-                  WhatsApp
-                </Button>
-                <Button href={siteConfig.phoneHref} variant="gold" size="md">
-                  <Phone className="h-4 w-4" />
-                  Call Now
-                </Button>
-              </div>
+              <Button href={siteConfig.phoneHref} variant="gold" size="lg" onClick={onClose}>
+                <Phone className="h-4 w-4" />
+                Call Now
+              </Button>
             </div>
           </motion.div>
         </motion.div>

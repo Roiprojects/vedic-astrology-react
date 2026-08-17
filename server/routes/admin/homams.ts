@@ -1,86 +1,79 @@
-/**
- * Admin Homams routes — Express port of:
- *  app/api/admin/homams/route.ts  (GET list, POST create)
- *  app/api/admin/homams/[slug]/route.ts  (PUT update, DELETE)
- */
-
-import { Router, Request, Response } from "express";
-import { readHomamsRaw, writeHomamsRaw } from "../../lib/data/homams-store";
+// Admin Homams routes — PostgreSQL-backed
+import { Router } from "express";
+import { query } from "../../lib/db";
 import { homamSchema } from "../../lib/admin/homam-schema";
 
 const router = Router();
 
-/** GET /api/admin/homams — list all homams (admin view). */
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", async (_req, res) => {
   try {
-    const homams = await readHomamsRaw();
-    return res.json({ homams });
-  } catch (err) {
-    console.error("[admin/homams] GET error", err);
-    return res.status(500).json({ error: "Failed to read homams." });
+    const { rows } = await query("SELECT * FROM homams ORDER BY display_order ASC, name ASC");
+    res.json({ homams: rows });
+  } catch {
+    res.status(500).json({ error: "DB error" });
   }
 });
 
-/** POST /api/admin/homams — create a new homam. */
-router.post("/", async (req: Request, res: Response) => {
-  const body = req.body;
-  const parsed = homamSchema.safeParse(body);
-  if (!parsed.success) {
-    return res.status(400).json({
-      error: "Please fix the highlighted fields.",
-      issues: parsed.error.flatten(),
-    });
+router.get("/:slug", async (req, res) => {
+  try {
+    const { rows } = await query("SELECT * FROM homams WHERE slug = $1", [req.params.slug]);
+    if (!rows.length) return res.status(404).json({ error: "Not found" });
+    res.json({ homam: rows[0] });
+  } catch {
+    res.status(500).json({ error: "DB error" });
   }
-
-  const homams = await readHomamsRaw();
-  if (homams.some((h) => h.slug === parsed.data.slug)) {
-    return res.status(409).json({ error: `A homam with the slug "${parsed.data.slug}" already exists.` });
-  }
-
-  const next = [...homams, parsed.data];
-  await writeHomamsRaw(next);
-  res.json({ ok: true, slug: parsed.data.slug });
 });
 
-/** PUT /api/admin/homams/:slug — update an existing homam. */
-router.put("/:slug", async (req: Request, res: Response) => {
+router.post("/", async (req, res) => {
+  const parsed = homamSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Validation failed", issues: parsed.error.flatten() });
+  const h = parsed.data;
+  try {
+    await query(
+      `INSERT INTO homams (slug,name,icon,short_benefit,full_description,price,discount_price,duration,gradient,benefits,suitable_for,pooja_items,booking_instructions,faqs,featured,display_order,active)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)`,
+      [h.slug,h.name,h.icon,h.shortBenefit,h.fullDescription,h.price,h.discountPrice??null,
+       h.duration,h.gradient,JSON.stringify(h.benefits),JSON.stringify(h.suitableFor),
+       JSON.stringify(h.poojaItems),h.bookingInstructions,JSON.stringify(h.faqs),h.featured,h.order,h.active]
+    );
+    res.json({ ok: true, slug: h.slug });
+  } catch (e: any) {
+    if (e.code === "23505") return res.status(409).json({ error: `Slug "${h.slug}" already exists.` });
+    res.status(500).json({ error: "DB error" });
+  }
+});
+
+router.put("/:slug", async (req, res) => {
+  const parsed = homamSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Validation failed", issues: parsed.error.flatten() });
+  const h = parsed.data;
   const { slug } = req.params;
-  const body = req.body;
-  const parsed = homamSchema.safeParse(body);
-  if (!parsed.success) {
-    return res.status(400).json({
-      error: "Please fix the highlighted fields.",
-      issues: parsed.error.flatten(),
-    });
+  try {
+    const { rowCount } = await query(
+      `UPDATE homams SET slug=$1,name=$2,icon=$3,short_benefit=$4,full_description=$5,price=$6,
+       discount_price=$7,duration=$8,gradient=$9,benefits=$10,suitable_for=$11,pooja_items=$12,
+       booking_instructions=$13,faqs=$14,featured=$15,display_order=$16,active=$17,updated_at=now()
+       WHERE slug=$18`,
+      [h.slug,h.name,h.icon,h.shortBenefit,h.fullDescription,h.price,h.discountPrice??null,
+       h.duration,h.gradient,JSON.stringify(h.benefits),JSON.stringify(h.suitableFor),
+       JSON.stringify(h.poojaItems),h.bookingInstructions,JSON.stringify(h.faqs),h.featured,h.order,h.active,slug]
+    );
+    if (!rowCount) return res.status(404).json({ error: "Not found" });
+    res.json({ ok: true, slug: h.slug });
+  } catch (e: any) {
+    if (e.code === "23505") return res.status(409).json({ error: `Slug "${h.slug}" already exists.` });
+    res.status(500).json({ error: "DB error" });
   }
-
-  const homams = await readHomamsRaw();
-  const index = homams.findIndex((h) => h.slug === slug);
-  if (index === -1) {
-    return res.status(404).json({ error: "Homam not found." });
-  }
-
-  const nextSlug = parsed.data.slug;
-  if (nextSlug !== slug && homams.some((h) => h.slug === nextSlug)) {
-    return res.status(409).json({ error: `Another homam already uses the slug "${nextSlug}".` });
-  }
-
-  const next = [...homams];
-  next[index] = parsed.data;
-  await writeHomamsRaw(next);
-  res.json({ ok: true, slug: nextSlug });
 });
 
-/** DELETE /api/admin/homams/:slug — delete a homam. */
-router.delete("/:slug", async (req: Request, res: Response) => {
-  const { slug } = req.params;
-  const homams = await readHomamsRaw();
-  const next = homams.filter((h) => h.slug !== slug);
-  if (next.length === homams.length) {
-    return res.status(404).json({ error: "Homam not found." });
+router.delete("/:slug", async (req, res) => {
+  try {
+    const { rowCount } = await query("DELETE FROM homams WHERE slug = $1", [req.params.slug]);
+    if (!rowCount) return res.status(404).json({ error: "Not found" });
+    res.json({ ok: true });
+  } catch {
+    res.status(500).json({ error: "DB error" });
   }
-  await writeHomamsRaw(next);
-  res.json({ ok: true });
 });
 
 export default router;

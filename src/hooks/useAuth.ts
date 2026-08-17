@@ -1,59 +1,36 @@
 import { useState, useEffect, useCallback } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import type { Session, User } from "@supabase/supabase-js";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+import { apiFetch } from "@/lib/api";
 
 export function useAuth() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      setLoading(false);
-      return;
-    }
-    const supabase = createSupabaseBrowserClient();
-    async function refreshAdminState(session: Session | null) {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (!session) {
-        setIsAdmin(false);
-        setLoading(false);
-        return;
-      }
-      const { data: admin } = await supabase.rpc("is_admin");
-      setIsAdmin(Boolean(admin));
-      setLoading(false);
-    }
-
-    supabase.auth.getSession().then(({ data }) => {
-      void refreshAdminState(data.session);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        void refreshAdminState(session);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    apiFetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => setIsAdmin(Boolean(d.isAdmin)))
+      .catch(() => setIsAdmin(false))
+      .finally(() => setLoading(false));
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const supabase = createSupabaseBrowserClient();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    return data;
+    const res = await apiFetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "Login failed");
+    setIsAdmin(true);
   }, []);
 
   const signOut = useCallback(async () => {
-    const supabase = createSupabaseBrowserClient();
-    await supabase.auth.signOut();
+    await apiFetch("/api/auth/logout", { method: "POST" });
+    setIsAdmin(false);
   }, []);
 
-  return { session, user, isAdmin, loading, signIn, signOut };
+  // Keep session/user aliases for backward compat with AdminLayout
+  const session = isAdmin ? { user: { email: "admin" } } : null;
+
+  return { session, user: session?.user ?? null, isAdmin, loading, signIn, signOut };
 }
