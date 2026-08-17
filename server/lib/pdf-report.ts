@@ -4,7 +4,37 @@
  * Bilingual Tamil/Telugu labels for South Indian readability.
  */
 import PDFDocument from "pdfkit";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import type { BirthDetails, AstrologyReport } from "./astrology-ai";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function logoPath(): string | null {
+  const candidates = [
+    path.resolve(__dirname, "../../public/logo-mark.png"),
+    path.resolve(__dirname, "../../../public/logo-mark.png"),
+    path.resolve(process.cwd(), "public/logo-mark.png"),
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
+
+/** Strip markdown symbols that pdfkit/Helvetica cannot render properly */
+function clean(text: string | undefined | null): string {
+  if (!text) return "—";
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/`(.+?)`/g, "$1")
+    .replace(/_{2}(.+?)_{2}/g, "$1")
+    .replace(/\[(.+?)\]\(.+?\)/g, "$1")
+    .trim();
+}
 
 // ── Palette ────────────────────────────────────────────────────
 const VERMILLION  = "#8B0000";   // temple red header / accent
@@ -91,13 +121,20 @@ export function generateReportPdf(
     doc.rect(0, 0, PW, 116).fill(VERMILLION);
 
     // Sacred symbols row
-    doc.fontSize(12).font("Helvetica").fillColor(GOLD_TXT)
-      .text("✦   OM   ✦   OM NAMAH SHIVAYA   ✦   SRI GURUBHYO NAMAH   ✦", ML, 9, { width: W, align: "center" });
+    doc.fontSize(11).font("Helvetica").fillColor(GOLD_TXT)
+      .text("*   OM   *   OM NAMAH SHIVAYA   *   SRI GURUBHYO NAMAH   *", ML, 9, { width: W, align: "center" });
     doc.moveTo(20, 26).lineTo(PW - 20, 26).lineWidth(0.7).strokeColor(GOLD_TXT).stroke();
 
-    // Brand name
+    // Logo + Brand name
+    const logo = logoPath();
+    const textML = ML;
+    if (logo) {
+      try {
+        doc.image(logo, ML, 28, { height: 52, fit: [52, 52] });
+      } catch { /* skip if logo missing */ }
+    }
     doc.fontSize(22).font("Helvetica-Bold").fillColor("white")
-      .text("My Vedic Astrology", ML, 32, { width: W, align: "center" });
+      .text("My Vedic Astrology", textML, 32, { width: W, align: "center" });
     doc.fontSize(9).font("Helvetica").fillColor(GOLD_TXT)
       .text("Sampath Kumara Guruji  ·  Bangalore  ·  myvedicastrology.in  ·  +91 98861 00565", ML, 58, { width: W, align: "center" });
 
@@ -123,7 +160,7 @@ export function generateReportPdf(
     doc.y = 165;
 
     // ── BIRTH DETAILS + COSMIC IDENTITY ───────────────────────
-    secHeader(doc, "🌟  Your Birth Details", "ஜாதக விவரம்  /  జాతక వివరాలు", ML, W, PW);
+    secHeader(doc, "Your Birth Details", "ஜாதக விவரம்  /  జాతక వివరాలు", ML, W, PW);
 
     const tableTop = doc.y;
     const COL1 = ML;
@@ -180,31 +217,31 @@ export function generateReportPdf(
     doc.y = Math.max(tableTop + leftH, ry2) + 14;
 
     // ── PROBLEM ANALYSIS ─────────────────────────────────────
-    secHeader(doc, "🔍  Your Problem — In Simple Words", "உங்கள் பிரச்சினை  /  మీ సమస్య", ML, W, PW);
+    secHeader(doc, "Your Problem — In Simple Words", "உங்கள் பிரச்சினை  /  మీ సమస్య", ML, W, PW);
     simpleBox(doc, report.problem_analysis, ML, W);
 
     // ── ASTROLOGICAL REASON ───────────────────────────────────
-    secHeader(doc, "🪐  Why This Is Happening  (Astrological Reason)", "ஜோதிட காரணம்  /  జ్యోతిష కారణం", ML, W, PW);
+    secHeader(doc, "Why This Is Happening  (Astrological Reason)", "ஜோதிட காரணம்  /  జ్యోతిష కారణం", ML, W, PW);
     simpleBox(doc, report.astrological_reason, ML, W);
 
     // ── PLANETARY POSITIONS ───────────────────────────────────
-    secHeader(doc, "✨  Planetary Positions & Yogas", "கிரக நிலைகள்  /  గ్రహ స్థానాలు", ML, W, PW);
+    secHeader(doc, "Planetary Positions & Yogas", "கிரக நிலைகள்  /  గ్రహ స్థానాలు", ML, W, PW);
     simpleBox(doc, report.planetary_positions, ML, W);
 
     // ── REMEDIES ─────────────────────────────────────────────
-    secHeader(doc, "✅  Remedies — Easy to Follow", "பரிகாரங்கள்  /  పరిహారాలు", ML, W, PW);
+    secHeader(doc, "Remedies — Easy to Follow", "பரிகாரங்கள்  /  పరిహారాలు", ML, W, PW);
     remedyBoxes(doc, report.remedies, ML, W);
 
     // ── MANTRA ───────────────────────────────────────────────
-    secHeader(doc, "🙏  Your Mantra", "மந்திரம்  /  మంత్రం", ML, W, PW);
+    secHeader(doc, "Your Prescribed Mantra", "மந்திரம்  /  మంత్రం", ML, W, PW);
     mantraBox(doc, report.mantras, ML, W);
 
     // ── GEMSTONE ─────────────────────────────────────────────
-    secHeader(doc, "💎  Gemstone Recommendation", "ரத்தினம்  /  రత్నం", ML, W, PW);
+    secHeader(doc, "Gemstone Recommendation", "ரத்தினம்  /  రత్నం", ML, W, PW);
     gemstoneBox(doc, report.gemstone_advice, ML, W);
 
     // ── AUSPICIOUS DAYS ──────────────────────────────────────
-    secHeader(doc, "📅  Your Lucky Days This Month", "நல்ல நாட்கள்  /  శుభ దినాలు", ML, W, PW);
+    secHeader(doc, "Auspicious Days & Lucky Dates This Month", "நல்ல நாட்கள்  /  శుభ దినాలు", ML, W, PW);
     auspiciousPills(doc, report.auspicious_days, ML, W);
 
     // ── CLOSING BLESSING ─────────────────────────────────────
@@ -258,12 +295,13 @@ function simpleBox(
   ML:   number,
   W:    number,
 ) {
+  const cleaned = clean(text);
   const y = doc.y;
-  const textH = estimateTextHeight(text, W, 10) + 20;
+  const textH = estimateTextHeight(cleaned, W, 10) + 20;
   doc.lineWidth(0.8).rect(ML, y, W, textH).fillAndStroke("#FFFAF0", TURMERIC);
   doc.rect(ML, y, 4, textH).fill(TURMERIC);
   doc.fontSize(10).font("Helvetica").fillColor(DARK)
-    .text(text || "—", ML + 12, y + 10, { width: W - 20, align: "justify", lineGap: 3 });
+    .text(cleaned, ML + 12, y + 10, { width: W - 20, align: "justify", lineGap: 3 });
   doc.y = y + textH + 8;
 }
 
@@ -287,7 +325,7 @@ function remedyBoxes(
       .text(String(i + 1), ML, cy + cardH / 2 - 10, { width: 36, align: "center" });
     // Text
     doc.fontSize(9.5).font("Helvetica").fillColor(DARK)
-      .text(item, ML + 44, cy + 10, { width: W - 52, lineGap: 2.5 });
+      .text(clean(item), ML + 44, cy + 10, { width: W - 52, lineGap: 2.5 });
     doc.y = cy + cardH + 6;
   });
   doc.moveDown(0.3);
@@ -300,7 +338,7 @@ function mantraBox(
   ML:   number,
   W:    number,
 ) {
-  const lines   = (text || "").split(/\n+/).filter(Boolean);
+  const lines   = clean(text).split(/\n+/).filter(Boolean);
   const mantra  = lines[0] || text;
   const instruct = lines.slice(1).join("  ·  ") || "Chant 108 times daily at sunrise, facing East";
   const h = 90;
@@ -375,7 +413,7 @@ function auspiciousPills(
     doc.lineWidth(1).rect(cx, cy, pillW, pillH).fillAndStroke(CREAM, TURMERIC);
     doc.rect(cx, cy, 4, pillH).fill(TURMERIC);
     doc.fontSize(8.5).font("Helvetica-Bold").fillColor(DARK)
-      .text("✦ " + day, cx + 10, cy + 9, { width: pillW - 14 });
+      .text(">> " + day, cx + 10, cy + 9, { width: pillW - 14 });
     cx += pillW + 8;
   });
   doc.y = cy + pillH + 10;
