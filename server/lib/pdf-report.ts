@@ -145,7 +145,7 @@ export function generateReportPdf(
       .text(serviceTitle.toUpperCase() + "  —  PERSONALIZED VEDIC CONSULTATION REPORT", ML, 80, { width: W, align: "center" });
 
     // Turmeric band below header
-    doc.rect(0, 113).lineTo(PW, 113).lineWidth(3).strokeColor(TURMERIC).stroke();
+    doc.moveTo(0, 113).lineTo(PW, 113).lineWidth(3).strokeColor(TURMERIC).stroke();
 
     // ── NAME BAND ─────────────────────────────────────────────
     doc.rect(0, 116, PW, 40).fill("#3D0009");
@@ -160,7 +160,7 @@ export function generateReportPdf(
     doc.y = 165;
 
     // ── BIRTH DETAILS + COSMIC IDENTITY ───────────────────────
-    secHeader(doc, "Your Birth Details", "ஜாதக விவரம்  /  జాతక వివరాలు", ML, W, PW);
+    secHeader(doc, "Your Birth Details", "Jaataka Vivaram  /  Nakshatra, Rashi, Lagna & Dasha", ML, W, PW);
 
     const tableTop = doc.y;
     const COL1 = ML;
@@ -169,11 +169,11 @@ export function generateReportPdf(
 
     // Left column — birth facts
     const birthRows: [string, string][] = [
-      ["Name (பெயர்)", birth.name],
-      ["Date of Birth (பிறந்த தேதி)", formatDate(birth.dob)],
-      ["Time of Birth (பிறந்த நேரம்)", birth.tob],
-      ["Place of Birth (பிறந்த இடம்)", birth.pob],
-      ["Gender (பாலினம்)", birth.gender || "—"],
+      ["Name (Hesaru)", birth.name],
+      ["Date of Birth (Huttida Dinanka)", formatDate(birth.dob)],
+      ["Time of Birth (Huttida Samaya)", birth.tob],
+      ["Place of Birth (Huttida Uru)", birth.pob],
+      ["Gender (Linga)", birth.gender || "-"],
     ];
 
     const rowH = 24;
@@ -194,10 +194,10 @@ export function generateReportPdf(
 
     // Right column — cosmic identity cards
     const cosmicCards: [string, string, string][] = [
-      ["Nakshatra  (நட்சத்திரம்)", report.nakshatra,     "Your birth star — the foundation of all predictions"],
-      ["Rashi  (ராசி / రాశి)",      report.rashi,          "Your moon sign"],
-      ["Lagna  (லக்னம் / లగ్నం)",   report.lagna,          "Your rising sign — personality & destiny"],
-      ["Ruling Planet / Dasha",     report.ruling_planet,  "Current dasha lord — influences present life"],
+      ["Nakshatra  (Janma Nakshatra)", report.nakshatra,     "Your birth star — foundation of all predictions"],
+      ["Rashi  (Moon Sign / Rasi)",    report.rashi,          "Your moon sign — emotional nature"],
+      ["Lagna  (Ascendant / Udaya)",   report.lagna,          "Your rising sign — personality & destiny"],
+      ["Ruling Planet / Dasha",        report.ruling_planet,  "Current dasha lord — influences present life"],
     ];
 
     let ry2 = tableTop;
@@ -217,31 +217,31 @@ export function generateReportPdf(
     doc.y = Math.max(tableTop + leftH, ry2) + 14;
 
     // ── PROBLEM ANALYSIS ─────────────────────────────────────
-    secHeader(doc, "Your Problem — In Simple Words", "உங்கள் பிரச்சினை  /  మీ సమస్య", ML, W, PW);
+    secHeader(doc, "Your Problem — In Simple Words", "Nimma Samasye  /  Explained in plain, clear language", ML, W, PW);
     simpleBox(doc, report.problem_analysis, ML, W);
 
     // ── ASTROLOGICAL REASON ───────────────────────────────────
-    secHeader(doc, "Why This Is Happening  (Astrological Reason)", "ஜோதிட காரணம்  /  జ్యోతిష కారణం", ML, W, PW);
+    secHeader(doc, "Why This Is Happening  (Astrological Reason)", "Jyotisha Karana  /  Based on Parasara Hora Shastra", ML, W, PW);
     simpleBox(doc, report.astrological_reason, ML, W);
 
     // ── PLANETARY POSITIONS ───────────────────────────────────
-    secHeader(doc, "Planetary Positions & Yogas", "கிரக நிலைகள்  /  గ్రహ స్థానాలు", ML, W, PW);
+    secHeader(doc, "Planetary Positions & Yogas", "Graha Nilagalu  /  Current planetary influences in your chart", ML, W, PW);
     simpleBox(doc, report.planetary_positions, ML, W);
 
     // ── REMEDIES ─────────────────────────────────────────────
-    secHeader(doc, "Remedies — Easy to Follow", "பரிகாரங்கள்  /  పరిహారాలు", ML, W, PW);
+    secHeader(doc, "Remedies — Easy to Follow", "Parikara / Upaay  /  Perform these daily for best results", ML, W, PW);
     remedyBoxes(doc, report.remedies, ML, W);
 
     // ── MANTRA ───────────────────────────────────────────────
-    secHeader(doc, "Your Prescribed Mantra", "மந்திரம்  /  మంత్రం", ML, W, PW);
+    secHeader(doc, "Your Prescribed Mantra", "Mantra Japa  /  Recite daily for divine blessings and relief", ML, W, PW);
     mantraBox(doc, report.mantras, ML, W);
 
     // ── GEMSTONE ─────────────────────────────────────────────
-    secHeader(doc, "Gemstone Recommendation", "ரத்தினம்  /  రత్నం", ML, W, PW);
+    secHeader(doc, "Gemstone Recommendation", "Ratna Dharana  /  Wear these gems for planetary strength", ML, W, PW);
     gemstoneBox(doc, report.gemstone_advice, ML, W);
 
     // ── AUSPICIOUS DAYS ──────────────────────────────────────
-    secHeader(doc, "Auspicious Days & Lucky Dates This Month", "நல்ல நாட்கள்  /  శుభ దినాలు", ML, W, PW);
+    secHeader(doc, "Auspicious Days & Lucky Dates This Month", "Shubha Dinagalu  /  Best dates for important decisions and rituals", ML, W, PW);
     auspiciousPills(doc, report.auspicious_days, ML, W);
 
     // ── CLOSING BLESSING ─────────────────────────────────────
