@@ -40,9 +40,18 @@ function generateMessageId() {
   return `<${Date.now()}.${Math.random().toString(36).substring(2, 15)}@myvedicastrology.in>`;
 }
 
-function getCommonHeaders() {
+function getTransactionalHeaders() {
   return {
     "Message-ID": generateMessageId(),
+    "X-Mailer": "My Vedic Astrology Mailer",
+    "X-Priority": "3",
+  };
+}
+
+// Only for actual bulk/newsletter emails
+function getBulkHeaders() {
+  return {
+    ...getTransactionalHeaders(),
     "List-Unsubscribe": "<mailto:info@myvedicastrology.in?subject=unsubscribe>, <https://myvedicastrology.in/unsubscribe>",
     "Precedence": "bulk",
     "X-Auto-Response-Suppress": "OOF, AutoReply",
@@ -67,7 +76,7 @@ export async function sendAdminNotification(subject: string, html: string): Prom
       subject,
       html,
       text,
-      headers: getCommonHeaders(),
+      headers: getTransactionalHeaders(),
     });
     console.info("[mailer] sent:", subject);
   } catch (e) {
@@ -221,7 +230,7 @@ https://myvedicastrology.in
       subject: `Your ${data.serviceTitle} Vedic Astrology Report — My Vedic Astrology`,
       html,
       text,
-      headers: getCommonHeaders(),
+      headers: getTransactionalHeaders(),
       attachments: [
         {
           filename: data.fileName,
@@ -360,7 +369,7 @@ info@myvedicastrology.in`;
       subject: `We received your ${serviceLabel} request — Ref: ${data.reference}`,
       html,
       text,
-      headers: getCommonHeaders(),
+      headers: getTransactionalHeaders(),
     });
     console.info("[mailer] customer confirmation sent to:", data.toEmail);
   } catch (e) {
@@ -455,7 +464,7 @@ https://myvedicastrology.in`;
       subject: `Payment Confirmed ${amountFormatted} — ${data.serviceName} · Ref: ${data.reference}`,
       html,
       text,
-      headers: getCommonHeaders(),
+      headers: getTransactionalHeaders(),
     });
     console.info("[mailer] payment confirmation sent to:", data.toEmail);
   } catch (e) {
