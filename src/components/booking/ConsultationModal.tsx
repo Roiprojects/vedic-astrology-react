@@ -94,8 +94,9 @@ export function ConsultationModal({
   function validate(): boolean {
     const e: Partial<FormValues> = {};
     if (!form.name.trim()) e.name = "Name is required";
-    if (!form.email.trim() || !/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Valid email required";
-    if (!form.phone.trim() || form.phone.length < 10) e.phone = "Valid phone number required";
+    if (form.email.trim() && !/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Enter a valid email address";
+    const digits = form.phone.replace(/\D/g, "");
+    if (!digits || digits.length !== 10) e.phone = "Enter a valid 10-digit mobile number";
     if (!form.dob) e.dob = "Date of birth is required";
     if (!form.tob) e.tob = "Time of birth is required";
     if (!form.pob.trim()) e.pob = "Place of birth is required";
@@ -135,12 +136,16 @@ export function ConsultationModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm p-4 py-8"
+      className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-black/75 backdrop-blur-sm sm:items-start sm:p-4 sm:py-8"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="relative w-full max-w-xl rounded-3xl border border-gold/25 bg-[#1a0a10] shadow-2xl">
+      <div className="relative w-full max-w-xl rounded-t-3xl border border-gold/25 bg-[#1a0a10] shadow-2xl sm:rounded-3xl">
+        {/* Mobile drag handle */}
+        <div className="flex justify-center pt-3 sm:hidden">
+          <div className="h-1 w-10 rounded-full bg-white/20" />
+        </div>
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 rounded-t-3xl border-b border-gold/20 bg-[#2a1018]/80 px-6 py-5">
+        <div className="flex items-start justify-between gap-3 border-b border-gold/20 bg-[#2a1018]/80 px-6 py-4 sm:rounded-t-3xl sm:py-5">
           <div className="flex items-center gap-3">
             <span className="text-3xl">{service.icon}</span>
             <div>
@@ -245,15 +250,25 @@ function FormStep({
             onChange={(e) => setField("name", e.target.value)} />
         </Field>
         <Field label="Phone Number" required error={errors.phone}>
-          <input className={inputCls} placeholder="+91 98765 43210" value={form.phone}
-            onChange={(e) => setField("phone", e.target.value)} type="tel" />
+          <div className="flex items-center overflow-hidden rounded-xl border border-gold/30 bg-[#2a1018]/70 focus-within:border-gold/70 focus-within:ring-1 focus-within:ring-gold/40 transition">
+            <span className="shrink-0 select-none border-r border-gold/20 bg-[#1a0a10]/60 px-3 py-2.5 text-sm font-medium text-[#ffd777]">+91</span>
+            <input
+              className="flex-1 bg-transparent px-3 py-2.5 text-sm text-[#fff2d0] placeholder:text-[#fff2d0]/35 outline-none"
+              placeholder="98765 43210"
+              type="tel"
+              inputMode="numeric"
+              maxLength={10}
+              value={form.phone}
+              onChange={(e) => setField("phone", e.target.value.replace(/\D/g, "").slice(0, 10))}
+            />
+          </div>
         </Field>
       </div>
 
-      <Field label="Email Address" required error={errors.email}>
+      <Field label="Email Address (optional)" error={errors.email}>
         <input className={inputCls} placeholder="your@email.com" value={form.email}
           onChange={(e) => setField("email", e.target.value)} type="email" />
-        <p className="text-[10px] text-[#ffd777]/60 mt-0.5">Your personalized PDF report will be sent here</p>
+        <p className="text-[10px] text-[#ffd777]/60 mt-0.5">If provided, your PDF report will also be sent here</p>
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -336,7 +351,7 @@ function PaymentStep({
       <div className="rounded-2xl border border-gold/20 bg-[#2a1018]/60 px-4 py-3">
         <p className="text-xs text-[#fff2d0]/60 mb-1">Booking for:</p>
         <p className="text-sm font-medium text-[#fff8e8]">{form.name}</p>
-        <p className="text-xs text-[#fff2d0]/50">{form.email}</p>
+        <p className="text-xs text-[#fff2d0]/50">{form.email || `+91 ${form.phone}`}</p>
       </div>
 
       <div className="rounded-2xl border border-saffron/30 bg-saffron/10 px-4 py-3 text-sm text-[#ffd777]">
@@ -432,7 +447,9 @@ function SuccessStep({
       </div>
 
       <div className="rounded-2xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
-        📩 Full report with remedies, mantras & gemstone advice sent to <strong>{email}</strong>
+        {email
+          ? <>📩 Full report with remedies, mantras & gemstone advice sent to <strong>{email}</strong></>
+          : <>📞 Guruji will contact you via WhatsApp/phone with your personalized report</>}
       </div>
 
       <Button variant="primary" size="lg" className="w-full" onClick={onClose}>

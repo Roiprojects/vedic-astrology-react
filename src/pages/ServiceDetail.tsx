@@ -13,7 +13,6 @@ import { StarField } from "@/components/effects/StarField";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { BookingForm } from "@/components/forms/BookingForm";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getServiceBySlug } from "@/lib/data";
 import { useConsultation } from "@/components/booking/ConsultationContext";
@@ -238,13 +237,6 @@ export default function ServiceDetailPage() {
             <h3 className="font-serif text-xl text-ink">Remedies & Support</h3>
             <IconList className="mt-5" items={service.remedies} />
           </div>
-        </div>
-      </Section>
-
-      {/* Booking form */}
-      <Section id="book" className="scroll-mt-24 pt-0">
-        <div className="mx-auto max-w-3xl rounded-3xl border border-gold/25 bg-surface/60 p-6 sm:p-9">
-          <BookingForm variant="consultation" subject={service.title} price={service.price} />
         </div>
       </Section>
 

@@ -6,10 +6,11 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { IconList } from "@/components/ui/IconList";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
-import { BookingForm } from "@/components/forms/BookingForm";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getPageContent } from "@/lib/data";
 import { PriceBadge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { useConsultation } from "@/components/booking/ConsultationContext";
 import { JsonLd, breadcrumbSchema, faqSchema, serviceSchema } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/lib/site";
 
@@ -22,6 +23,7 @@ const highlights = [
 export default function BirthChartPdfPage() {
   const [content, setContent] = useState<Awaited<ReturnType<typeof getPageContent>> | null>(null);
   const [loading, setLoading] = useState(true);
+  const { openConsultation } = useConsultation();
 
   useEffect(() => {
     getPageContent("birth-chart-pdf")
@@ -101,8 +103,34 @@ export default function BirthChartPdfPage() {
             <IconList className="mt-6" items={content.includes} columns={2} />
           </div>
 
-          <div className="rounded-3xl border border-gold/25 bg-surface/60 p-6 sm:p-8">
-            <BookingForm variant="birth-chart" subject="Birth Chart PDF" />
+          <div className="flex flex-col items-center justify-center gap-6 rounded-3xl border border-gold/25 bg-surface/60 p-8 text-center">
+            <div className="text-5xl">📄</div>
+            <div>
+              <h3 className="font-serif text-2xl text-ink">Get Your Birth Chart PDF</h3>
+              <p className="mt-2 text-sm text-muted">
+                Detailed Vedic kundli delivered to your email within 24–48 hours.
+              </p>
+              {content.price != null && (
+                <p className="mt-3 text-2xl font-bold text-gold-light">
+                  ₹{content.price.toLocaleString("en-IN")}
+                </p>
+              )}
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              onClick={() => openConsultation({
+                slug: "birth-chart-pdf",
+                title: "Birth Chart PDF",
+                price: content.price ?? 2000,
+                duration: "24–48 hrs delivery",
+                icon: "📄",
+              })}
+            >
+              Book Birth Chart PDF
+            </Button>
+            <p className="text-xs text-faint">Fill details → Pay → Receive PDF on email / WhatsApp</p>
           </div>
         </div>
       </Section>

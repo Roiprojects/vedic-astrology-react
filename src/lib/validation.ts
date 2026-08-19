@@ -17,9 +17,18 @@ export const enquirySchema = z.object({
 
 export type EnquiryInput = z.infer<typeof enquirySchema>;
 
+const phoneRegex = /^(\+91[\s-]?)?[6-9]\d{9}$|^\d{10}$/;
+
 const baseSchema = z.object({
   name: z.string().min(2, "Name is required"),
-  phone: z.string().optional().or(z.literal("")),
+  phone: z
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .refine(
+      (v) => !v || phoneRegex.test(v.replace(/\s/g, "")),
+      "Enter a valid 10-digit Indian mobile number"
+    ),
   email: z.string().email("Valid email required").optional().or(z.literal("")),
   message: z.string().optional(),
   website: z.string().optional(), // honeypot

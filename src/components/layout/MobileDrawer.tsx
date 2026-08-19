@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, MessageCircle, Phone, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
-import { mainNav } from "@/lib/site";
+import { mainNav, siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const CONSULTATION_ITEMS = [
@@ -161,10 +161,26 @@ export function MobileDrawer({
               </ul>
             </nav>
 
-            <div className="container-x grid grid-cols-1 gap-3 border-t border-gold/20 py-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+            <div className="container-x flex flex-col gap-3 border-t border-gold/20 py-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
               <Button href="/contact-us" variant="primary" size="lg" onClick={onClose}>
                 Book Consultation
               </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href={siteConfig.phoneHref}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-600/10 px-3 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-600/20"
+                >
+                  <Phone className="h-4 w-4" /> Call Now
+                </a>
+                <a
+                  href={`https://wa.me/${siteConfig.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-green-400/30 bg-green-500/10 px-3 py-2.5 text-sm font-medium text-green-700 transition hover:bg-green-500/20"
+                >
+                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                </a>
+              </div>
             </div>
           </motion.div>
         </motion.div>

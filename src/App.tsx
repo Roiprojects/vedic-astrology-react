@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { ServiceAiChat } from "@/components/ai/ServiceAiChat";
 import AdminLayout from "@/admin/AdminLayout";
@@ -122,6 +123,7 @@ function PublicLayout() {
       </main>
       <Footer />
       <ServiceAiChat />
+      <FloatingWhatsApp />
     </>
   );
 }

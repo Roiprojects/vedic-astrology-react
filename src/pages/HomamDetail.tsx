@@ -12,10 +12,10 @@ import { StarField } from "@/components/effects/StarField";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { BookingForm } from "@/components/forms/BookingForm";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { getHomamBySlug } from "@/lib/data";
 import { getHomamImage } from "@/lib/presentation/vedic-symbols";
+import { useConsultation } from "@/components/booking/ConsultationContext";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import {
@@ -29,6 +29,7 @@ export default function HomamDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [homam, setHomam] = useState<Awaited<ReturnType<typeof getHomamBySlug>> | null>(null);
   const [loading, setLoading] = useState(true);
+  const { openConsultation } = useConsultation();
 
   useEffect(() => {
     let cancelled = false;
@@ -136,7 +137,16 @@ export default function HomamDetailPage() {
             </Reveal>
             <Reveal delay={0.22}>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Button href="#book" variant="primary" size="lg" className="w-full sm:w-auto">
+                <Button
+                  variant="primary" size="lg" className="w-full sm:w-auto"
+                  onClick={() => homam && openConsultation({
+                    slug: homam.slug,
+                    title: homam.name,
+                    price: homam.price,
+                    duration: homam.duration,
+                    icon: homam.icon,
+                  })}
+                >
                   Book Homam
                 </Button>
                 <AskGurujiButton serviceTitle={homam.name} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
@@ -208,13 +218,6 @@ export default function HomamDetailPage() {
               {homam.bookingInstructions}
             </p>
           </div>
-        </div>
-      </Section>
-
-      {/* Booking form */}
-      <Section id="book" className="scroll-mt-24 pt-0">
-        <div className="mx-auto max-w-3xl rounded-3xl border border-gold/25 bg-surface/60 p-6 sm:p-9">
-          <BookingForm variant="homam" subject={homam.name} price={homam.price} />
         </div>
       </Section>
 

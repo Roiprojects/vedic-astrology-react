@@ -234,7 +234,24 @@ export function BookingForm({
 
         <div>
           <Label htmlFor="phone" required>Phone</Label>
-          <Input id="phone" type="tel" placeholder="+91 90000 00000" {...register("phone")} />
+          <div className="flex items-center overflow-hidden rounded-xl border border-border bg-white/60 focus-within:border-gold/60 focus-within:ring-1 focus-within:ring-gold/30">
+            <span className="shrink-0 select-none border-r border-border bg-amber-50/80 px-3 py-2.5 text-sm font-medium text-amber-800">+91</span>
+            <input
+              id="phone"
+              type="tel"
+              inputMode="numeric"
+              maxLength={10}
+              pattern="[0-9]{10}"
+              placeholder="98765 43210"
+              className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted"
+              {...register("phone")}
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                e.target.value = digits;
+                register("phone").onChange(e);
+              }}
+            />
+          </div>
           {fieldError(errs.phone?.message)}
         </div>
 

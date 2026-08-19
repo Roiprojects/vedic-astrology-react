@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Menu, Phone } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
 import { mainNav, siteConfig } from "@/lib/site";
@@ -198,6 +198,14 @@ export function Navbar() {
 
             {/* Desktop actions */}
             <div className="hidden items-center gap-2 lg:flex">
+              <a
+                href={siteConfig.phoneHref}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-muted hover:text-ink transition-colors"
+                title={siteConfig.phone}
+              >
+                <Phone className="h-3.5 w-3.5" />
+                {siteConfig.phone}
+              </a>
               <Button href="/contact-us" variant="primary" size="sm">
                 Book Now
               </Button>
