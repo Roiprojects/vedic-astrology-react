@@ -3,11 +3,13 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { storageGetJson, storageSetJson, storageRemove } from "@/lib/storage";
 import type { BirthDetails, CosmicChart } from "@/lib/cosmic";
 import { computeCosmicChart } from "@/lib/cosmic";
+import { apiBaseUrl } from "@/lib/api";
 
 const PROFILE_KEY = "va.cosmic.profile";
 const ONBOARDING_KEY = "va.onboarding.complete";
 const INSIGHTS_KEY = "va.saved.insights";
 const CHAT_KEY = "va.guruji.history";
+const USER_TOKEN_KEY = "va.user.token";
 const SAVED_ASTROLOGERS_KEY = "va.saved.astrologers";
 const CONSULT_HISTORY_KEY = "va.consult.history";
 
@@ -38,16 +40,22 @@ export type AppProfile = {
   onboardingComplete: boolean;
 };
 
+export type UserPlan = "free" | "star" | "cosmic";
+
 type AppUserState = {
   loading: boolean;
   profile: AppProfile;
   userId: string | null;
+  userToken: string | null;
+  plan: UserPlan;
   insights: SavedInsight[];
   chatHistory: ChatTurn[];
   savedAstrologers: string[];
   consultHistory: ConsultRecord[];
   saveBirth: (details: BirthDetails) => Promise<void>;
   completeOnboarding: (details: BirthDetails) => Promise<void>;
+  sendOtp: (email: string) => Promise<void>;
+  verifyOtp: (email: string, otp: string, name?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -102,6 +110,8 @@ async function persistProfileToSupabase(userId: string, profile: AppProfile) {
 export function AppUserProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userToken, setUserToken] = useState<string | null>(null);
+  const [plan, setPlan] = useState<UserPlan>("free");
   const [profile, setProfile] = useState<AppProfile>(emptyProfile);
   const [insights, setInsights] = useState<SavedInsight[]>([]);
   const [chatHistory, setChatHistoryState] = useState<ChatTurn[]>([]);
@@ -122,6 +132,32 @@ export function AppUserProvider({ children }: { children: ReactNode }) {
         setChatHistoryState(chatStored);
         setSavedAstrologers(saved);
         setConsultHistory(consults);
+      }
+
+      // Load stored OTP token and restore user session
+      const token = await storageGetJson<string>(USER_TOKEN_KEY);
+      if (token && !cancelled) {
+        setUserToken(token);
+        try {
+          const me = await fetch(`${apiBaseUrl()}/api/user/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }).then((r) => r.json()) as { ok: boolean; user?: { id: number; email: string; name: string | null; plan: string } };
+          if (me.ok && me.user && !cancelled) {
+            setUserId(String(me.user.id));
+            setPlan((me.user.plan as UserPlan) || "free");
+            const next: AppProfile = {
+              ...((await storageGetJson<AppProfile>(PROFILE_KEY)) ?? emptyProfile),
+              name: me.user.name || stored?.name || "",
+              email: me.user.email,
+            };
+            setProfile(next);
+            await storageSetJson(PROFILE_KEY, next);
+          }
+        } catch {
+          // Token invalid / server unreachable — clear it
+          await storageRemove(USER_TOKEN_KEY);
+          if (!cancelled) setUserToken(null);
+        }
       }
 
       const supabase = supabaseOrNull();
@@ -198,6 +234,34 @@ export function AppUserProvider({ children }: { children: ReactNode }) {
     [persist, profile.email, profile.phone]
   );
 
+  const sendOtp = useCallback(async (email: string) => {
+    const res = await fetch(`${apiBaseUrl()}/api/user/send-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = (await res.json()) as { ok: boolean; error?: string };
+    if (!data.ok) throw new Error(data.error || "Failed to send OTP");
+  }, []);
+
+  const verifyOtp = useCallback(async (email: string, otp: string, name?: string) => {
+    const res = await fetch(`${apiBaseUrl()}/api/user/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp, name }),
+    });
+    const data = (await res.json()) as { ok: boolean; token?: string; user?: { id: number; email: string; name: string | null; plan: string }; error?: string };
+    if (!data.ok || !data.token) throw new Error(data.error || "Verification failed");
+    await storageSetJson(USER_TOKEN_KEY, data.token);
+    setUserToken(data.token);
+    if (data.user) {
+      setUserId(String(data.user.id));
+      setPlan((data.user.plan as UserPlan) || "free");
+      const next: AppProfile = { ...profile, name: data.user.name || profile.name, email: data.user.email };
+      await persist(next);
+    }
+  }, [profile, persist]);
+
   const signIn = useCallback(async (email: string, password: string) => {
     const supabase = supabaseOrNull();
     if (!supabase) throw new Error("Cloud sign-in is not configured yet. You can continue with your local profile.");
@@ -228,7 +292,10 @@ export function AppUserProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     const supabase = supabaseOrNull();
     if (supabase) await supabase.auth.signOut();
+    await storageRemove(USER_TOKEN_KEY);
+    setUserToken(null);
     setUserId(null);
+    setPlan("free");
   }, []);
 
   const saveInsight = useCallback(async (insight: Omit<SavedInsight, "id" | "createdAt">) => {
@@ -279,12 +346,16 @@ export function AppUserProvider({ children }: { children: ReactNode }) {
       loading,
       profile,
       userId,
+      userToken,
+      plan,
       insights,
       chatHistory,
       savedAstrologers,
       consultHistory,
       saveBirth,
       completeOnboarding,
+      sendOtp,
+      verifyOtp,
       signIn,
       signUp,
       signOut,
@@ -297,12 +368,16 @@ export function AppUserProvider({ children }: { children: ReactNode }) {
       loading,
       profile,
       userId,
+      userToken,
+      plan,
       insights,
       chatHistory,
       savedAstrologers,
       consultHistory,
       saveBirth,
       completeOnboarding,
+      sendOtp,
+      verifyOtp,
       signIn,
       signUp,
       signOut,

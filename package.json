@@ -11,8 +11,8 @@
     "dev": "node scripts/dev.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "server": "tsx watch server/index.ts",
-    "start": "tsx server/index.ts",
+    "server": "node --env-file=.env.local --import=tsx/esm --watch server/index.ts",
+    "start": "node --env-file=.env.local --import=tsx/esm server/index.ts",
     "build:all": "npm run build && node scripts/build-server.mjs",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
@@ -23,7 +23,7 @@
     "apk:release": "npm run cap:sync && node scripts/android-apk.mjs release",
     "generate-sitemap": "tsx scripts/generate-sitemap.ts",
     "dev:vite": "vite",
-    "dev:api": "tsx server/index.ts"
+    "dev:api": "node --import=tsx/esm server/index.ts"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

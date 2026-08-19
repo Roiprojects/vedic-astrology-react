@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Bookmark, Mic, Send, Share2, Sparkles, Trash2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { useAppUser } from "@/hooks/useAppUser";
-import { openWhatsApp } from "@/lib/whatsapp";
 import { siteConfig } from "@/lib/site";
 import { AppButton, Chip, HScroll, IconButton } from "@/app/components/AppUI";
 
@@ -105,7 +104,7 @@ export function GurujiScreen() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div
-        className="mx-auto flex w-full max-w-lg items-center justify-between px-4 py-3"
+        className="mx-auto flex w-full max-w-lg items-center justify-between border-b border-[#D6AE57]/12 px-4 py-3"
         style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
       >
         <button
@@ -113,9 +112,12 @@ export function GurujiScreen() {
           onClick={() => navigate(-1)}
           className="app-back"
         >
-          Close
+          ← Close
         </button>
-        <p className="font-display text-xs tracking-[0.28em] text-[#F3D899]">ASK GURUJI</p>
+        <div className="flex flex-col items-center">
+          <p className="font-display text-[0.68rem] tracking-[0.28em] text-[#D6AE57]">ASK GURUJI</p>
+          <p className="text-[0.55rem] tracking-[0.14em] text-[#F3D899]/40">VEDIC ASSISTANT</p>
+        </div>
         <IconButton aria-label="Clear chat" onClick={() => void setChatHistory([])}>
           <Trash2 className="h-4 w-4" />
         </IconButton>
@@ -179,9 +181,7 @@ export function GurujiScreen() {
           <AppButton
             variant="ghost"
             className="app-btn-sm"
-            onClick={() =>
-              void openWhatsApp("I would like to continue this AI guidance with a personal consultation.")
-            }
+            onClick={() => navigate("/app/consult")}
           >
             Human astrologer
           </AppButton>

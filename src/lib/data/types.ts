@@ -47,6 +47,7 @@ export type Homam = {
   slug: string;
   name: string;
   icon: string;
+  image?: string;
   shortBenefit: string;
   fullDescription: string;
   price: number;

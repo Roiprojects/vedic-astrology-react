@@ -18,7 +18,7 @@ export function BottomNav() {
         className="pointer-events-auto mx-auto w-full max-w-lg px-3"
         style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
       >
-        <div className="grid h-[4.5rem] grid-cols-5 items-end overflow-visible rounded-[28px] border border-[#D6AE57]/25 bg-[#080A18]/94 px-1 shadow-[0_-16px_40px_-20px_rgba(8,10,24,0.9)] backdrop-blur-xl">
+        <div className="grid h-[4.5rem] grid-cols-5 items-end overflow-visible rounded-[28px] border border-[#D6AE57]/20 bg-[#080A18]/96 px-1 shadow-[0_-20px_50px_-16px_rgba(8,10,24,1),inset_0_1px_0_rgba(214,174,87,0.08)] backdrop-blur-2xl">
           {tabs.map((tab) => (
             <TabLink key={tab.to} {...tab} />
           ))}
@@ -47,7 +47,7 @@ function TabLink({
       end={end}
       onClick={() => void hapticLight()}
       aria-label={label}
-      className="flex h-full min-w-0 flex-col items-center justify-end pb-2"
+      className="flex h-full min-w-0 flex-col items-center justify-end pb-1.5"
     >
       {({ isActive }) =>
         raised ? (
@@ -66,10 +66,16 @@ function TabLink({
           </>
         ) : (
           <>
-            <Icon className={cn("mb-1 h-[1.15rem] w-[1.15rem]", isActive ? "text-[#D6AE57]" : "text-[#F3D899]/55")} />
-            <span className={cn("text-[0.58rem] font-semibold uppercase tracking-[0.12em]", isActive ? "text-[#D6AE57]" : "text-[#F3D899]/55")}>
+            <span className={cn(
+              "mb-0.5 grid h-8 w-8 place-items-center rounded-full transition-all duration-200",
+              isActive ? "bg-[#D6AE57]/12" : "bg-transparent"
+            )}>
+              <Icon className={cn("h-[1.1rem] w-[1.1rem] transition-colors duration-200", isActive ? "text-[#D6AE57]" : "text-[#F3D899]/50")} />
+            </span>
+            <span className={cn("text-[0.57rem] font-semibold uppercase tracking-[0.12em] transition-colors duration-200", isActive ? "text-[#D6AE57]" : "text-[#F3D899]/50")}>
               {label}
             </span>
+            <span className={cn("mt-0.5 h-0.5 w-4 rounded-full transition-all duration-300", isActive ? "bg-[#D6AE57]" : "bg-transparent")} />
           </>
         )
       }

@@ -83,50 +83,68 @@ export function BookingForm({
 
   if (reference) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center">
+      <div className="glass-card rounded-3xl p-8">
         {paymentId ? (
-          <>
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle2 className="h-9 w-9 text-green-600" />
+          /* ── Payment success state ── */
+          <div className="text-center">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 ring-8 ring-green-50">
+              <CheckCircle2 className="h-10 w-10 text-green-600" />
             </div>
-            <h3 className="mt-4 font-serif text-2xl text-ink">Payment Successful!</h3>
-            <p className="mt-1 text-sm text-muted">
-              Your booking is confirmed. Guruji will reach out to you shortly.
-            </p>
-            <div className="mt-5 rounded-2xl border border-gold/20 bg-[#b67a1b]/[0.04] p-4 text-left text-sm">
-              <div className="flex justify-between border-b border-gold/15 pb-2">
-                <span className="text-faint">Enquiry Reference</span>
-                <span className="font-semibold text-gold-light">{reference}</span>
-              </div>
-              <div className="flex justify-between border-b border-gold/15 py-2">
-                <span className="text-faint">Payment ID</span>
-                <span className="font-mono text-xs text-ink">{paymentId}</span>
-              </div>
-              {subject && (
-                <div className="flex justify-between pt-2">
-                  <span className="text-faint">Service</span>
-                  <span className="text-ink">{subject}</span>
-                </div>
-              )}
-            </div>
-            <p className="mt-3 text-xs text-faint">
-              A confirmation has been sent to Guruji. Keep your reference number safe.
-            </p>
-          </>
-        ) : (
-          <>
-            <CheckCircle2 className="mx-auto h-14 w-14 text-online" />
-            <h3 className="mt-4 font-serif text-2xl text-ink">Request Received</h3>
+            <h3 className="mt-5 font-serif text-2xl text-ink">Payment Successful!</h3>
             <p className="mt-2 text-sm text-muted">
-              Your reference is{" "}
-              <span className="font-semibold text-gold-light">{reference}</span>. Guruji
-              will review your details and reach out to you shortly.
+              Your booking is confirmed. A confirmation email has been sent to you.
             </p>
+            <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-5 text-left text-sm">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-green-700">Payment Details</p>
+              <div className="space-y-2 divide-y divide-green-100">
+                <div className="flex justify-between pb-2">
+                  <span className="text-green-800">Reference</span>
+                  <span className="font-bold tracking-wider text-amber-700">{reference}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span className="text-green-800">Payment ID</span>
+                  <span className="font-mono text-xs text-ink">{paymentId}</span>
+                </div>
+                {subject && (
+                  <div className="flex justify-between pt-2">
+                    <span className="text-green-800">Service</span>
+                    <span className="text-ink">{subject}</span>
+                  </div>
+                )}
+                {price && (
+                  <div className="flex justify-between pt-2">
+                    <span className="text-green-800">Amount Paid</span>
+                    <span className="font-semibold text-green-700">₹{price.toLocaleString("en-IN")}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <p className="mt-4 text-xs text-faint">
+              Guruji will reach out within 24–48 hours · Keep your reference number safe
+            </p>
+          </div>
+        ) : (
+          /* ── Enquiry received, awaiting payment (if any) ── */
+          <div className="text-center">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber-50 ring-8 ring-amber-50/50">
+              <CheckCircle2 className="h-10 w-10 text-amber-600" />
+            </div>
+            <h3 className="mt-5 font-serif text-2xl text-ink">Request Received!</h3>
+            <p className="mt-2 text-sm text-muted">
+              {formValues?.email
+                ? "A confirmation email has been sent to you."
+                : "Guruji will review your details and reach out to you shortly."}
+            </p>
+            <div className="mt-5 rounded-2xl border border-gold/25 bg-gold/[0.04] p-4 text-center">
+              <p className="text-xs text-faint uppercase tracking-widest">Your Reference</p>
+              <p className="mt-1 font-mono text-2xl font-bold tracking-[0.2em] text-amber-700">{reference}</p>
+              <p className="mt-1 text-xs text-faint">Please save this for follow-up</p>
+            </div>
+
             {price && price > 0 && (
-              <div className="mt-6">
-                <p className="mb-3 text-sm font-medium text-ink">
-                  Complete your booking by paying ₹{price.toLocaleString("en-IN")}:
-                </p>
+              <div className="mt-6 rounded-2xl border border-gold/20 bg-surface/60 p-5 text-left">
+                <p className="mb-1 text-sm font-semibold text-ink">Complete your booking</p>
+                <p className="mb-4 text-xs text-muted">Pay ₹{price.toLocaleString("en-IN")} to confirm your slot with Guruji.</p>
                 <RazorpayButton
                   amount={price}
                   serviceName={subject || "Consultation"}
@@ -136,20 +154,34 @@ export function BookingForm({
                   customerEmail={formValues?.email}
                   onSuccess={(payload) => setPaymentId(payload.razorpay_payment_id)}
                   onError={(msg) => setPaymentError(msg)}
-                  label={`Pay ₹${price.toLocaleString("en-IN")} via Razorpay`}
+                  label={`Pay ₹${price.toLocaleString("en-IN")} — Confirm Booking`}
                   className="w-full"
                 />
                 {paymentError && (
-                  <p className="mt-2 text-xs text-danger">{paymentError}</p>
+                  <div className="mt-3 flex items-start gap-2 rounded-xl border border-danger/30 bg-danger/10 px-4 py-3">
+                    <span className="mt-0.5 text-danger">✕</span>
+                    <div>
+                      <p className="text-sm font-medium text-danger">Payment Failed</p>
+                      <p className="mt-0.5 text-xs text-danger/80">{paymentError}</p>
+                      <p className="mt-1 text-xs text-faint">Please try again or pay via UPI and share screenshot on WhatsApp.</p>
+                    </div>
+                  </div>
                 )}
-                <p className="mt-2 text-xs text-faint">
-                  Or pay via UPI / bank transfer and share screenshot on call.
-                </p>
+                {!paymentError && (
+                  <p className="mt-3 text-center text-xs text-faint">
+                    Or pay via UPI / bank transfer and share screenshot on WhatsApp
+                  </p>
+                )}
               </div>
             )}
-          </>
+
+            <p className="mt-4 text-xs text-faint">
+              Guruji will reach out within 24–48 hours via phone or WhatsApp
+            </p>
+          </div>
         )}
-        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+
+        <div className="mt-6 flex justify-center">
           <Button
             variant="gold"
             size="md"
@@ -159,7 +191,7 @@ export function BookingForm({
               setPaymentError(null);
             }}
           >
-            Submit Another
+            Submit Another Request
           </Button>
         </div>
       </div>

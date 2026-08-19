@@ -1,4 +1,3 @@
-import { Phone } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/effects/Reveal";
@@ -28,15 +27,6 @@ export function ContactCta({
             </Reveal>
             <Reveal delay={0.16}>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
-                <Button
-                  href={siteConfig.phoneHref}
-                  variant="gold"
-                  size="lg"
-                  className="w-full sm:w-auto"
-                >
-                  <Phone className="h-5 w-5" />
-                  Call Now
-                </Button>
                 <Button
                   href="/contact-us"
                   variant="primary"

@@ -3,7 +3,7 @@ import { Router } from "express";
 import Razorpay from "razorpay";
 import crypto from "node:crypto";
 import { query } from "../lib/db";
-import { sendPaymentNotification } from "../lib/mailer";
+import { sendPaymentNotification, sendCustomerPaymentConfirmation } from "../lib/mailer";
 import { rateLimit, clientIp } from "../lib/ratelimit";
 
 const router = Router();
@@ -113,6 +113,18 @@ router.post("/verify", async (req, res) => {
       email: customer_email,
       phone: customer_phone,
     }).catch(() => {});
+
+    // Send payment confirmation to customer
+    if (customer_email) {
+      sendCustomerPaymentConfirmation({
+        toEmail: customer_email,
+        toName: customer_name || "Valued Customer",
+        reference,
+        paymentId: razorpay_payment_id,
+        amount: amount || 0,
+        serviceName: service_name || "Consultation",
+      }).catch(() => {});
+    }
   }
 
   console.info("[razorpay/verify] payment verified", { payment_id: razorpay_payment_id, reference });

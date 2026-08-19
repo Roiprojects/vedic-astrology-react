@@ -12,6 +12,7 @@ function mapServiceRow(row: Record<string, any>): Service {
     title: row.title,
     categorySlug: row.category_slug ?? "",
     icon: row.icon ?? "🔮",
+    image: row.image ?? undefined,
     shortDescription: row.short_description ?? "",
     fullDescription: row.full_description ?? "",
     problem: row.problem ?? "",
@@ -35,6 +36,7 @@ function mapHomamRow(row: Record<string, any>): Homam {
     slug: row.slug,
     name: row.name,
     icon: row.icon ?? "🔥",
+    image: row.image ?? undefined,
     shortBenefit: row.short_benefit ?? "",
     fullDescription: row.full_description ?? "",
     price: row.price ?? 0,
@@ -73,7 +75,8 @@ export async function saveAdminService(service: Service): Promise<void> {
   const url = existing ? `/api/admin/services/${service.slug}` : "/api/admin/services";
   const body = {
     slug: service.slug, title: service.title, categorySlug: service.categorySlug,
-    icon: service.icon, shortDescription: service.shortDescription, fullDescription: service.fullDescription,
+    icon: service.icon, image: service.image ?? null,
+    shortDescription: service.shortDescription, fullDescription: service.fullDescription,
     problem: service.problem, price: service.price, discountPrice: service.discountPrice ?? null,
     duration: service.duration, gradient: service.gradient, analysis: service.analysis,
     receive: service.receive, benefits: service.benefits, remedies: service.remedies,
@@ -110,7 +113,8 @@ export async function saveAdminHomam(homam: Homam): Promise<void> {
   const method = existing ? "PUT" : "POST";
   const url = existing ? `/api/admin/homams/${homam.slug}` : "/api/admin/homams";
   const body = {
-    slug: homam.slug, name: homam.name, icon: homam.icon, shortBenefit: homam.shortBenefit,
+    slug: homam.slug, name: homam.name, icon: homam.icon, image: homam.image ?? null,
+    shortBenefit: homam.shortBenefit,
     fullDescription: homam.fullDescription, price: homam.price, discountPrice: homam.discountPrice ?? null,
     duration: homam.duration, gradient: homam.gradient, benefits: homam.benefits,
     suitableFor: homam.suitableFor, poojaItems: homam.poojaItems,

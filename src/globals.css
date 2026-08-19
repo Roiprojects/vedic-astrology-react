@@ -290,10 +290,12 @@
   box-sizing: border-box;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+  cursor: pointer;
 }
 
 .app-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
 }
 
 .app-btn-sm {
@@ -307,8 +309,13 @@
 }
 
 .app-btn-primary {
-  background: linear-gradient(180deg, #F3D899, #D6AE57);
+  background: linear-gradient(170deg, #F3D899 0%, #D6AE57 60%, #c1912f 100%);
   color: #080A18;
+  box-shadow: 0 4px 20px -6px rgba(214, 174, 87, 0.55);
+}
+
+.app-btn-primary:active {
+  box-shadow: 0 2px 10px -4px rgba(214, 174, 87, 0.35);
 }
 
 .app-btn-gold,
@@ -352,6 +359,13 @@
   color: #F3D899;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+
+.app-icon-btn:active {
+  transform: scale(0.93);
+  background: #1b2144;
 }
 
 .app-back {
@@ -378,6 +392,12 @@
   font-size: 0.75rem;
   line-height: 1;
   white-space: nowrap;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  cursor: pointer;
+}
+
+.app-chip:active {
+  transform: scale(0.95);
 }
 
 .app-chip-active {
@@ -437,7 +457,8 @@
 .app-card {
   border-radius: 1.5rem;
   border: 1px solid color-mix(in oklab, #D6AE57 22%, transparent);
-  background: #11152F;
+  background: linear-gradient(160deg, #141934 0%, #11152F 100%);
+  box-shadow: 0 8px 32px -12px rgba(8, 10, 24, 0.6);
 }
 
 .app-card-ivory {
@@ -450,7 +471,8 @@
 .app-list {
   overflow: hidden;
   border-radius: 1.5rem;
-  border: 1px solid color-mix(in oklab, #D6AE57 22%, transparent);
+  border: 1px solid color-mix(in oklab, #D6AE57 20%, transparent);
+  box-shadow: 0 8px 32px -12px rgba(8, 10, 24, 0.5);
 }
 
 .app-list a,
@@ -460,9 +482,14 @@
   justify-content: space-between;
   min-height: 3.35rem;
   padding: 0.85rem 1rem;
-  background: #11152F;
-  border-bottom: 1px solid color-mix(in oklab, #D6AE57 12%, transparent);
+  background: linear-gradient(160deg, #141934 0%, #11152F 100%);
+  border-bottom: 1px solid color-mix(in oklab, #D6AE57 10%, transparent);
   font-size: 0.9rem;
+  transition: background 0.15s ease;
+}
+
+.app-list a:active {
+  background: #1b2144;
 }
 
 .app-list a:last-child,
@@ -498,9 +525,16 @@
   gap: 0.5rem;
   border-radius: 1.15rem;
   border: 1px solid color-mix(in oklab, #D6AE57 20%, transparent);
-  background: #11152F;
+  background: linear-gradient(170deg, #16193e 0%, #11152F 100%);
   padding: 0.6rem 0.4rem;
   text-align: center;
+  transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-tile:active {
+  transform: scale(0.95);
+  border-color: color-mix(in oklab, #D6AE57 45%, transparent);
+  box-shadow: 0 0 16px -6px rgba(214, 174, 87, 0.3);
 }
 
 .app-discover-card {

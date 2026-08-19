@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { InstagramIcon } from "@/components/icons/InstagramIcon";
@@ -49,9 +49,6 @@ export function Footer() {
               >
                 <InstagramIcon className="h-4 w-4" />
               </a>
-              <a href={siteConfig.phoneHref} aria-label="Call" className={iconLink}>
-                <Phone className="h-4 w-4" />
-              </a>
               <a href={`mailto:${siteConfig.email}`} aria-label="Email" className={iconLink}>
                 <Mail className="h-4 w-4" />
               </a>
@@ -90,12 +87,6 @@ export function Footer() {
           <div>
             <h4 className={heading}>Contact</h4>
             <ul className="mt-4 space-y-3 text-sm text-[#e9d6b3]/80">
-              <li className="flex items-start gap-3">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#e0b34e]" />
-                <a href={siteConfig.phoneHref} className="hover:text-[#ffe1a0]">
-                  {siteConfig.phone}
-                </a>
-              </li>
               <li className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#e0b34e]" />
                 <a href={`mailto:${siteConfig.email}`} className="hover:text-[#ffe1a0]">

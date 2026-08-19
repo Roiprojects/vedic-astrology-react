@@ -28,7 +28,11 @@ export function AppShell() {
 
   useEffect(() => {
     if (loading || splash) return;
-    if (!profile.onboardingComplete && !location.pathname.startsWith("/app/onboarding")) {
+    if (
+      !profile.onboardingComplete &&
+      !location.pathname.startsWith("/app/onboarding") &&
+      !location.pathname.startsWith("/app/auth")
+    ) {
       navigate("/app/onboarding", { replace: true });
     }
   }, [loading, splash, profile.onboardingComplete, location.pathname, navigate]);
@@ -72,11 +76,14 @@ export function AppShell() {
 
       {!immersive && (
         <header
-          className="sticky top-0 z-30 border-b border-[#D6AE57]/10 bg-[#080A18]/88 backdrop-blur-md"
+          className="sticky top-0 z-30 border-b border-[#D6AE57]/12 bg-[#080A18]/92 backdrop-blur-xl"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
           <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
-            <p className="font-display text-[0.7rem] tracking-[0.26em] text-[#D6AE57]">VEDIC ASTROLOGY</p>
+            <div className="flex items-center gap-2.5">
+              <img src="/logo-mark.png" alt="" className="h-6 w-6 rounded-full object-cover opacity-90" />
+              <p className="font-display text-[0.68rem] tracking-[0.28em] text-[#D6AE57]">VEDIC ASTROLOGY</p>
+            </div>
             <IconButton aria-label="Notifications" onClick={() => navigate("/app/profile/notifications")}>
               <Bell className="h-4 w-4" />
             </IconButton>

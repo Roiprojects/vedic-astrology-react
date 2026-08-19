@@ -340,7 +340,7 @@ function PaymentStep({
       </div>
 
       <div className="rounded-2xl border border-saffron/30 bg-saffron/10 px-4 py-3 text-sm text-[#ffd777]">
-        ✨ After payment, Guruji's AI will generate your personalized report using{" "}
+        ✨ After payment, Guruji will generate your personalized report using{" "}
         <strong>Parasara Hora Shastra</strong> and send it to your email as a PDF.
       </div>
 
@@ -374,7 +374,7 @@ function GeneratingStep({ name }: { name: string }) {
       <div>
         <h3 className="font-serif text-xl text-[#fff8e8]">Generating Your Report…</h3>
         <p className="mt-2 text-sm text-[#fff2d0]/70">
-          Guruji's AI is analyzing <strong className="text-[#ffd777]">{name}</strong>'s birth chart
+          Guruji is analyzing <strong className="text-[#ffd777]">{name}</strong>'s birth chart
           using Parasara Hora Shastra and the Lahiri ayanamsa system.
         </p>
       </div>

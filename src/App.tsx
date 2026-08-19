@@ -40,6 +40,9 @@ const AdminHomamEdit = lazy(() => import("@/admin/AdminHomamEdit"));
 const AdminPages = lazy(() => import("@/admin/AdminPages"));
 const AdminTestimonials = lazy(() => import("@/admin/AdminTestimonials"));
 const AdminEnquiries = lazy(() => import("@/admin/AdminEnquiries"));
+const AdminAstrologers = lazy(() => import("@/admin/AdminAstrologers"));
+const AdminAstrologerNew = lazy(() => import("@/admin/AdminAstrologerNew"));
+const AdminAstrologerEdit = lazy(() => import("@/admin/AdminAstrologerEdit"));
 
 const HomeScreen = lazy(() => import("@/app/screens/HomeScreen").then((m) => ({ default: m.HomeScreen })));
 const ConsultScreen = lazy(() => import("@/app/screens/ConsultScreen").then((m) => ({ default: m.ConsultScreen })));
@@ -61,6 +64,8 @@ const KundliScreen = lazy(() => import("@/app/screens/KundliScreen").then((m) =>
 const PalmReaderScreen = lazy(() => import("@/app/screens/PalmReaderScreen").then((m) => ({ default: m.PalmReaderScreen })));
 const OnboardingScreen = lazy(() => import("@/app/screens/OnboardingScreen").then((m) => ({ default: m.OnboardingScreen })));
 const AuthScreen = lazy(() => import("@/app/screens/AuthScreen").then((m) => ({ default: m.AuthScreen })));
+const HomamsScreen = lazy(() => import("@/app/screens/HomamsScreen").then((m) => ({ default: m.HomamsScreen })));
+const SubscriptionScreen = lazy(() => import("@/app/screens/SubscriptionScreen").then((m) => ({ default: m.SubscriptionScreen })));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -160,6 +165,9 @@ export function App() {
             <Route path="/admin/pages/:page" element={<AdminPages />} />
             <Route path="/admin/testimonials" element={<AdminTestimonials />} />
             <Route path="/admin/enquiries" element={<AdminEnquiries />} />
+            <Route path="/admin/astrologers" element={<AdminAstrologers />} />
+            <Route path="/admin/astrologers/new" element={<AdminAstrologerNew />} />
+            <Route path="/admin/astrologers/:slug" element={<AdminAstrologerEdit />} />
             <Route path="/admin" element={<Navigate to="dashboard" replace />} />
           </Route>
 
@@ -178,6 +186,8 @@ export function App() {
             <Route path="palm" element={<PalmReaderScreen />} />
             <Route path="onboarding" element={<OnboardingScreen />} />
             <Route path="auth" element={<AuthScreen />} />
+            <Route path="homams" element={<HomamsScreen />} />
+            <Route path="subscription" element={<SubscriptionScreen />} />
           </Route>
 
           <Route element={<PublicLayout />}>

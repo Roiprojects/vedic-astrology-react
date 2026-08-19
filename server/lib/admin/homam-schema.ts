@@ -17,6 +17,7 @@ export const homamSchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase words separated by hyphens"),
   name: z.string().trim().min(1, "Name is required").max(160),
   icon: z.string().trim().min(1, "Icon is required").max(24),
+  image: z.string().trim().max(500).nullable().optional(),
   shortBenefit: z.string().trim().min(1, "Short benefit is required").max(400),
   fullDescription: z.string().trim().min(1, "Full description is required").max(4000),
   price: z.coerce.number().int().min(0),

@@ -5,7 +5,6 @@ import { CameraResultType, CameraSource } from "@capacitor/camera";
 import { apiFetch } from "@/lib/api";
 import { isNativePlatform } from "@/lib/platform";
 import { useAppUser } from "@/hooks/useAppUser";
-import { openWhatsApp } from "@/lib/whatsapp";
 import { AppButton, Screen } from "@/app/components/AppUI";
 
 type Phase = "guide" | "permission" | "scan" | "analysis" | "results" | "denied";
@@ -111,12 +110,12 @@ export function PalmReaderScreen() {
               <p key={line}>{line}</p>
             ))}
           <AppButton
-            variant="whatsapp"
+            variant="primary"
             block
             className="mt-3"
-            onClick={() => void openWhatsApp("I would like a full palm consultation.")}
+            onClick={() => navigate("/app/guruji")}
           >
-            Escalate to Guruji
+            Ask Guruji
           </AppButton>
         </div>
       )}

@@ -44,13 +44,16 @@ export function OnboardingScreen() {
 
       {step === 0 && (
         <div className="mt-12 flex flex-1 flex-col text-center">
-          <h1 className="font-serif text-4xl leading-tight">Welcome to your cosmic journey</h1>
-          <p className="mt-4 text-sm leading-relaxed text-[#F3D899]/75">
+          <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-full border border-[#D6AE57]/30 bg-gradient-to-b from-[#D6AE57]/15 to-transparent shadow-[0_0_40px_-10px_rgba(214,174,87,0.4)]">
+            <img src="/logo-mark.png" alt="" className="h-14 w-14 rounded-full object-cover" />
+          </div>
+          <h1 className="font-serif text-4xl leading-tight">Welcome to your<br />cosmic journey</h1>
+          <p className="mt-4 text-sm leading-relaxed text-[#F3D899]/70">
             Ancient wisdom, held with the calm precision of a private observatory.
           </p>
           <div className="mt-auto pt-10">
             <AppButton block onClick={() => setStep(1)}>
-              Begin
+              Begin your journey
             </AppButton>
           </div>
         </div>
@@ -66,11 +69,11 @@ export function OnboardingScreen() {
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, intention: intent }))}
                 className={cn(
-                  "min-h-[4.25rem] rounded-2xl px-3 text-sm font-semibold",
+                  "min-h-[4.25rem] rounded-2xl px-3 text-sm font-semibold transition-all duration-200 active:scale-95",
                   i === INTENTS.length - 1 && "col-span-2",
                   form.intention === intent
-                    ? "bg-[#D6AE57] text-[#080A18]"
-                    : "border border-[#D6AE57]/25 text-[#F3D899]"
+                    ? "bg-gradient-to-b from-[#F3D899] to-[#D6AE57] text-[#080A18] shadow-[0_4px_16px_-4px_rgba(214,174,87,0.55)]"
+                    : "border border-[#D6AE57]/25 bg-[#11152F]/50 text-[#F3D899]"
                 )}
               >
                 {intent}

@@ -1,18 +1,14 @@
 /**
- * Palm Reading API route — Express port of app/api/palm-reading/route.ts
- *
- * Accepts a palm image (base64) and returns a Vedic palmistry reading
- * using Google Gemini (multimodal).
+ * Palm Reading API route — Gemini vision (primary) → OpenAI GPT-4o-mini fallback.
  */
 
 import { Request, Response, Router } from "express";
 import {
-  getGeminiKey,
-  geminiUrl,
-  extractText,
+  hasAnyAIKey,
+  callAIWithImage,
   AI_DISABLED_MESSAGE,
   SUPPORTED_IMAGE_TYPES,
-} from "../lib/gemini";
+} from "../lib/ai-client";
 import { rateLimit, clientIp } from "../lib/ratelimit";
 
 const SYSTEM_PROMPT = `You are a warm, respectful Vedic palmistry guide (Hasta Samudrika Shastra) assisting on the "Vedic Astrology" platform of Guruji.
@@ -43,8 +39,7 @@ interface PalmReadingBody {
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-  const key = getGeminiKey();
-  if (!key) {
+  if (!hasAnyAIKey()) {
     return res.status(503).json({ ok: false, error: AI_DISABLED_MESSAGE });
   }
 
@@ -81,41 +76,15 @@ router.post("/", async (req: Request, res: Response) => {
     .filter(Boolean)
     .join(" ");
 
-  const payload = {
-    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-    contents: [
-      {
-        role: "user" as const,
-        parts: [
-          { inlineData: { mimeType: mediaType, data: imageBase64 } },
-          { text: `Please read this palm.${contextLine ? " " + contextLine : ""}` },
-        ],
-      },
-    ],
-    generationConfig: {
-      maxOutputTokens: 1800,
-      temperature: 0.9,
-      thinkingConfig: { thinkingBudget: 0 },
-    },
-  };
-
   try {
-    const res2 = await fetch(geminiUrl("generateContent", key), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const json = (await res2.json()) as { candidates?: { content?: { parts?: { text?: string }[] } }[]; error?: { message?: string } };
-
-    if (!res2.ok) {
-      console.error("[palm-reading] gemini error", res2.status, json?.error?.message);
-      return res.status(500).json({
-        ok: false,
-        error: "Something went wrong generating your reading. Please try again.",
-      });
-    }
-
-    const text = extractText(json).trim();
+    const text = (await callAIWithImage({
+      systemPrompt: SYSTEM_PROMPT,
+      userPrompt: `Please read this palm.${contextLine ? " " + contextLine : ""}`,
+      imageBase64,
+      mediaType,
+      maxTokens: 1800,
+      temperature: 0.9,
+    })).trim();
 
     if (!text) {
       return res.status(422).json({

@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Loader2,
   MessageCircle,
-  Phone,
   Send,
   ShieldCheck,
   Sparkles,
@@ -179,12 +178,12 @@ export function ServiceAiChat() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Chat with AI Assistant"
+          aria-label="Chat with Guruji"
           className="group fixed bottom-5 left-5 z-40 flex items-center gap-2.5 rounded-full border border-[#f2c55e]/50 bg-gradient-to-r from-[#c0451a] to-[#e07b1e] p-3.5 text-white shadow-[0_14px_40px_-10px_rgba(207,94,25,0.75)] transition-transform hover:scale-105 sm:bottom-6 sm:left-6"
         >
           <span aria-hidden className="absolute inset-0 animate-ping rounded-full bg-[#e07b1e] opacity-20" />
           <Sparkles className="relative h-6 w-6" />
-          <span className="relative hidden pr-1 text-sm font-semibold sm:block">Chat with AI</span>
+          <span className="relative hidden pr-1 text-sm font-semibold sm:block">Chat with Guruji</span>
         </button>
       )}
 
@@ -206,7 +205,7 @@ export function ServiceAiChat() {
                   className="h-11 w-11 rounded-full object-cover object-top ring-2 ring-[#d7aa4c]"
                 />
                 <div>
-                  <p className="font-serif text-lg text-[#ffe0a0]">Guruji AI Assistant</p>
+                  <p className="font-serif text-lg text-[#ffe0a0]">Guruji Assistant</p>
                   <p className="text-[0.65rem] text-[#ead7ad]/60">
                     {activeService ? activeService : "Vedic astrology assistant"} · {timerLabel}
                   </p>
@@ -262,12 +261,6 @@ export function ServiceAiChat() {
                     Your 5-minute chat on this topic is complete. For personal guidance on {activeService ?? "your concern"}, reach out to {siteConfig.guruji} directly.
                   </p>
                   <div className="mt-4 grid gap-2.5">
-                    <a
-                      href={siteConfig.phoneHref}
-                      className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#d5631c] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#e07128]"
-                    >
-                      <Phone className="h-4 w-4" /> Call {siteConfig.phone}
-                    </a>
                     <a
                       href="/contact-us"
                       className="flex min-h-12 items-center justify-between rounded-xl border border-[#dbb25c]/50 bg-[#311523] px-4 text-sm font-semibold text-[#ffe0a0] transition-colors hover:border-[#f2c55e]"

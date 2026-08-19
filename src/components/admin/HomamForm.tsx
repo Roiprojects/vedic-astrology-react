@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Trash2 } from "lucide-react";
 import { deleteAdminHomam, saveAdminHomam } from "@/lib/supabase/admin-data";
 import type { Homam } from "@/lib/data/types";
+import { ImageUpload } from "./ImageUpload";
 
 const inputCls =
   "w-full rounded-xl border border-gold/30 bg-overlay px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-gold/70";
@@ -170,6 +171,11 @@ export function HomamForm({
             <input className={inputCls} value={form.duration} onChange={(e) => update("duration", e.target.value)} placeholder="2–3 hours" />
           </div>
         </div>
+        <ImageUpload
+          label="Homam image"
+          value={form.image}
+          onChange={(url) => update("image", url ?? undefined)}
+        />
         <div>
           <label className={labelCls}>Short benefit</label>
           <textarea className={inputCls} rows={2} value={form.shortBenefit} onChange={(e) => update("shortBenefit", e.target.value)} placeholder="One-line benefit shown on cards." />

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Clock, MessageCircleMore, Phone } from "lucide-react";
+import { Clock, MessageCircleMore } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -142,9 +142,6 @@ export default function HomamDetailPage() {
                 <AskGurujiButton serviceTitle={homam.name} className="w-full justify-center border border-[#f2c55e]/60 bg-[#8a2c12]/70 text-[#fff1c7] hover:bg-[#a4381a] sm:w-auto">
                   <MessageCircleMore className="h-5 w-5" /> Ask Guruji
                 </AskGurujiButton>
-                <Button href={siteConfig.phoneHref} variant="gold" size="lg" className="w-full border-[#f2c55e]/50 bg-[#381523]/70 text-[#fff1c7] hover:bg-[#481c2e] sm:w-auto">
-                  <Phone className="h-5 w-5" /> Call Now
-                </Button>
               </div>
             </Reveal>
           </div>

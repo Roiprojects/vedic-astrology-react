@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { astrologers } from "@/lib/astrologers";
 import { useAppUser } from "@/hooks/useAppUser";
-import { openWhatsApp } from "@/lib/whatsapp";
 import { hapticSuccess } from "@/lib/native";
 import { AppButton, AppLink, Screen } from "@/app/components/AppUI";
 
@@ -45,7 +44,7 @@ export function ConsultationSessionScreen() {
     if (phase === "waiting")
       return { title: "Waiting", body: "Live consultation rooms will attach here when the realtime backend is enabled." };
     if (phase === "unavailable")
-      return { title: "Currently unavailable", body: "This astrologer is offline. Book a slot or continue on WhatsApp." };
+      return { title: "Currently unavailable", body: "This astrologer is offline. Book a slot or ask Guruji for guidance." };
     return { title: "Booking confirmed", body: "Your request is recorded. Guruji’s team will reach you with the session details." };
   }, [phase, mode, astrologer?.name]);
 
@@ -61,13 +60,9 @@ export function ConsultationSessionScreen() {
       <p className="mt-3 max-w-sm text-sm text-[#F3D899]/75">{copy.body}</p>
       <div className="mt-6 flex w-full max-w-xs flex-col gap-2">
         {phase === "unavailable" && (
-          <AppButton
-            variant="whatsapp"
-            block
-            onClick={() => void openWhatsApp(`Please help me book ${astrologer.name}.`)}
-          >
-            Message on WhatsApp
-          </AppButton>
+          <AppLink to="/app/guruji" block>
+            Ask Guruji for next slot
+          </AppLink>
         )}
         {phase === "confirmed" && (
           <AppLink to="/app/guruji" block>

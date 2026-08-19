@@ -4,6 +4,10 @@ import { serviceSchema } from "../../lib/admin/service-schema";
 
 const router = Router();
 
+// Add image column if it doesn't exist yet
+query("ALTER TABLE services ADD COLUMN IF NOT EXISTS image TEXT").catch(() => {});
+
+
 router.get("/", async (_req, res) => {
   try {
     const { rows } = await query("SELECT * FROM services ORDER BY display_order ASC, title ASC");
@@ -29,9 +33,9 @@ router.post("/", async (req, res) => {
   const s = parsed.data;
   try {
     await query(
-      `INSERT INTO services (slug,title,category_slug,icon,short_description,full_description,problem,price,discount_price,duration,gradient,analysis,receive,benefits,remedies,faqs,featured,display_order,active)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`,
-      [s.slug,s.title,s.categorySlug||'astrology-consultations',s.icon,s.shortDescription,s.fullDescription,
+      `INSERT INTO services (slug,title,category_slug,icon,image,short_description,full_description,problem,price,discount_price,duration,gradient,analysis,receive,benefits,remedies,faqs,featured,display_order,active)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)`,
+      [s.slug,s.title,s.categorySlug||'astrology-consultations',s.icon,s.image??null,s.shortDescription,s.fullDescription,
        s.problem,s.price,s.discountPrice??null,s.duration,s.gradient,
        JSON.stringify(s.analysis),JSON.stringify(s.receive),JSON.stringify(s.benefits),
        JSON.stringify(s.remedies),JSON.stringify(s.faqs),s.featured,s.order,s.active]
@@ -50,10 +54,10 @@ router.put("/:slug", async (req, res) => {
   const { slug } = req.params;
   try {
     const { rowCount } = await query(
-      `UPDATE services SET slug=$1,title=$2,category_slug=$3,icon=$4,short_description=$5,full_description=$6,
-       problem=$7,price=$8,discount_price=$9,duration=$10,gradient=$11,analysis=$12,receive=$13,benefits=$14,
-       remedies=$15,faqs=$16,featured=$17,display_order=$18,active=$19,updated_at=now() WHERE slug=$20`,
-      [s.slug,s.title,s.categorySlug||'astrology-consultations',s.icon,s.shortDescription,s.fullDescription,
+      `UPDATE services SET slug=$1,title=$2,category_slug=$3,icon=$4,image=$5,short_description=$6,full_description=$7,
+       problem=$8,price=$9,discount_price=$10,duration=$11,gradient=$12,analysis=$13,receive=$14,benefits=$15,
+       remedies=$16,faqs=$17,featured=$18,display_order=$19,active=$20,updated_at=now() WHERE slug=$21`,
+      [s.slug,s.title,s.categorySlug||'astrology-consultations',s.icon,s.image??null,s.shortDescription,s.fullDescription,
        s.problem,s.price,s.discountPrice??null,s.duration,s.gradient,
        JSON.stringify(s.analysis),JSON.stringify(s.receive),JSON.stringify(s.benefits),
        JSON.stringify(s.remedies),JSON.stringify(s.faqs),s.featured,s.order,s.active,slug]

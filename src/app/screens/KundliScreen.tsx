@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useAppUser } from "@/hooks/useAppUser";
 import { RASHIS } from "@/lib/cosmic";
 import { NAKSHATRAS } from "@/lib/panchanga";
-import { openWhatsApp } from "@/lib/whatsapp";
 import { AppButton, AppLink, Chip, HScroll, IconButton, IconLink, Screen } from "@/app/components/AppUI";
 import { Download, Share2 } from "lucide-react";
 
@@ -108,14 +107,9 @@ export function KundliScreen() {
         )}
       </div>
 
-      <AppButton
-        variant="whatsapp"
-        block
-        className="mt-4"
-        onClick={() => void openWhatsApp("Please prepare my detailed kundli report.")}
-      >
-        Request full report on WhatsApp
-      </AppButton>
+      <AppLink to="/birth-chart-pdf" block className="mt-4">
+        Order detailed kundli report
+      </AppLink>
     </Screen>
   );
 }

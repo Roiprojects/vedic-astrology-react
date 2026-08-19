@@ -19,7 +19,7 @@ export type EnquiryInput = z.infer<typeof enquirySchema>;
 
 const baseSchema = z.object({
   name: z.string().min(2, "Name is required"),
-  phone: z.string().min(10, "Valid phone number required"),
+  phone: z.string().optional().or(z.literal("")),
   email: z.string().email("Valid email required").optional().or(z.literal("")),
   message: z.string().optional(),
   website: z.string().optional(), // honeypot

@@ -53,6 +53,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               Homams
             </a>
             <a
+              href="/admin/astrologers"
+              className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-ink sm:inline"
+            >
+              Astrologers
+            </a>
+            <a
               href="/admin/testimonials"
               className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-ink lg:inline"
             >

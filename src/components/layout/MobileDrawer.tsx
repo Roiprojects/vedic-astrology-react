@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Phone, X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
-import { mainNav, siteConfig } from "@/lib/site";
+import { mainNav } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const CONSULTATION_ITEMS = [
@@ -164,10 +164,6 @@ export function MobileDrawer({
             <div className="container-x grid grid-cols-1 gap-3 border-t border-gold/20 py-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
               <Button href="/contact-us" variant="primary" size="lg" onClick={onClose}>
                 Book Consultation
-              </Button>
-              <Button href={siteConfig.phoneHref} variant="gold" size="lg" onClick={onClose}>
-                <Phone className="h-4 w-4" />
-                Call Now
               </Button>
             </div>
           </motion.div>

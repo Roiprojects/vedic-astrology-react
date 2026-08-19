@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { ChevronDown, Menu, Phone } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/Button";
 import { mainNav, siteConfig } from "@/lib/site";
@@ -205,13 +205,6 @@ export function Navbar() {
 
             {/* Mobile actions */}
             <div className="flex items-center gap-2 lg:hidden">
-              <a
-                href={siteConfig.phoneHref}
-                aria-label="Call now"
-                className="grid h-10 w-10 place-items-center rounded-full border border-gold/30 text-gold-light"
-              >
-                <Phone className="h-4.5 w-4.5" />
-              </a>
               <button
                 type="button"
                 aria-label="Open menu"

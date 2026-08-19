@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, MapPin } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -11,7 +11,6 @@ import { siteConfig } from "@/lib/site";
 import { JsonLd, breadcrumbSchema, localBusinessSchema } from "@/components/seo/JsonLd";
 
 const contactCards = [
-  { icon: Phone, label: "Phone", value: siteConfig.phone, href: siteConfig.phoneHref },
   { icon: Mail, label: "Email", value: siteConfig.email, href: `mailto:${siteConfig.email}` },
   { icon: MapPin, label: "Location", value: siteConfig.location },
   { icon: Clock, label: "Working Hours", value: siteConfig.workingHours },
@@ -48,8 +47,8 @@ export default function ContactUsPage() {
         seed={31}
       >
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button href={siteConfig.phoneHref} variant="gold" size="lg">
-            <Phone className="h-5 w-5" /> Call Now
+          <Button href={`mailto:${siteConfig.email}`} variant="gold" size="lg">
+            <Mail className="h-5 w-5" /> Email Us
           </Button>
         </div>
       </PageHero>

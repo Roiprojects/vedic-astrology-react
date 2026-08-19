@@ -1,13 +1,15 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Hand, Moon, ScrollText, Sparkles, Star, Sun } from "lucide-react";
+import { Bell, Flame, Hand, Moon, ScrollText, Sparkles, Star, Sun } from "lucide-react";
 import { useAppUser } from "@/hooks/useAppUser";
 import { formatDisplayDate, greetingForNow, moonPhaseName } from "@/lib/cosmic";
-import { astrologers } from "@/lib/astrologers";
+import { apiFetch } from "@/lib/api";
 import { calculatePanchanga } from "@/lib/panchanga";
 import { Skeleton } from "@/app/components/ScreenStates";
 import { HScroll, IconLink, Screen } from "@/app/components/AppUI";
 import { cn } from "@/lib/utils";
+
+type AstrologerSnap = { slug: string; name: string; image?: string; online: boolean; rating: number; price_chat: number; title: string };
 
 const QUICK = [
   { to: "/app/guruji", label: "Guruji", icon: Sparkles },
@@ -16,13 +18,32 @@ const QUICK = [
   { to: "/app/discover/horoscope", label: "Horoscope", icon: Sun },
   { to: "/app/discover/compatibility", label: "Match", icon: Star },
   { to: "/app/discover/muhurat", label: "Muhurat", icon: Moon },
+  { to: "/app/homams", label: "Homams", icon: Flame },
+];
+
+const APP_SERVICES = [
+  { to: "/services/love-relationship-problems", label: "Love & Relationships", icon: "💖", desc: "Compatibility & harmony guidance" },
+  { to: "/services/marriage-delay-divorce-issues", label: "Marriage & Divorce", icon: "💍", desc: "Resolve marriage obstacles" },
+  { to: "/services/career-job-business-success", label: "Career & Business", icon: "💼", desc: "Job, promotion & success" },
+  { to: "/services/health-healing-astrology", label: "Health & Healing", icon: "🌿", desc: "Vedic health remedies" },
+  { to: "/services/financial-debt-wealth-problems", label: "Finance & Wealth", icon: "💰", desc: "Debt relief & prosperity" },
+  { to: "/birth-chart-pdf", label: "Birth Chart PDF", icon: "📜", desc: "Detailed kundli report" },
+  { to: "/palm-reading", label: "Palm Reading", icon: "🖐️", desc: "Instant palm reading" },
+  { to: "/chat-with-guruji", label: "Chat with Guruji", icon: "🔮", desc: "Live Vedic guidance" },
 ];
 
 export function HomeScreen() {
   const { loading, profile } = useAppUser();
   const chart = profile.chart;
   const panchanga = useMemo(() => calculatePanchanga(new Date()), []);
-  const live = astrologers.filter((a) => a.online);
+  const [liveAstrologers, setLiveAstrologers] = useState<AstrologerSnap[]>([]);
+
+  useEffect(() => {
+    apiFetch("/api/public/astrologers")
+      .then((r) => r.json())
+      .then((d) => setLiveAstrologers((d.astrologers ?? []).filter((a: AstrologerSnap) => a.online)))
+      .catch(() => {});
+  }, []);
 
   return (
     <Screen className="va-stars">
@@ -46,8 +67,9 @@ export function HomeScreen() {
         </div>
       </div>
 
-      <section className="relative mt-5 overflow-hidden rounded-[1.75rem] border border-[#D6AE57]/25 bg-gradient-to-br from-[#1a1f48] via-[#11152F] to-[#080A18] p-5">
-        <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-[#D6AE57]/10 blur-2xl" />
+      <section className="relative mt-5 overflow-hidden rounded-[1.75rem] border border-[#D6AE57]/30 bg-gradient-to-br from-[#1c2050] via-[#13183a] to-[#080A18] p-5 shadow-[0_12px_40px_-16px_rgba(8,10,24,0.8)]">
+        <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-[#D6AE57]/12 blur-3xl" />
+        <div className="pointer-events-none absolute -left-4 bottom-0 h-24 w-24 rounded-full bg-[#6B4FBB]/20 blur-2xl" />
         <p className="app-kicker">Your Cosmic Energy</p>
         {loading || !chart ? (
           <div className="mt-4 grid grid-cols-2 gap-2.5">
@@ -92,10 +114,10 @@ export function HomeScreen() {
             to={item.to}
             className="app-tile"
           >
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-[#D6AE57]/12">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-b from-[#D6AE57]/18 to-[#D6AE57]/8 shadow-[inset_0_1px_0_rgba(243,216,153,0.15)]">
               <item.icon className="h-4 w-4 text-[#D6AE57]" />
             </span>
-            <span className="text-[0.72rem] leading-tight text-[#F3D899]">{item.label}</span>
+            <span className="text-[0.72rem] font-medium leading-tight text-[#F3D899]">{item.label}</span>
           </Link>
         ))}
       </div>
@@ -108,29 +130,37 @@ export function HomeScreen() {
           </Link>
         </div>
         <HScroll className="-mx-1 px-1">
-          {live.map((a) => (
+          {liveAstrologers.length === 0 && (
+            <Link to="/app/consult" className="w-[17rem] shrink-0 rounded-[1.5rem] border border-[#D6AE57]/20 bg-gradient-to-br from-[#15193e] to-[#11152F] p-4 opacity-60">
+              <p className="text-sm text-[#F3D899]/60">No astrologers online right now</p>
+              <p className="mt-1 text-xs text-[#F3D899]/40">Tap to see all available guides</p>
+            </Link>
+          )}
+          {liveAstrologers.map((a) => (
             <Link
-              key={a.id}
-              to={`/app/consult/${a.id}`}
-              className="w-[16.5rem] shrink-0 rounded-[1.5rem] border border-[#D6AE57]/20 bg-[#11152F] p-4"
+              key={a.slug}
+              to={`/app/consult/${a.slug}`}
+              className="w-[17rem] shrink-0 rounded-[1.5rem] border border-[#D6AE57]/20 bg-gradient-to-br from-[#15193e] to-[#11152F] p-4 shadow-[0_8px_24px_-10px_rgba(8,10,24,0.7)]"
             >
               <div className="flex items-center gap-3">
                 <span className="relative shrink-0">
-                  <img src={a.image} alt="" className="h-12 w-12 rounded-full object-cover" />
+                  {a.image ? (
+                    <img src={a.image} alt="" className="h-13 w-13 rounded-full object-cover ring-2 ring-[#D6AE57]/25" />
+                  ) : (
+                    <span className="grid h-13 w-13 place-items-center rounded-full bg-[#D6AE57]/10 font-serif text-xl text-[#D6AE57] ring-2 ring-[#D6AE57]/25">
+                      {a.name.slice(0, 1)}
+                    </span>
+                  )}
                   <span className={cn("absolute bottom-0 right-0 h-3 w-3 rounded-full ring-2 ring-[#11152F]", a.online ? "va-pulse-online bg-[#3ad67f]" : "bg-[#6a5340]")} />
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-[#FFF9EE]">
-                    {a.name} {a.verified && <span className="text-[#D6AE57]">✓</span>}
-                  </p>
-                  <p className="text-xs text-[#F3D899]/70">{a.experienceYears} yrs · {a.rating} ★</p>
+                  <p className="truncate font-semibold text-[#FFF9EE]">{a.name}</p>
+                  <p className="text-xs text-[#F3D899]/65">{a.title} · {a.rating} ★</p>
                 </div>
               </div>
-              <p className="mt-3 truncate text-xs text-[#F3D899]/70">{a.specialties.slice(0, 2).join(" · ")}</p>
-              <p className="mt-0.5 truncate text-xs text-[#F3D899]/50">{a.languages.join(", ")}</p>
               <div className="app-btn-row mt-3">
-                <span className="app-btn app-btn-primary text-xs">Chat ₹{a.priceChat}</span>
-                <span className="app-btn app-btn-ghost text-xs">Call</span>
+                <span className="app-btn app-btn-primary app-btn-sm">Chat ₹{a.price_chat}</span>
+                <span className="app-btn app-btn-ghost app-btn-sm">Call</span>
               </div>
             </Link>
           ))}
@@ -151,15 +181,40 @@ export function HomeScreen() {
           <Dash label="Nakshatra" value={panchanga.nakshatra} />
         </div>
       </section>
+
+      <section className="mt-6">
+        <div className="mb-3 flex items-baseline justify-between gap-3">
+          <h2 className="font-serif text-2xl">Our Services</h2>
+          <Link to="/app/homams" className="shrink-0 text-[0.68rem] uppercase tracking-[0.16em] text-[#D6AE57]">
+            Homams →
+          </Link>
+        </div>
+        <div className="space-y-2">
+          {APP_SERVICES.map((s) => (
+            <Link
+              key={s.to}
+              to={s.to}
+              className="app-list flex items-center gap-4 p-3.5"
+            >
+              <span className="text-xl shrink-0">{s.icon}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold text-[#FFF9EE]">{s.label}</span>
+                <span className="block text-xs text-[#F3D899]/60">{s.desc}</span>
+              </span>
+              <span className="shrink-0 text-[0.65rem] text-[#D6AE57]/70">›</span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </Screen>
   );
 }
 
 function EnergyCell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-h-[4.25rem] rounded-2xl bg-[#080A18]/55 p-3">
-      <p className="text-[0.6rem] uppercase tracking-[0.18em] text-[#D6AE57]/80">{label}</p>
-      <p className="mt-1 font-serif text-[0.95rem] leading-snug text-[#FFF9EE]">{value}</p>
+    <div className="min-h-[4.25rem] rounded-2xl border border-[#D6AE57]/12 bg-[#080A18]/60 p-3 backdrop-blur-sm">
+      <p className="text-[0.6rem] uppercase tracking-[0.18em] text-[#D6AE57]/85">{label}</p>
+      <p className="mt-1 font-serif text-[1rem] leading-snug text-[#FFF9EE]">{value}</p>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { refineForVariant, type BookingVariant } from "../../src/lib/validation";
 import { query } from "../lib/db";
-import { sendEnquiryNotification } from "../lib/mailer";
+import { sendEnquiryNotification, sendCustomerConfirmation } from "../lib/mailer";
 import { sendAutoReport, shouldSendAutoReport } from "../lib/dosha-report";
 import { rateLimit, clientIp } from "../lib/ratelimit";
 
@@ -50,6 +50,21 @@ router.post("/", async (req, res) => {
     name: d.name || "", phone: d.phone || "",
     email: d.email, dob: d.dob, tob: d.tob, pob: d.pob, message: d.message,
   }).catch(() => {});
+
+  // Send confirmation email to customer for all form submissions
+  if (d.email) {
+    sendCustomerConfirmation({
+      toEmail: d.email,
+      toName: d.name || "Valued Customer",
+      reference,
+      variant,
+      subject: d.subject || null,
+      dob: d.dob || null,
+      tob: d.tob || null,
+      pob: d.pob || null,
+      message: d.message || null,
+    }).catch(() => {});
+  }
 
   // Send automated dosha analysis report to customer (if email provided)
   if (d.email && shouldSendAutoReport(d.subject || variant, d.email)) {

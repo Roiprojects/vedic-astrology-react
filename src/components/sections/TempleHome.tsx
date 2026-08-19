@@ -351,7 +351,7 @@ export function TempleHome() {
         <Container>
           <h2 className="font-serif text-[clamp(2.8rem,5vw,5rem)] text-[#ffe0a0]">Ready for personal guidance?</h2>
           <p className="mx-auto mt-5 max-w-2xl leading-7 text-[#eadbbd]/70">Speak with Guruji for a confidential consultation rooted in authentic Vedic practice.</p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Button href="/contact-us" size="lg">Book Consultation</Button><Button href="tel:+919886100565" variant="gold" size="lg">Call Guruji</Button></div>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Button href="/contact-us" size="lg">Book Consultation</Button></div>
           <p className="mx-auto mt-10 max-w-3xl border-t border-[#d5a94f]/20 pt-6 text-xs leading-5 text-[#eadbbd]/55">{siteConfig.disclaimer}</p>
         </Container>
       </section>

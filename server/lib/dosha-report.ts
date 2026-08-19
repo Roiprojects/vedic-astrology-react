@@ -1,9 +1,8 @@
 /**
- * Automated dosha report generator — uses Gemini to produce a brief
- * personalised dosha analysis and emails it to the customer.
+ * Automated dosha report generator — uses Gemini (primary) → OpenAI fallback.
  * Triggered for specific service bookings (career, education, jataka match, etc.)
  */
-import { getGeminiKey, geminiUrl, extractText, type GeminiResponse } from "./gemini";
+import { callAI, hasAnyAIKey } from "./ai-client";
 import { sendAdminNotification } from "./mailer";
 import nodemailer from "nodemailer";
 
@@ -28,8 +27,7 @@ async function generateDoshaReport(data: {
   subject?: string;
   message?: string | null;
 }): Promise<string> {
-  const key = getGeminiKey();
-  if (!key) return "";
+  if (!hasAnyAIKey()) return "";
 
   const prompt = `You are a Vedic astrology expert. Generate a brief, warm, personalised dosha analysis report for a client.
 
@@ -52,15 +50,14 @@ Format as plain text with clear sections. Keep it warm, hopeful, and professiona
 End with: "For your complete personalised birth chart analysis and specific remedies, please connect with Guruji. Your detailed report is being prepared and Guruji will reach out to you shortly."`;
 
   try {
-    const response = await fetch(geminiUrl("generateContent", key), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] }),
+    return await callAI({
+      systemPrompt: "You are a compassionate Vedic astrology expert.",
+      userPrompt: prompt,
+      maxTokens: 1000,
+      temperature: 0.7,
     });
-    const json = await response.json() as GeminiResponse;
-    return extractText(json);
   } catch (e) {
-    console.error("[dosha-report] Gemini error:", e);
+    console.error("[dosha-report] AI error:", e);
     return "";
   }
 }

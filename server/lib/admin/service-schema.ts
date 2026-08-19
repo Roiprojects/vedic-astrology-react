@@ -19,6 +19,7 @@ export const serviceSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(160),
   categorySlug: z.string().trim().min(1, "Category is required").max(120),
   icon: z.string().trim().min(1, "Icon is required").max(24),
+  image: z.string().trim().max(500).nullable().optional(),
   shortDescription: z.string().trim().min(1, "Short description is required").max(400),
   fullDescription: z.string().trim().min(1, "Full description is required").max(4000),
   problem: z.string().trim().min(1, "Problem text is required").max(4000),

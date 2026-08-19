@@ -1,12 +1,10 @@
 /**
- * Chat API route — Express port of app/api/chat/route.ts
- *
- * Handles AI chatbot messages via Google Gemini streaming.
+ * Chat API route — Gemini streaming (primary) → OpenAI fallback.
  */
 
 import { Router, Request } from "express";
 import type { Response as ExpressResponse } from "express";
-import { getGeminiKey, geminiUrl, AI_DISABLED_MESSAGE } from "../lib/gemini";
+import { hasAnyAIKey, streamAI, AI_DISABLED_MESSAGE } from "../lib/ai-client";
 import { rateLimit, clientIp } from "../lib/ratelimit";
 import { consumeFreeQuestion, refundFreeQuestion } from "../lib/ai/chat-policy";
 import { siteConfig } from "../lib/site";
@@ -66,8 +64,7 @@ function buildSystemPrompt(
 }
 
 router.post("/", async (req: Request, res: ExpressResponse) => {
-  const key = getGeminiKey();
-  if (!key) {
+  if (!hasAnyAIKey()) {
     return res.status(503).json({ ok: false, error: AI_DISABLED_MESSAGE });
   }
 
@@ -120,47 +117,10 @@ router.post("/", async (req: Request, res: ExpressResponse) => {
     });
   }
 
-  // Map to Gemini's contents (assistant -> model).
-  const contents = clean.map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content.slice(0, 2000) }],
+  const chatMessages = clean.map((m) => ({
+    role: m.role as "user" | "assistant",
+    content: m.content.slice(0, 2000),
   }));
-
-  const payload = {
-    systemInstruction: { parts: [{ text: systemPrompt }] },
-    contents,
-    generationConfig: {
-      maxOutputTokens: 700,
-      temperature: 0.8,
-      thinkingConfig: { thinkingBudget: 0 },
-    },
-  };
-
-  let upstream: globalThis.Response;
-  try {
-    upstream = await fetch(geminiUrl("streamGenerateContent", key), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-  } catch (err) {
-    console.error("[chat] fetch error", err);
-    refundFreeQuestion(visitor.id);
-    return res.status(500).json({ ok: false, error: "The assistant is unavailable right now. Please try again." });
-  }
-
-  if (!upstream.ok || !upstream.body) {
-    let detail = "";
-    try {
-      const j = (await upstream.json()) as { error?: { message?: string } };
-      detail = j?.error?.message || "";
-    } catch {
-      /* ignore */
-    }
-    console.error("[chat] gemini error", upstream.status, detail);
-    refundFreeQuestion(visitor.id);
-    return res.status(500).json({ ok: false, error: "The assistant is unavailable right now. Please try again." });
-  }
 
   res.set({
     "Content-Type": "text/plain; charset=utf-8",
@@ -169,39 +129,17 @@ router.post("/", async (req: Request, res: ExpressResponse) => {
   });
   if (visitor.isNew) res.set("Set-Cookie", visitorCookie(visitor.id));
 
-  const reader = upstream.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
   try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (!value) continue;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const data = trimmed.slice(5).trim();
-        if (!data || data === "[DONE]") continue;
-        try {
-          const json = JSON.parse(data) as {
-            candidates?: { content?: { parts?: { text?: string }[] } }[];
-          };
-          const parts = json?.candidates?.[0]?.content?.parts;
-          if (Array.isArray(parts)) {
-            const text = parts.map((part) => (typeof part?.text === "string" ? part.text : "")).join("");
-            if (text) res.write(text);
-          }
-        } catch {
-          /* skip partial/non-JSON lines */
-        }
-      }
-    }
+    await streamAI(
+      { systemPrompt, messages: chatMessages, maxTokens: 700, temperature: 0.8 },
+      (text) => res.write(text)
+    );
   } catch (err) {
     console.error("[chat] stream error", err);
+    if (!res.headersSent) {
+      refundFreeQuestion(visitor.id);
+      return res.status(500).json({ ok: false, error: "The assistant is unavailable right now. Please try again." });
+    }
   } finally {
     res.end();
   }
