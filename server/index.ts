@@ -1,3 +1,4 @@
+import "dotenv/config"; // auto-loads .env (and .env.local fallback)
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
