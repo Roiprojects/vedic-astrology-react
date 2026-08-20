@@ -1,28 +1,41 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { rateLimit, clientIp } from "../lib/ratelimit";
+import { query } from "../lib/db";
 
 const router = Router();
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
+async function getAdminConfig() {
+  let JWT_SECRET = process.env.JWT_SECRET;
+  let ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+  let ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-if (!JWT_SECRET || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
-  console.error("[auth] FATAL: JWT_SECRET, ADMIN_EMAIL, and ADMIN_PASSWORD must be set in environment variables. Admin login is disabled.");
+  if (!JWT_SECRET || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    try {
+      const res = await query(
+        "SELECT key, value::text FROM settings WHERE key IN ('jwt_secret','admin_email','admin_password')"
+      );
+      for (const row of res.rows) {
+        const val = row.value?.replace(/^"|"$/g, "");
+        if (row.key === "jwt_secret") JWT_SECRET = val;
+        if (row.key === "admin_email") ADMIN_EMAIL = val;
+        if (row.key === "admin_password") ADMIN_PASSWORD = val;
+      }
+    } catch { /* DB unavailable — fall through */ }
+  }
+  return { JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD };
 }
 
-router.post("/login", (req, res) => {
-  // 5 attempts per 15 minutes per IP
+router.post("/login", async (req, res) => {
   const ip = clientIp(req as Parameters<typeof clientIp>[0]);
   const rl = rateLimit(`login:${ip}`, 5, 15 * 60_000);
   if (!rl.ok) {
-    return res
-      .status(429)
-      .set("Retry-After", String(rl.retryAfter))
+    return res.status(429).set("Retry-After", String(rl.retryAfter))
       .json({ ok: false, error: "Too many login attempts. Please wait before trying again." });
   }
+
+  const { JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD } = await getAdminConfig();
 
   if (!JWT_SECRET || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
     return res.status(503).json({ ok: false, error: "Admin login not configured." });
@@ -47,9 +60,11 @@ router.post("/logout", (_req, res) => {
   return res.json({ ok: true });
 });
 
-router.get("/me", (req, res) => {
+router.get("/me", async (req, res) => {
   const token = req.cookies?.admin_token;
-  if (!token || !JWT_SECRET) return res.json({ isAdmin: false });
+  if (!token) return res.json({ isAdmin: false });
+  const { JWT_SECRET } = await getAdminConfig();
+  if (!JWT_SECRET) return res.json({ isAdmin: false });
   try {
     const payload = jwt.verify(token, JWT_SECRET) as { isAdmin: boolean };
     return res.json({ isAdmin: Boolean(payload.isAdmin) });

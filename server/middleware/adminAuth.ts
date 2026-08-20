@@ -1,13 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { query } from "../lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  console.error("[adminAuth] FATAL: JWT_SECRET env var is not set. All admin routes will be inaccessible.");
+async function getJwtSecret(): Promise<string | undefined> {
+  if (process.env.JWT_SECRET) return process.env.JWT_SECRET;
+  try {
+    const res = await query("SELECT value::text FROM settings WHERE key = 'jwt_secret'");
+    const val = res.rows[0]?.value?.replace(/^"|"$/g, "");
+    return val || undefined;
+  } catch {
+    return undefined;
+  }
 }
 
-export function adminAuthMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function adminAuthMiddleware(req: Request, res: Response, next: NextFunction) {
+  const JWT_SECRET = await getJwtSecret();
   if (!JWT_SECRET) return res.status(503).json({ error: "Admin auth not configured" });
   const token = req.cookies?.admin_token;
   if (!token) return res.status(401).json({ error: "Unauthorized" });
