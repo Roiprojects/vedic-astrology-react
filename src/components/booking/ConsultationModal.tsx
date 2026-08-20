@@ -112,28 +112,6 @@ export function ConsultationModal({
     setPayment(payload);
     setStep("generating");
 
-    // If no email provided, record via enquiry and skip AI generation
-    if (!form.email.trim()) {
-      try {
-        await apiFetch("/api/enquiry", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: form.name,
-            phone: `+91${form.phone}`,
-            service: service.title,
-            message: `DOB: ${form.dob} | Time: ${form.tob} | Place: ${form.pob} | Gender: ${form.gender} | Concern: ${form.concern || "N/A"} | PaymentID: ${payload.razorpay_payment_id}`,
-          }),
-        });
-      } catch { /* ignore — payment already done */ }
-      setReport({
-        nakshatra: "", rashi: "", lagna: "", summary: "", remedies: "", mantras: "",
-        message: `Your booking is confirmed. Guruji will contact you at +91${form.phone} with your personalized report.`,
-      });
-      setStep("success");
-      return;
-    }
-
     try {
       const res = await apiFetch("/api/consultation/generate", {
         method: "POST",
@@ -150,8 +128,7 @@ export function ConsultationModal({
       if (!res.ok || !data.ok) throw new Error(data.error || "Report generation failed");
       setReport({ ...data.report, message: data.message });
       setStep("success");
-    } catch (err) {
-      // Fallback: payment succeeded but report generation failed — show partial success
+    } catch {
       setReport({
         nakshatra: "", rashi: "", lagna: "", summary: "", remedies: "", mantras: "",
         message: `Payment confirmed (ID: ${payload.razorpay_payment_id}). Your report will be sent to ${form.email} shortly.`,
@@ -291,10 +268,9 @@ function FormStep({
         </Field>
       </div>
 
-      <Field label="Email Address (optional)" error={errors.email}>
+      <Field label="Email Address" required error={errors.email}>
         <input className={inputCls} placeholder="your@email.com" value={form.email}
           onChange={(e) => setField("email", e.target.value)} type="email" />
-        <p className="text-[10px] text-[#ffd777]/60 mt-0.5">If provided, your PDF report will also be sent here</p>
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -473,9 +449,7 @@ function SuccessStep({
       </div>
 
       <div className="rounded-2xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
-        {email
-          ? <>📩 Full report with remedies, mantras & gemstone advice sent to <strong>{email}</strong></>
-          : <>📞 Guruji will contact you via WhatsApp/phone with your personalized report</>}
+        📩 Full report with remedies, mantras & gemstone advice sent to <strong>{email}</strong>
       </div>
 
       <Button variant="primary" size="lg" className="w-full" onClick={onClose}>
