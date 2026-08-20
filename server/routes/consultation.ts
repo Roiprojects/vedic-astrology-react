@@ -39,8 +39,8 @@ router.post("/generate", async (req, res) => {
     orderId: string;
   };
 
-  // Basic validation
-  if (!name || !email || !dob || !tob || !pob || !serviceTitle || !paymentId) {
+  // Basic validation (email is optional — report sent via WhatsApp/phone if absent)
+  if (!name || !dob || !tob || !pob || !serviceTitle || !paymentId) {
     return res.status(400).json({ ok: false, error: "Missing required fields" });
   }
 
@@ -84,7 +84,9 @@ router.post("/generate", async (req, res) => {
         remedies: report.remedies,
         mantras: report.mantras,
       },
-      message: `Your personalized Vedic astrology report has been sent to ${email}`,
+      message: email
+        ? `Your personalized Vedic astrology report has been sent to ${email}`
+        : `Your booking is confirmed. Guruji will contact you at +91${phone} with your personalized report.`,
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Report generation failed";

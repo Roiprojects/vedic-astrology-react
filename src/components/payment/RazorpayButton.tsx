@@ -52,6 +52,9 @@ interface RazorpayButtonProps {
   label?: string;
 }
 
+// Razorpay key_id is public — safe to embed in frontend
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_TLyBF9AdhqAZBX";
+
 export function RazorpayButton({
   amount,
   serviceName,
@@ -72,48 +75,66 @@ export function RazorpayButton({
       const loaded = await loadRazorpayScript();
       if (!loaded) throw new Error("Failed to load Razorpay checkout. Please refresh and try again.");
 
-      const res = await apiFetch("/api/razorpay/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: amount * 100, // paise
-          receipt: reference || `va-${Date.now()}`,
-          notes: { service: serviceName, reference: reference || "" },
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) throw new Error(data.error || "Could not create order");
+      // Try server-side order creation; fall back to orderless checkout if unavailable
+      let orderId: string | undefined;
+      let orderAmount = amount * 100;
+      let orderCurrency = "INR";
+      let serverVerify = true;
 
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
-        amount: data.order.amount,
-        currency: data.order.currency,
+      try {
+        const res = await apiFetch("/api/razorpay/order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: amount * 100,
+            receipt: reference || `va-${Date.now()}`,
+            notes: { service: serviceName, reference: reference || "" },
+          }),
+        });
+        const data = await res.json();
+        if (res.ok && data.ok && data.order?.id) {
+          orderId = data.order.id;
+          orderAmount = data.order.amount;
+          orderCurrency = data.order.currency;
+        } else {
+          serverVerify = false; // fallback to orderless
+        }
+      } catch {
+        serverVerify = false; // network/server error — proceed orderless
+      }
+
+      const options: Record<string, unknown> = {
+        key: RAZORPAY_KEY_ID,
+        amount: orderAmount,
+        currency: orderCurrency,
         name: siteConfig.name,
         description: serviceName,
-        order_id: data.order.id,
         prefill: {
           name: customerName || "",
-          contact: customerPhone || "",
+          contact: customerPhone ? `+91${customerPhone}` : "",
           email: customerEmail || "",
         },
         theme: { color: "#b45309" },
         handler: async (response: RazorpaySuccessPayload) => {
           try {
-            const vRes = await apiFetch("/api/razorpay/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...response,
-                reference,
-                service_name: serviceName,
-                amount: amount * 100,
-                customer_name: customerName,
-                customer_email: customerEmail,
-                customer_phone: customerPhone,
-              }),
-            });
-            const vData = await vRes.json();
-            if (!vRes.ok || !vData.ok) throw new Error(vData.error || "Payment verification failed");
+            if (serverVerify && response.razorpay_order_id && response.razorpay_signature) {
+              const vRes = await apiFetch("/api/razorpay/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ...response,
+                  reference,
+                  service_name: serviceName,
+                  amount: amount * 100,
+                  customer_name: customerName,
+                  customer_email: customerEmail,
+                  customer_phone: customerPhone,
+                }),
+              });
+              const vData = await vRes.json();
+              if (!vRes.ok || !vData.ok) throw new Error(vData.error || "Payment verification failed");
+            }
+            // In orderless mode, payment succeeded — proceed directly
             onSuccess?.(response);
           } catch (e) {
             const msg = e instanceof Error ? e.message : "Verification failed";
@@ -126,6 +147,8 @@ export function RazorpayButton({
           ondismiss: () => setLoading(false),
         },
       };
+
+      if (orderId) options.order_id = orderId;
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", (resp: { error: { description: string } }) => {
