@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/$(whoami)/myvedicastrology.in
+    - /bin/cp -r server $DEPLOYPATH
+    - /bin/cp -r dist $DEPLOYPATH
+    - /bin/cp package.json $DEPLOYPATH
+    - /bin/cp package-lock.json $DEPLOYPATH
+    - cd $DEPLOYPATH && /usr/local/bin/node /usr/local/bin/npm install --production
